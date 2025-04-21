@@ -33,7 +33,7 @@ surfaceGui.Face = Enum.NormalId.Top
 surfaceGui.AlwaysOnTop = true
 
 local label = Instance.new("TextLabel", surfaceGui)
-label.Text = "貓玲的安全區(>^ω^<)"
+label.Text = "貓玲的安全區(>^ω^<) v0.1"
 label.Size = UDim2.new(1, 0, 1, 0)
 label.BackgroundTransparency = 1
 label.TextColor3 = Color3.fromRGB(255, 192, 203)
