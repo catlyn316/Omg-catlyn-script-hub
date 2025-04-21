@@ -1,0 +1,254 @@
+-- 基本服務與玩家
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local LocalPlayer = Players.LocalPlayer
+
+-- 建立安全區平台
+local baseSize = Vector3.new(150, 5, 150)
+local basePosition = Vector3.new(5122, 119, 9513)
+
+local platform = Instance.new("Part")
+platform.Size = baseSize
+platform.Position = basePosition
+platform.Anchored = true
+platform.CanCollide = true
+platform.Transparency = 0.5
+platform.Color = Color3.fromRGB(100, 100, 100)
+platform.Material = Enum.Material.SmoothPlastic
+platform.Name = "LocalPlatform"
+platform.Parent = Workspace
+
+-- 顯示文字 Part
+local textPart = Instance.new("Part")
+textPart.Size = Vector3.new(50, 1, 50)
+textPart.Anchored = true
+textPart.CanCollide = false
+textPart.Transparency = 1
+textPart.Position = platform.Position - Vector3.new(0, 0.5, 0)
+textPart.Rotation = Vector3.new(180, 0, 0)
+textPart.Parent = Workspace
+
+local surfaceGui = Instance.new("SurfaceGui", textPart)
+surfaceGui.Face = Enum.NormalId.Top
+surfaceGui.AlwaysOnTop = true
+
+local label = Instance.new("TextLabel", surfaceGui)
+label.Text = "貓玲的安全區(>^ω^<)"
+label.Size = UDim2.new(1, 0, 1, 0)
+label.BackgroundTransparency = 1
+label.TextColor3 = Color3.fromRGB(255, 192, 203)
+label.TextScaled = true
+label.Font = Enum.Font.Fantasy
+
+-- 建立牆壁
+local function createWall(size, position)
+	local wall = Instance.new("Part")
+	wall.Size = size
+	wall.Position = position
+	wall.Anchored = true
+	wall.CanCollide = true
+	wall.Transparency = 0.5
+	wall.Color = Color3.fromRGB(100, 100, 100)
+	wall.Material = Enum.Material.SmoothPlastic
+	wall.Parent = Workspace
+end
+
+local wallHeight = 150
+createWall(Vector3.new(1, wallHeight, 150), basePosition + Vector3.new(baseSize.X/2, wallHeight/2, 0))
+createWall(Vector3.new(1, wallHeight, 150), basePosition - Vector3.new(baseSize.X/2, -wallHeight/2, 0))
+createWall(Vector3.new(150, wallHeight, 1), basePosition + Vector3.new(0, wallHeight/2, baseSize.Z/2))
+createWall(Vector3.new(150, wallHeight, 1), basePosition - Vector3.new(0, -wallHeight/2, baseSize.Z/2))
+createWall(baseSize, basePosition + Vector3.new(0, wallHeight, 0))
+
+-- GUI 主體
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+ScreenGui.Name = "MaolingHub"
+
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 400, 0, 300)
+Frame.Position = UDim2.new(0.3, 0, 0.3, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.Active = true
+Frame.Draggable = true
+
+local UICorner = Instance.new("UICorner", Frame)
+UICorner.CornerRadius = UDim.new(0, 10)
+
+local Title = Instance.new("TextLabel", Frame)
+Title.Size = UDim2.new(1, -70, 0, 40)
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "貓玲的腳本區(>^ω^<)"
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 20
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local Close = Instance.new("TextButton", Frame)
+Close.Size = UDim2.new(0, 30, 0, 30)
+Close.Position = UDim2.new(1, -35, 0, 5)
+Close.Text = "X"
+Close.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+Close.TextColor3 = Color3.fromRGB(255, 255, 255)
+Close.Font = Enum.Font.GothamBold
+Close.TextSize = 16
+Close.MouseButton1Click:Connect(function()
+	ScreenGui:Destroy()
+end)
+
+local Minimize = Instance.new("TextButton", Frame)
+Minimize.Size = UDim2.new(0, 30, 0, 30)
+Minimize.Position = UDim2.new(1, -70, 0, 5)
+Minimize.Text = "-"
+Minimize.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+Minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
+Minimize.Font = Enum.Font.GothamBold
+Minimize.TextSize = 16
+
+-- 區塊
+local SideBar = Instance.new("Frame", Frame)
+SideBar.Size = UDim2.new(0, 100, 1, -40)
+SideBar.Position = UDim2.new(0, 0, 0, 40)
+SideBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+
+local Content = Instance.new("Frame", Frame)
+Content.Size = UDim2.new(1, -100, 1, -40)
+Content.Position = UDim2.new(0, 100, 0, 40)
+Content.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+
+-- 縮小功能
+local isMinimized = false
+local fullSize = UDim2.new(0, 400, 0, 300)
+local miniSize = UDim2.new(0, 400, 0, 40)
+
+Minimize.MouseButton1Click:Connect(function()
+	isMinimized = not isMinimized
+	SideBar.Visible = not isMinimized
+	Content.Visible = not isMinimized
+	Frame.Size = isMinimized and miniSize or fullSize
+end)
+
+-- 選單按鈕
+local Section1 = Instance.new("TextButton", SideBar)
+Section1.Size = UDim2.new(1, 0, 0, 40)
+Section1.Position = UDim2.new(0, 0, 0, 0)
+Section1.Text = "傳送"
+Section1.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+Section1.TextColor3 = Color3.fromRGB(255, 255, 255)
+Section1.Font = Enum.Font.Gotham
+Section1.TextSize = 16
+
+local Section2 = Instance.new("TextButton", SideBar)
+Section2.Size = UDim2.new(1, 0, 0, 40)
+Section2.Position = UDim2.new(0, 0, 0, 45)
+Section2.Text = "eggler手套"
+Section2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+Section2.TextColor3 = Color3.fromRGB(255, 255, 255)
+Section2.Font = Enum.Font.Gotham
+Section2.TextSize = 16
+
+-- 按鈕生成器
+local function createButton(text, order, parent, spacing)
+	local btn = Instance.new("TextButton", parent)
+	btn.Size = UDim2.new(0, 160, 0, 30)
+	btn.Position = UDim2.new(0.5, -80, 0, 10 + (order - 1) * spacing)
+	btn.Text = text
+	btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Font = Enum.Font.Gotham
+	btn.TextSize = 14
+	return btn
+end
+
+-- 傳送區按鈕
+local TPButtons = {}
+local safe = createButton("安全區", 1, Content, 35)
+safe.MouseButton1Click:Connect(function()
+	local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	if hrp then hrp.CFrame = platform.CFrame + Vector3.new(0, 5, 0) end
+end)
+
+local redGate = createButton("紅門", 2, Content, 35)
+redGate.MouseButton1Click:Connect(function()
+	local teleportPart = Workspace:WaitForChild("Lobby"):FindFirstChild("Teleport1")
+	if teleportPart then
+		local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+		hrp.CFrame = teleportPart.CFrame + Vector3.new(0, 5, 0)
+	end
+end)
+
+local mainPlace = createButton("主場地", 3, Content, 35)
+mainPlace.MouseButton1Click:Connect(function()
+	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	if hrp then hrp.CFrame = CFrame.new(0, 0, 0) end
+end)
+
+local fruit = createButton("樹果島", 4, Content, 35)
+fruit.MouseButton1Click:Connect(function()
+	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	if hrp then hrp.CFrame = CFrame.new(-423, 108, -20) end
+end)
+
+local statue = createButton("石像島", 5, Content, 35)
+statue.MouseButton1Click:Connect(function()
+	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	if hrp then hrp.CFrame = CFrame.new(220, 21, 2) end
+end)
+
+local cannon = createButton("大炮島", 6, Content, 35)
+cannon.MouseButton1Click:Connect(function()
+	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	if hrp then hrp.CFrame = CFrame.new(244, 34, 184) end
+end)
+
+local brazil = createButton("巴西", 7, Content, 35)
+brazil.MouseButton1Click:Connect(function()
+	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	if hrp then hrp.CFrame = CFrame.new(-825, 311, -3) end
+end)
+
+TPButtons = {safe, redGate, mainPlace, fruit, statue, cannon, brazil}
+
+-- Eggler區按鈕
+local EgglerButtons = {}
+local Fly = createButton("自動拿蛋（要先接任務）", 1, Content, 35)
+Fly.MouseButton1Click:Connect(function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/catlyn316/Auto-get-eggs-dude/refs/heads/main/Eggs%20yummy"))()
+end)
+
+local gold1 = createButton("拿第1個金蛋", 2, Content, 35)
+gold1.MouseButton1Click:Connect(function()
+	local part = Workspace:WaitForChild("TrialCompletedPoints"):WaitForChild("Trial 1"):FindFirstChild("root")
+	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	if hrp and part then hrp.CFrame = part.CFrame end
+end)
+
+local gold2 = createButton("拿第2個金蛋", 3, Content, 35)
+gold2.MouseButton1Click:Connect(function()
+	local part = Workspace:WaitForChild("TrialCompletedPoints"):WaitForChild("Trial 2"):FindFirstChild("root")
+	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	if hrp and part then hrp.CFrame = part.CFrame end
+end)
+
+local gold3 = createButton("拿第3個金蛋", 4, Content, 35)
+gold3.MouseButton1Click:Connect(function()
+	local part = Workspace:WaitForChild("TrialCompletedPoints"):WaitForChild("Trial 3"):FindFirstChild("root")
+	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	if hrp and part then hrp.CFrame = part.CFrame end
+end)
+
+EgglerButtons = {Fly, gold1, gold2, gold3}
+
+-- 隱藏 Eggler 按鈕預設
+for _, btn in ipairs(EgglerButtons) do btn.Visible = false end
+
+-- 分區切換邏輯
+Section1.MouseButton1Click:Connect(function()
+	for _, btn in ipairs(TPButtons) do btn.Visible = true end
+	for _, btn in ipairs(EgglerButtons) do btn.Visible = false end
+end)
+
+Section2.MouseButton1Click:Connect(function()
+	for _, btn in ipairs(TPButtons) do btn.Visible = false end
+	for _, btn in ipairs(EgglerButtons) do btn.Visible = true end
+end)
