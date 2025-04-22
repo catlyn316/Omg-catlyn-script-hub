@@ -71,14 +71,13 @@ Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Frame.Active = true
 Frame.Draggable = true
 
-local UICorner = Instance.new("UICorner", Frame)
-UICorner.CornerRadius = UDim.new(0, 10)
+Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 10)
 
 local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -70, 0, 40)
 Title.Position = UDim2.new(0, 10, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "貓玲的腳本區(>^ω^<) v0.1"
+Title.Text = "貓玲的腳本區(>^ω^<) v0.15"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 20
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -92,9 +91,7 @@ Close.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 Close.TextColor3 = Color3.fromRGB(255, 255, 255)
 Close.Font = Enum.Font.GothamBold
 Close.TextSize = 16
-Close.MouseButton1Click:Connect(function()
-	ScreenGui:Destroy()
-end)
+Close.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 
 local Minimize = Instance.new("TextButton", Frame)
 Minimize.Size = UDim2.new(0, 30, 0, 30)
@@ -105,7 +102,6 @@ Minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
 Minimize.Font = Enum.Font.GothamBold
 Minimize.TextSize = 16
 
--- 區塊
 local SideBar = Instance.new("Frame", Frame)
 SideBar.Size = UDim2.new(0, 100, 1, -40)
 SideBar.Position = UDim2.new(0, 0, 0, 40)
@@ -120,7 +116,6 @@ Content.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 local isMinimized = false
 local fullSize = UDim2.new(0, 400, 0, 300)
 local miniSize = UDim2.new(0, 400, 0, 40)
-
 Minimize.MouseButton1Click:Connect(function()
 	isMinimized = not isMinimized
 	SideBar.Visible = not isMinimized
@@ -128,24 +123,27 @@ Minimize.MouseButton1Click:Connect(function()
 	Frame.Size = isMinimized and miniSize or fullSize
 end)
 
--- 選單按鈕
+-- 分區按鈕
 local Section1 = Instance.new("TextButton", SideBar)
 Section1.Size = UDim2.new(1, 0, 0, 40)
 Section1.Position = UDim2.new(0, 0, 0, 0)
 Section1.Text = "傳送"
 Section1.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 Section1.TextColor3 = Color3.fromRGB(255, 255, 255)
-Section1.Font = Enum.Font.Gotham
-Section1.TextSize = 16
 
 local Section2 = Instance.new("TextButton", SideBar)
 Section2.Size = UDim2.new(1, 0, 0, 40)
 Section2.Position = UDim2.new(0, 0, 0, 45)
-Section2.Text = "eggler手套"
+Section2.Text = "常用"
 Section2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 Section2.TextColor3 = Color3.fromRGB(255, 255, 255)
-Section2.Font = Enum.Font.Gotham
-Section2.TextSize = 16
+
+local Section3 = Instance.new("TextButton", SideBar)
+Section3.Size = UDim2.new(1, 0, 0, 40)
+Section3.Position = UDim2.new(0, 0, 0, 90)
+Section3.Text = "eggler手套"
+Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+Section3.TextColor3 = Color3.fromRGB(255, 255, 255)
 
 -- 按鈕生成器
 local function createButton(text, order, parent, spacing)
@@ -160,95 +158,193 @@ local function createButton(text, order, parent, spacing)
 	return btn
 end
 
--- 傳送區按鈕
-local TPButtons = {}
-local safe = createButton("安全區", 1, Content, 35)
-safe.MouseButton1Click:Connect(function()
+
+
+-- 傳送分區使用 ScrollingFrame
+local TPScroll = Instance.new("ScrollingFrame", Content)
+TPScroll.Size = UDim2.new(1, 0, 1, 0)
+TPScroll.CanvasSize = UDim2.new(0, 0, 0, 350)  -- 高度設定視實際按鈕總高度
+TPScroll.ScrollBarThickness = 6
+TPScroll.BackgroundTransparency = 1
+TPScroll.Visible = true
+TPScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+TPScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+TPScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+
+-- 修改按鈕生成器讓它生成在 TPScroll 裡
+local function createButton(text, order, parent, spacing)
+	local btn = Instance.new("TextButton", parent)
+	btn.Size = UDim2.new(0, 160, 0, 30)
+	btn.Position = UDim2.new(0.5, -80, 0, 10 + (order - 1) * spacing)
+	btn.Text = text
+	btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Font = Enum.Font.Gotham
+	btn.TextSize = 14
+	return btn
+end
+
+-- 傳送分區（共 9 個按鈕）
+local TPButtons = {
+	createButton("安全區", 1, TPScroll, 35),
+	createButton("紅門", 2, TPScroll, 35),
+	createButton("主場地", 3, TPScroll, 35),
+	createButton("樹果島", 4, TPScroll, 35),
+	createButton("石像島", 5, TPScroll, 35),
+	createButton("大炮島", 6, TPScroll, 35),
+	createButton("巴西", 7, TPScroll, 35),
+	createButton("盤子", 8, TPScroll, 35),
+	createButton("彩虹雲", 9, TPScroll, 35)
+}
+
+-- 傳送功能綁定
+TPButtons[1].MouseButton1Click:Connect(function()
 	local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if hrp then hrp.CFrame = platform.CFrame + Vector3.new(0, 5, 0) end
+	if hrp then hrp.CFrame = CFrame.new(5122, 124, 9513) end
+end)
+TPButtons[2].MouseButton1Click:Connect(function()
+	local part = Workspace:WaitForChild("Lobby"):FindFirstChild("Teleport1")
+	if part then LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame + Vector3.new(0, 5, 0) end
+end)
+TPButtons[3].MouseButton1Click:Connect(function()
+	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 0, 0)
+end)
+TPButtons[4].MouseButton1Click:Connect(function()
+	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-423, 108, -20)
+end)
+TPButtons[5].MouseButton1Click:Connect(function()
+	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(220, 21, 2)
+end)
+TPButtons[6].MouseButton1Click:Connect(function()
+	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(244, 34, 184)
+end)
+TPButtons[7].MouseButton1Click:Connect(function()
+	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-825, 311, -3)
+end)
+TPButtons[8].MouseButton1Click:Connect(function()
+	local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
+	if plate then LocalPlayer.Character.HumanoidRootPart.CFrame = plate.CFrame end
+end)
+TPButtons[9].MouseButton1Click:Connect(function()
+	local cloud = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Fort") and Workspace.Arena.Fort:FindFirstChild("Floor")
+	if cloud then LocalPlayer.Character.HumanoidRootPart.CFrame = cloud.CFrame + Vector3.new(0, 5, 0) end
 end)
 
-local redGate = createButton("紅門", 2, Content, 35)
-redGate.MouseButton1Click:Connect(function()
-	local teleportPart = Workspace:WaitForChild("Lobby"):FindFirstChild("Teleport1")
-	if teleportPart then
-		local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-		hrp.CFrame = teleportPart.CFrame + Vector3.new(0, 5, 0)
+-- 常用分區
+local CommonButtons = {}
+local nameBox = Instance.new("TextBox", Content)
+nameBox.Size = UDim2.new(0, 160, 0, 30)
+nameBox.Position = UDim2.new(0.5, -80, 0, 10)
+nameBox.PlaceholderText = "輸入假名"
+nameBox.Text = ""
+nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+nameBox.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+nameBox.Font = Enum.Font.Gotham
+nameBox.TextSize = 14
+table.insert(CommonButtons, nameBox)
+
+local nameBtn = Instance.new("TextButton", Content)
+nameBtn.Size = UDim2.new(0, 160, 0, 30)
+nameBtn.Position = UDim2.new(0.5, -80, 0, 45)
+nameBtn.Text = "設定假名"
+nameBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+nameBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+nameBtn.Font = Enum.Font.Gotham
+nameBtn.TextSize = 14
+table.insert(CommonButtons, nameBtn)
+
+local function setNametag(text)
+	local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+	local head = char:WaitForChild("Head", 5)
+	if head then
+		local nametag = head:FindFirstChild("Nametag")
+		if nametag and nametag:FindFirstChild("TextLabel") then
+			nametag.TextLabel.Text = text ~= "" and text or "catlyn"
+		end
+	end
+end
+
+nameBtn.MouseButton1Click:Connect(function()
+	setNametag(nameBox.Text)
+end)
+
+LocalPlayer.CharacterAdded:Connect(function()
+	wait(0)
+	setNametag(nameBox.Text ~= "" and nameBox.Text or "catlyn")
+end)
+local createPlatformCheck = Instance.new("TextButton", Content)
+createPlatformCheck.Size = UDim2.new(0, 160, 0, 30)
+createPlatformCheck.Position = UDim2.new(0.5, -80, 0, 85)
+createPlatformCheck.Text = "防虛空: 關"
+createPlatformCheck.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+createPlatformCheck.TextColor3 = Color3.fromRGB(255, 255, 255)
+createPlatformCheck.Font = Enum.Font.Gotham
+createPlatformCheck.TextSize = 14
+table.insert(CommonButtons, createPlatformCheck)
+
+local platformEnabled = false
+local generatedPlatform = nil
+
+createPlatformCheck.MouseButton1Click:Connect(function()
+	platformEnabled = not platformEnabled
+	createPlatformCheck.Text = platformEnabled and "防虛空: 開" or "防虛空: 關"
+
+	if platformEnabled and not generatedPlatform then
+		-- 建立平台
+		generatedPlatform = Instance.new("Part")
+		generatedPlatform.Size = Vector3.new(5000, 2, 5000)
+		generatedPlatform.Position = Vector3.new(0, -85, 0)
+		generatedPlatform.Anchored = true
+		generatedPlatform.CanCollide = true
+		generatedPlatform.Transparency = 0.3
+		generatedPlatform.Material = Enum.Material.SmoothPlastic
+		generatedPlatform.Color = Color3.fromRGB(150, 150, 150)
+		generatedPlatform.Name = "CustomPlatform"
+		generatedPlatform.Parent = Workspace
+	elseif not platformEnabled and generatedPlatform then
+		generatedPlatform:Destroy()
+		generatedPlatform = nil
 	end
 end)
 
-local mainPlace = createButton("主場地", 3, Content, 35)
-mainPlace.MouseButton1Click:Connect(function()
-	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if hrp then hrp.CFrame = CFrame.new(0, 0, 0) end
-end)
 
-local fruit = createButton("樹果島", 4, Content, 35)
-fruit.MouseButton1Click:Connect(function()
-	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if hrp then hrp.CFrame = CFrame.new(-423, 108, -20) end
-end)
+-- eggler手套分區
+local EgglerButtons = {
+	createButton("自動拿蛋（要先接任務）", 1, Content, 35),
+	createButton("拿第1個金蛋", 2, Content, 35),
+	createButton("拿第2個金蛋", 3, Content, 35),
+	createButton("拿第3個金蛋", 4, Content, 35)
+}
+-- 初始化時隱藏常用和eggler手套分區的按鈕
+for _, b in ipairs(CommonButtons) do b.Visible = false end
+for _, b in ipairs(EgglerButtons) do b.Visible = false end
 
-local statue = createButton("石像島", 5, Content, 35)
-statue.MouseButton1Click:Connect(function()
-	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if hrp then hrp.CFrame = CFrame.new(220, 21, 2) end
-end)
-
-local cannon = createButton("大炮島", 6, Content, 35)
-cannon.MouseButton1Click:Connect(function()
-	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if hrp then hrp.CFrame = CFrame.new(244, 34, 184) end
-end)
-
-local brazil = createButton("巴西", 7, Content, 35)
-brazil.MouseButton1Click:Connect(function()
-	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if hrp then hrp.CFrame = CFrame.new(-825, 311, -3) end
-end)
-
-TPButtons = {safe, redGate, mainPlace, fruit, statue, cannon, brazil}
-
--- Eggler區按鈕
-local EgglerButtons = {}
-local Fly = createButton("自動拿蛋（要先接任務）", 1, Content, 35)
-Fly.MouseButton1Click:Connect(function()
+EgglerButtons[1].MouseButton1Click:Connect(function()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/catlyn316/Auto-get-eggs-dude/refs/heads/main/Eggs%20yummy"))()
 end)
+for i = 2, 4 do
+	EgglerButtons[i].MouseButton1Click:Connect(function()
+		local part = Workspace:WaitForChild("TrialCompletedPoints"):WaitForChild("Trial " .. (i - 1)):FindFirstChild("root")
+		if part then LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame end
+	end)
+end
 
-local gold1 = createButton("拿第1個金蛋", 2, Content, 35)
-gold1.MouseButton1Click:Connect(function()
-	local part = Workspace:WaitForChild("TrialCompletedPoints"):WaitForChild("Trial 1"):FindFirstChild("root")
-	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if hrp and part then hrp.CFrame = part.CFrame end
-end)
-
-local gold2 = createButton("拿第2個金蛋", 3, Content, 35)
-gold2.MouseButton1Click:Connect(function()
-	local part = Workspace:WaitForChild("TrialCompletedPoints"):WaitForChild("Trial 2"):FindFirstChild("root")
-	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if hrp and part then hrp.CFrame = part.CFrame end
-end)
-
-local gold3 = createButton("拿第3個金蛋", 4, Content, 35)
-gold3.MouseButton1Click:Connect(function()
-	local part = Workspace:WaitForChild("TrialCompletedPoints"):WaitForChild("Trial 3"):FindFirstChild("root")
-	local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if hrp and part then hrp.CFrame = part.CFrame end
-end)
-
-EgglerButtons = {Fly, gold1, gold2, gold3}
-
--- 隱藏 Eggler 按鈕預設
-for _, btn in ipairs(EgglerButtons) do btn.Visible = false end
-
--- 分區切換邏輯
+-- 分區切換，新增 TPScroll.Visible 控制
 Section1.MouseButton1Click:Connect(function()
-	for _, btn in ipairs(TPButtons) do btn.Visible = true end
-	for _, btn in ipairs(EgglerButtons) do btn.Visible = false end
+	TPScroll.Visible = true
+	for _, b in ipairs(CommonButtons) do b.Visible = false end
+	for _, b in ipairs(EgglerButtons) do b.Visible = false end
 end)
 
 Section2.MouseButton1Click:Connect(function()
-	for _, btn in ipairs(TPButtons) do btn.Visible = false end
-	for _, btn in ipairs(EgglerButtons) do btn.Visible = true end
+	TPScroll.Visible = false
+	for _, b in ipairs(CommonButtons) do b.Visible = true end
+	for _, b in ipairs(EgglerButtons) do b.Visible = false end
 end)
+
+Section3.MouseButton1Click:Connect(function()
+	TPScroll.Visible = false
+	for _, b in ipairs(CommonButtons) do b.Visible = false end
+	for _, b in ipairs(EgglerButtons) do b.Visible = true end
+end)
+
