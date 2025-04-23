@@ -3,6 +3,15 @@ local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 
+local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+	local head = char:WaitForChild("Head", 5)
+	if head then
+		local nametag = head:FindFirstChild("Nametag")
+		if nametag and nametag:FindFirstChild("TextLabel") then
+			nametag.TextLabel.Text = text ~= "" and text or "catlyn"
+		end
+	end
+
 -- 建立安全區平台
 local baseSize = Vector3.new(150, 5, 150)
 local basePosition = Vector3.new(5122, 119, 9513)
@@ -77,7 +86,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -70, 0, 40)
 Title.Position = UDim2.new(0, 10, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "貓玲的腳本區(>^ω^<) v0.15"
+Title.Text = "貓玲的腳本區(>^ω^<) v0.2"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 20
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -144,6 +153,15 @@ Section3.Position = UDim2.new(0, 0, 0, 90)
 Section3.Text = "eggler手套"
 Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 Section3.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+local Section4 = Instance.new("TextButton", SideBar)
+Section4.Size = UDim2.new(1, 0, 0, 40)
+Section4.Position = UDim2.new(0, 0, 0, 135)
+Section4.Text = "精通手套腳本"
+Section4.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+Section4.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+
 
 -- 按鈕生成器
 local function createButton(text, order, parent, spacing)
@@ -315,7 +333,7 @@ local EgglerButtons = {
 	createButton("拿第2個金蛋", 3, Content, 35),
 	createButton("拿第3個金蛋", 4, Content, 35)
 }
--- 初始化時隱藏常用和eggler手套分區的按鈕
+-- 初始化時隱藏分區的按鈕
 for _, b in ipairs(CommonButtons) do b.Visible = false end
 for _, b in ipairs(EgglerButtons) do b.Visible = false end
 
@@ -329,22 +347,53 @@ for i = 2, 4 do
 	end)
 end
 
+local MasteryButtons = {
+	createButton("閃光(任務二)", 1, Content, 35),
+	createButton("加速器", 2, Content, 35),
+	createButton("空間", 3, Content, 35)
+}
+
+for _, b in ipairs(MasteryButtons) do b.Visible = false end
+
+MasteryButtons[1].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Flash-mastery/refs/heads/main/Flash%20second%20task'))()
+end)
+
+MasteryButtons[2].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/catlyn316/Need-baller/refs/heads/main/Need%20baller%20to%20farm%20booster%20mastery"))()
+end)
+
+MasteryButtons[3].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Space-mastery/refs/heads/main/Space%20mastery%20no%20need%20baller%20but%20alt'))()
+end)
+
 -- 分區切換，新增 TPScroll.Visible 控制
 Section1.MouseButton1Click:Connect(function()
 	TPScroll.Visible = true
 	for _, b in ipairs(CommonButtons) do b.Visible = false end
 	for _, b in ipairs(EgglerButtons) do b.Visible = false end
+	for _, b in ipairs(MasteryButtons) do b.Visible = false end
 end)
 
 Section2.MouseButton1Click:Connect(function()
 	TPScroll.Visible = false
 	for _, b in ipairs(CommonButtons) do b.Visible = true end
 	for _, b in ipairs(EgglerButtons) do b.Visible = false end
+	for _, b in ipairs(MasteryButtons) do b.Visible = false end
 end)
 
 Section3.MouseButton1Click:Connect(function()
 	TPScroll.Visible = false
 	for _, b in ipairs(CommonButtons) do b.Visible = false end
 	for _, b in ipairs(EgglerButtons) do b.Visible = true end
+	for _, b in ipairs(MasteryButtons) do b.Visible = false end
 end)
+
+Section4.MouseButton1Click:Connect(function()
+	TPScroll.Visible = false
+	for _, b in ipairs(CommonButtons) do b.Visible = false end
+	for _, b in ipairs(EgglerButtons) do b.Visible = false end
+	for _, b in ipairs(MasteryButtons) do b.Visible = true end
+end)
+ 
 
