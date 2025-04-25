@@ -13,7 +13,7 @@ local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 	end
 
 -- 建立安全區平台
-local baseSize = Vector3.new(200, 5, 200)
+local baseSize = Vector3.new(150, 5, 150)
 local basePosition = Vector3.new(5122, 119, 9513)
 
 local platform = Instance.new("Part")
