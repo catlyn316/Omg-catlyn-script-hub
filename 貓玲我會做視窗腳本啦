@@ -351,7 +351,7 @@ local MasteryButtons = {
 	createButton("閃光(任務二)", 1, Content, 35),
 	createButton("加速器", 2, Content, 35),
 	createButton("空間", 3, Content, 35),
-	createButton("冰砂", 3, Content, 35)
+	createButton("冰砂", 4, Content, 35)
 }
 
 for _, b in ipairs(MasteryButtons) do b.Visible = false end
@@ -370,6 +370,7 @@ end)
 
 MasteryButtons[4].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Shard-mastery/refs/heads/main/Shard%20mastery'))()
+end)
 
 -- 分區切換，新增 TPScroll.Visible 控制
 Section1.MouseButton1Click:Connect(function()
@@ -399,6 +400,7 @@ Section4.MouseButton1Click:Connect(function()
 	for _, b in ipairs(EgglerButtons) do b.Visible = false end
 	for _, b in ipairs(MasteryButtons) do b.Visible = true end
 end)
+
 
  
 
