@@ -86,7 +86,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -70, 0, 40)
 Title.Position = UDim2.new(0, 10, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "貓玲的腳本區(>^ω^<) v0.21"
+Title.Text = "貓玲的腳本區(>^ω^<) v0.22"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 20
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -181,7 +181,7 @@ end
 -- 傳送分區使用 ScrollingFrame
 local TPScroll = Instance.new("ScrollingFrame", Content)
 TPScroll.Size = UDim2.new(1, 0, 1, 0)
-TPScroll.CanvasSize = UDim2.new(0, 0, 0, 350)  -- 高度設定視實際按鈕總高度
+TPScroll.CanvasSize = UDim2.new(0, 0, 0, 385)  -- 高度設定視實際按鈕總高度
 TPScroll.ScrollBarThickness = 6
 TPScroll.BackgroundTransparency = 1
 TPScroll.Visible = true
@@ -207,12 +207,13 @@ local TPButtons = {
 	createButton("安全區", 1, TPScroll, 35),
 	createButton("紅門", 2, TPScroll, 35),
 	createButton("主場地", 3, TPScroll, 35),
-	createButton("樹果島", 4, TPScroll, 35),
-	createButton("石像島", 5, TPScroll, 35),
-	createButton("大炮島", 6, TPScroll, 35),
-	createButton("巴西", 7, TPScroll, 35),
-	createButton("盤子", 8, TPScroll, 35),
-	createButton("彩虹雲", 9, TPScroll, 35)
+	createButton("大廳", 4, TPScroll, 35),
+	createButton("樹果島", 5, TPScroll, 35),
+	createButton("石像島", 6, TPScroll, 35),
+	createButton("大炮島", 7, TPScroll, 35),
+	createButton("巴西", 8, TPScroll, 35),
+	createButton("盤子", 9, TPScroll, 35),
+	createButton("彩虹雲", 10, TPScroll, 35)
 }
 
 -- 傳送功能綁定
@@ -228,22 +229,25 @@ TPButtons[3].MouseButton1Click:Connect(function()
 	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 0, 0)
 end)
 TPButtons[4].MouseButton1Click:Connect(function()
-	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-423, 108, -20)
+	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-900, 330, -2)
 end)
 TPButtons[5].MouseButton1Click:Connect(function()
-	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(220, 21, 2)
+	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-423, 108, -20)
 end)
 TPButtons[6].MouseButton1Click:Connect(function()
-	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(244, 34, 184)
+	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(220, 21, 2)
 end)
 TPButtons[7].MouseButton1Click:Connect(function()
-	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-825, 311, -3)
+	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(244, 34, 184)
 end)
 TPButtons[8].MouseButton1Click:Connect(function()
+	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-825, 311, -3)
+end)
+TPButtons[9].MouseButton1Click:Connect(function()
 	local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
 	if plate then LocalPlayer.Character.HumanoidRootPart.CFrame = plate.CFrame end
 end)
-TPButtons[9].MouseButton1Click:Connect(function()
+TPButtons[10].MouseButton1Click:Connect(function()
 	local cloud = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Fort") and Workspace.Arena.Fort:FindFirstChild("Floor")
 	if cloud then LocalPlayer.Character.HumanoidRootPart.CFrame = cloud.CFrame + Vector3.new(0, 5, 0) end
 end)
@@ -400,6 +404,7 @@ Section4.MouseButton1Click:Connect(function()
 	for _, b in ipairs(EgglerButtons) do b.Visible = false end
 	for _, b in ipairs(MasteryButtons) do b.Visible = true end
 end)
+
 
 
  
