@@ -86,7 +86,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -70, 0, 40)
 Title.Position = UDim2.new(0, 10, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "貓玲的腳本區(>^ω^<) v0.22"
+Title.Text = "貓玲的腳本區(>^ω^<) v0.23"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 20
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -150,7 +150,7 @@ Section2.TextColor3 = Color3.fromRGB(255, 255, 255)
 local Section3 = Instance.new("TextButton", SideBar)
 Section3.Size = UDim2.new(1, 0, 0, 40)
 Section3.Position = UDim2.new(0, 0, 0, 90)
-Section3.Text = "eggler手套"
+Section3.Text = "徽章手套"
 Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 Section3.TextColor3 = Color3.fromRGB(255, 255, 255)
 
@@ -188,6 +188,16 @@ TPScroll.Visible = true
 TPScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 TPScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 TPScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+
+local BadgeGlove = Instance.new("ScrollingFrame", Content)
+BadgeGlove.Size = UDim2.new(1, 0, 1, 0)
+BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 280)  -- 高度設定視實際按鈕總高度
+BadgeGlove.ScrollBarThickness = 6
+BadgeGlove.BackgroundTransparency = 1
+BadgeGlove.Visible = false
+BadgeGlove.AutomaticCanvasSize = Enum.AutomaticSize.Y
+BadgeGlove.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+BadgeGlove.ScrollingDirection = Enum.ScrollingDirection.Y
 
 -- 修改按鈕生成器讓它生成在 TPScroll 裡
 local function createButton(text, order, parent, spacing)
@@ -330,26 +340,20 @@ createPlatformCheck.MouseButton1Click:Connect(function()
 end)
 
 
--- eggler手套分區
+-- 徽章手套分區
 local EgglerButtons = {
-	createButton("自動拿蛋（要先接任務）", 1, Content, 35),
-	createButton("拿第1個金蛋", 2, Content, 35),
-	createButton("拿第2個金蛋", 3, Content, 35),
-	createButton("拿第3個金蛋", 4, Content, 35)
+	createButton("eggler手套", 1, BadgeGlove, 35),
+	createButton("bob手套", 2, BadgeGlove, 35)
 }
 -- 初始化時隱藏分區的按鈕
 for _, b in ipairs(CommonButtons) do b.Visible = false end
-for _, b in ipairs(EgglerButtons) do b.Visible = false end
 
 EgglerButtons[1].MouseButton1Click:Connect(function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/catlyn316/Auto-get-eggs-dude/refs/heads/main/Eggs%20yummy"))()
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Eggler-badge-glove/refs/heads/main/Eggler%20badge%20glove'))()
 end)
-for i = 2, 4 do
-	EgglerButtons[i].MouseButton1Click:Connect(function()
-		local part = Workspace:WaitForChild("TrialCompletedPoints"):WaitForChild("Trial " .. (i - 1)):FindFirstChild("root")
-		if part then LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame end
-	end)
-end
+EgglerButtons[2].MouseButton1Click:Connect(function()
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Bob-glove/refs/heads/main/Bob%20glove'))()
+end)
 
 local MasteryButtons = {
 	createButton("閃光(任務二)", 1, Content, 35),
@@ -380,28 +384,28 @@ end)
 Section1.MouseButton1Click:Connect(function()
 	TPScroll.Visible = true
 	for _, b in ipairs(CommonButtons) do b.Visible = false end
-	for _, b in ipairs(EgglerButtons) do b.Visible = false end
+	BadgeGlove.Visible = false 
 	for _, b in ipairs(MasteryButtons) do b.Visible = false end
 end)
 
 Section2.MouseButton1Click:Connect(function()
 	TPScroll.Visible = false
 	for _, b in ipairs(CommonButtons) do b.Visible = true end
-	for _, b in ipairs(EgglerButtons) do b.Visible = false end
+	BadgeGlove.Visible = false
 	for _, b in ipairs(MasteryButtons) do b.Visible = false end
 end)
 
 Section3.MouseButton1Click:Connect(function()
 	TPScroll.Visible = false
 	for _, b in ipairs(CommonButtons) do b.Visible = false end
-	for _, b in ipairs(EgglerButtons) do b.Visible = true end
+	BadgeGlove.Visible = true
 	for _, b in ipairs(MasteryButtons) do b.Visible = false end
 end)
 
 Section4.MouseButton1Click:Connect(function()
 	TPScroll.Visible = false
 	for _, b in ipairs(CommonButtons) do b.Visible = false end
-	for _, b in ipairs(EgglerButtons) do b.Visible = false end
+	BadgeGlove.Visible = false
 	for _, b in ipairs(MasteryButtons) do b.Visible = true end
 end)
 
