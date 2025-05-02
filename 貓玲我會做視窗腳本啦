@@ -343,7 +343,8 @@ end)
 -- 徽章手套分區
 local EgglerButtons = {
 	createButton("eggler手套", 1, BadgeGlove, 35),
-	createButton("bob手套", 2, BadgeGlove, 35)
+	createButton("bob手套", 2, BadgeGlove, 35),
+	createButton("slender手套", 3, BadgeGlove, 35)
 }
 -- 初始化時隱藏分區的按鈕
 for _, b in ipairs(CommonButtons) do b.Visible = false end
@@ -353,6 +354,9 @@ EgglerButtons[1].MouseButton1Click:Connect(function()
 end)
 EgglerButtons[2].MouseButton1Click:Connect(function()
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Bob-glove/refs/heads/main/Bob%20glove'))()
+end)
+EgglerButtons[3].MouseButton1Click:Connect(function()
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Slender-glove/refs/heads/main/Slender%20glove'))()
 end)
 
 local MasteryButtons = {
