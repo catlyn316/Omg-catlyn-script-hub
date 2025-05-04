@@ -3,15 +3,6 @@ local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 
-local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-	local head = char:WaitForChild("Head", 5)
-	if head then
-		local nametag = head:FindFirstChild("Nametag")
-		if nametag and nametag:FindFirstChild("TextLabel") then
-			nametag.TextLabel.Text = text ~= "" and text or "catlyn"
-		end
-	end
-
 -- 建立安全區平台
 local baseSize = Vector3.new(150, 5, 150)
 local basePosition = Vector3.new(5122, 119, 9513)
@@ -51,15 +42,15 @@ label.Font = Enum.Font.Fantasy
 
 -- 建立牆壁
 local function createWall(size, position)
-	local wall = Instance.new("Part")
-	wall.Size = size
-	wall.Position = position
-	wall.Anchored = true
-	wall.CanCollide = true
-	wall.Transparency = 0.5
-	wall.Color = Color3.fromRGB(100, 100, 100)
-	wall.Material = Enum.Material.SmoothPlastic
-	wall.Parent = Workspace
+    local wall = Instance.new("Part")
+    wall.Size = size
+    wall.Position = position
+    wall.Anchored = true
+    wall.CanCollide = true
+    wall.Transparency = 0.5
+    wall.Color = Color3.fromRGB(100, 100, 100)
+    wall.Material = Enum.Material.SmoothPlastic
+    wall.Parent = Workspace
 end
 
 local wallHeight = 150
@@ -86,7 +77,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -70, 0, 40)
 Title.Position = UDim2.new(0, 10, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "貓玲的腳本區(>^ω^<) v0.24"
+Title.Text = "貓玲的腳本區(>^ω^<) v0.25"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 20
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -102,6 +93,8 @@ Close.Font = Enum.Font.GothamBold
 Close.TextSize = 16
 Close.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 
+Instance.new("UICorner", Close).CornerRadius = UDim.new(0, 6)
+
 local Minimize = Instance.new("TextButton", Frame)
 Minimize.Size = UDim2.new(0, 30, 0, 30)
 Minimize.Position = UDim2.new(1, -70, 0, 5)
@@ -111,25 +104,31 @@ Minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
 Minimize.Font = Enum.Font.GothamBold
 Minimize.TextSize = 16
 
+Instance.new("UICorner", Minimize).CornerRadius = UDim.new(0, 6)
+
 local SideBar = Instance.new("Frame", Frame)
 SideBar.Size = UDim2.new(0, 100, 1, -40)
 SideBar.Position = UDim2.new(0, 0, 0, 40)
 SideBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+
+Instance.new("UICorner", SideBar).CornerRadius = UDim.new(0, 6)
 
 local Content = Instance.new("Frame", Frame)
 Content.Size = UDim2.new(1, -100, 1, -40)
 Content.Position = UDim2.new(0, 100, 0, 40)
 Content.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 
+Instance.new("UICorner", Content).CornerRadius = UDim.new(0, 6)
+
 -- 縮小功能
 local isMinimized = false
 local fullSize = UDim2.new(0, 400, 0, 300)
 local miniSize = UDim2.new(0, 400, 0, 40)
 Minimize.MouseButton1Click:Connect(function()
-	isMinimized = not isMinimized
-	SideBar.Visible = not isMinimized
-	Content.Visible = not isMinimized
-	Frame.Size = isMinimized and miniSize or fullSize
+    isMinimized = not isMinimized
+    SideBar.Visible = not isMinimized
+    Content.Visible = not isMinimized
+    Frame.Size = isMinimized and miniSize or fullSize
 end)
 
 -- 分區按鈕
@@ -140,12 +139,16 @@ Section1.Text = "傳送"
 Section1.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 Section1.TextColor3 = Color3.fromRGB(255, 255, 255)
 
+Instance.new("UICorner", Section1).CornerRadius = UDim.new(0, 6)
+
 local Section2 = Instance.new("TextButton", SideBar)
 Section2.Size = UDim2.new(1, 0, 0, 40)
 Section2.Position = UDim2.new(0, 0, 0, 45)
 Section2.Text = "常用"
 Section2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 Section2.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+Instance.new("UICorner", Section2).CornerRadius = UDim.new(0, 6)
 
 local Section3 = Instance.new("TextButton", SideBar)
 Section3.Size = UDim2.new(1, 0, 0, 40)
@@ -154,6 +157,8 @@ Section3.Text = "徽章手套"
 Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 Section3.TextColor3 = Color3.fromRGB(255, 255, 255)
 
+Instance.new("UICorner", Section3).CornerRadius = UDim.new(0, 6)
+
 local Section4 = Instance.new("TextButton", SideBar)
 Section4.Size = UDim2.new(1, 0, 0, 40)
 Section4.Position = UDim2.new(0, 0, 0, 135)
@@ -161,22 +166,24 @@ Section4.Text = "精通手套腳本"
 Section4.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 Section4.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-
+Instance.new("UICorner", Section4).CornerRadius = UDim.new(0, 6)
 
 -- 按鈕生成器
 local function createButton(text, order, parent, spacing)
-	local btn = Instance.new("TextButton", parent)
-	btn.Size = UDim2.new(0, 160, 0, 30)
-	btn.Position = UDim2.new(0.5, -80, 0, 10 + (order - 1) * spacing)
-	btn.Text = text
-	btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.Font = Enum.Font.Gotham
-	btn.TextSize = 14
-	return btn
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(0, 160, 0, 30)
+    btn.Position = UDim2.new(0.5, -80, 0, 10 + (order - 1) * spacing)
+    btn.Text = text
+    btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 14
+    
+    -- 添加圓角
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+    
+    return btn
 end
-
-
 
 -- 傳送分區使用 ScrollingFrame
 local TPScroll = Instance.new("ScrollingFrame", Content)
@@ -199,73 +206,66 @@ BadgeGlove.AutomaticCanvasSize = Enum.AutomaticSize.Y
 BadgeGlove.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 BadgeGlove.ScrollingDirection = Enum.ScrollingDirection.Y
 
+-- 精通腳本分區
+local MasteryScroll = Instance.new("ScrollingFrame", Content)
+MasteryScroll.Size = UDim2.new(1, 0, 1, 0)
+MasteryScroll.CanvasSize = UDim2.new(0, 0, 0, 280)
+MasteryScroll.ScrollBarThickness = 6
+MasteryScroll.BackgroundTransparency = 1
+MasteryScroll.Visible = false
+MasteryScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+MasteryScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+MasteryScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
-
--- 修改按鈕生成器讓它生成在 TPScroll 裡
-local function createButton(text, order, parent, spacing)
-	local btn = Instance.new("TextButton", parent)
-	btn.Size = UDim2.new(0, 160, 0, 30)
-	btn.Position = UDim2.new(0.5, -80, 0, 10 + (order - 1) * spacing)
-	btn.Text = text
-	btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.Font = Enum.Font.Gotham
-	btn.TextSize = 14
-	return btn
-end
-
--- 傳送分區（共 9 個按鈕）
+-- 傳送分區（共 10 個按鈕）
 local TPButtons = {
-	createButton("安全區", 1, TPScroll, 35),
-	createButton("紅門", 2, TPScroll, 35),
-	createButton("主場地", 3, TPScroll, 35),
-	createButton("大廳", 4, TPScroll, 35),
-	createButton("樹果島", 5, TPScroll, 35),
-	createButton("石像島", 6, TPScroll, 35),
-	createButton("大炮島", 7, TPScroll, 35),
-	createButton("巴西", 8, TPScroll, 35),
-	createButton("盤子", 9, TPScroll, 35),
-	createButton("彩虹雲", 10, TPScroll, 35)
+    createButton("安全區", 1, TPScroll, 35),
+    createButton("紅門", 2, TPScroll, 35),
+    createButton("主場地", 3, TPScroll, 35),
+    createButton("大廳", 4, TPScroll, 35),
+    createButton("樹果島", 5, TPScroll, 35),
+    createButton("石像島", 6, TPScroll, 35),
+    createButton("大炮島", 7, TPScroll, 35),
+    createButton("巴西", 8, TPScroll, 35),
+    createButton("盤子", 9, TPScroll, 35),
+    createButton("彩虹雲", 10, TPScroll, 35)
 }
 
 -- 傳送功能綁定
 TPButtons[1].MouseButton1Click:Connect(function()
-	local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if hrp then hrp.CFrame = CFrame.new(5122, 124, 9513) end
+    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if hrp then hrp.CFrame = CFrame.new(5122, 124, 9513) end
 end)
 TPButtons[2].MouseButton1Click:Connect(function()
-	local part = Workspace:WaitForChild("Lobby"):FindFirstChild("Teleport1")
-	if part then LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame + Vector3.new(0, 5, 0) end
+    local part = Workspace:WaitForChild("Lobby"):FindFirstChild("Teleport1")
+    if part then LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame + Vector3.new(0, 5, 0) end
 end)
 TPButtons[3].MouseButton1Click:Connect(function()
-	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 0, 0)
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 0, 0)
 end)
 TPButtons[4].MouseButton1Click:Connect(function()
-	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-900, 330, -2)
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-900, 330, -2)
 end)
 TPButtons[5].MouseButton1Click:Connect(function()
-	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-423, 108, -20)
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-423, 108, -20)
 end)
 TPButtons[6].MouseButton1Click:Connect(function()
-	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(220, 21, 2)
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(220, 21, 2)
 end)
 TPButtons[7].MouseButton1Click:Connect(function()
-	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(244, 34, 184)
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(244, 34, 184)
 end)
 TPButtons[8].MouseButton1Click:Connect(function()
-	LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-825, 311, -3)
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-825, 311, -3)
 end)
 TPButtons[9].MouseButton1Click:Connect(function()
-	local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
-	if plate then LocalPlayer.Character.HumanoidRootPart.CFrame = plate.CFrame end
+    local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
+    if plate then LocalPlayer.Character.HumanoidRootPart.CFrame = plate.CFrame end
 end)
 TPButtons[10].MouseButton1Click:Connect(function()
-	local cloud = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Fort") and Workspace.Arena.Fort:FindFirstChild("Floor")
-	if cloud then LocalPlayer.Character.HumanoidRootPart.CFrame = cloud.CFrame + Vector3.new(0, 5, 0) end
+    local cloud = Workspace:FindFirstChild("Arena") and Workspace.Arena.Fort and Workspace.Arena.Fort:FindFirstChild("Floor")
+    if cloud then LocalPlayer.Character.HumanoidRootPart.CFrame = cloud.CFrame + Vector3.new(0, 5, 0) end
 end)
-
--- 常用分區 ScrollFrame
-
 
 -- 通用按鈕分頁
 local CommonButtonsScroll = Instance.new("ScrollingFrame", Content)
@@ -292,6 +292,8 @@ nameBox.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 nameBox.Font = Enum.Font.Gotham
 nameBox.TextSize = 14
 
+Instance.new("UICorner", nameBox).CornerRadius = UDim.new(0, 6)
+
 -- 假名設定按鈕
 local nameBtn = Instance.new("TextButton", CommonButtonsScroll)
 nameBtn.Size = UDim2.new(0, 160, 0, 30)
@@ -301,24 +303,26 @@ nameBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 nameBtn.Font = Enum.Font.Gotham
 nameBtn.TextSize = 14
 
+Instance.new("UICorner", nameBtn).CornerRadius = UDim.new(0, 6)
+
 local function setNametag(text)
-	local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-	local head = char:WaitForChild("Head", 5)
-	if head then
-		local nametag = head:FindFirstChild("Nametag")
-		if nametag and nametag:FindFirstChild("TextLabel") then
-			nametag.TextLabel.Text = text ~= "" and text or "catlyn"
-		end
-	end
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local head = char:WaitForChild("Head", 5)
+    if head then
+        local nametag = head:FindFirstChild("Nametag")
+        if nametag and nametag:FindFirstChild("TextLabel") then
+            nametag.TextLabel.Text = text ~= "" and text or "catlyn"
+        end
+    end
 end
 
 nameBtn.MouseButton1Click:Connect(function()
-	setNametag(nameBox.Text)
+    setNametag(nameBox.Text)
 end)
 
 LocalPlayer.CharacterAdded:Connect(function()
-	task.wait(0)
-	setNametag(nameBox.Text ~= "" and nameBox.Text or "catlyn")
+    task.wait(1) -- 改為1秒以確保角色正確加載
+    setNametag(nameBox.Text ~= "" and nameBox.Text or "catlyn")
 end)
 
 -- 防虛空平台
@@ -333,25 +337,27 @@ platformBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 platformBtn.Font = Enum.Font.Gotham
 platformBtn.TextSize = 14
 
-platformBtn.MouseButton1Click:Connect(function()
-	platformEnabled = not platformEnabled
-	platformBtn.Text = platformEnabled and "防虛空: 開" or "防虛空: 關"
+Instance.new("UICorner", platformBtn).CornerRadius = UDim.new(0, 6)
 
-	if platformEnabled and not generatedPlatform then
-		generatedPlatform = Instance.new("Part")
-		generatedPlatform.Size = Vector3.new(5000, 2, 5000)
-		generatedPlatform.Position = Vector3.new(0, -85, 0)
-		generatedPlatform.Anchored = true
-		generatedPlatform.CanCollide = true
-		generatedPlatform.Transparency = 0.3
-		generatedPlatform.Material = Enum.Material.SmoothPlastic
-		generatedPlatform.Color = Color3.fromRGB(150, 150, 150)
-		generatedPlatform.Name = "CustomPlatform"
-		generatedPlatform.Parent = Workspace
-	elseif not platformEnabled and generatedPlatform then
-		generatedPlatform:Destroy()
-		generatedPlatform = nil
-	end
+platformBtn.MouseButton1Click:Connect(function()
+    platformEnabled = not platformEnabled
+    platformBtn.Text = platformEnabled and "防虛空: 開" or "防虛空: 關"
+
+    if platformEnabled and not generatedPlatform then
+        generatedPlatform = Instance.new("Part")
+        generatedPlatform.Size = Vector3.new(5000, 2, 5000)
+        generatedPlatform.Position = Vector3.new(0, -85, 0)
+        generatedPlatform.Anchored = true
+        generatedPlatform.CanCollide = true
+        generatedPlatform.Transparency = 0.3
+        generatedPlatform.Material = Enum.Material.SmoothPlastic
+        generatedPlatform.Color = Color3.fromRGB(150, 150, 150)
+        generatedPlatform.Name = "CustomPlatform"
+        generatedPlatform.Parent = Workspace
+    elseif not platformEnabled and generatedPlatform then
+        generatedPlatform:Destroy()
+        generatedPlatform = nil
+    end
 end)
 
 -- 防掛機功能
@@ -366,17 +372,19 @@ antiAFKBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 antiAFKBtn.Font = Enum.Font.Gotham
 antiAFKBtn.TextSize = 14
 
+Instance.new("UICorner", antiAFKBtn).CornerRadius = UDim.new(0, 6)
+
 antiAFKBtn.MouseButton1Click:Connect(function()
-	antiAFK = not antiAFK
-	antiAFKBtn.Text = antiAFK and "防掛機: 開" or "防掛機: 關"
+    antiAFK = not antiAFK
+    antiAFKBtn.Text = antiAFK and "防掛機: 開" or "防掛機: 關"
 end)
 
-Players.LocalPlayer.Idled:Connect(function()
-	if antiAFK then
-		virtualUser:Button2Down(Vector2.new(0, 0), Workspace.CurrentCamera.CFrame)
-		task.wait(1)
-		virtualUser:Button2Up(Vector2.new(0, 0), Workspace.CurrentCamera.CFrame)
-	end
+LocalPlayer.Idled:Connect(function()
+    if antiAFK then
+        virtualUser:Button2Down(Vector2.new(0, 0), Workspace.CurrentCamera.CFrame)
+        task.wait(1)
+        virtualUser:Button2Up(Vector2.new(0, 0), Workspace.CurrentCamera.CFrame)
+    end
 end)
 
 -- 自動回場
@@ -390,62 +398,59 @@ autoReturnBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 autoReturnBtn.Font = Enum.Font.Gotham
 autoReturnBtn.TextSize = 14
 
+Instance.new("UICorner", autoReturnBtn).CornerRadius = UDim.new(0, 6)
+
 autoReturnBtn.MouseButton1Click:Connect(function()
-	autoReturn = not autoReturn
-	autoReturnBtn.Text = autoReturn and "自動回場: 開" or "自動回場: 關"
+    autoReturn = not autoReturn
+    autoReturnBtn.Text = autoReturn and "自動回場: 開" or "自動回場: 關"
 end)
 
 task.spawn(function()
-	while true do
-		task.wait(1)
-		if autoReturn then
-			local char = LocalPlayer.Character
-			local plrModel = Workspace:FindFirstChild(LocalPlayer.Name)
-			local lobby = Workspace:FindFirstChild("Lobby")
-			local tele = lobby and lobby:FindFirstChild("Teleport1")
+    while true do
+        task.wait(1)
+        if autoReturn then
+            pcall(function() -- 使用pcall避免錯誤中斷循環
+                local char = LocalPlayer.Character
+                local plrModel = Workspace:FindFirstChild(LocalPlayer.Name)
+                local lobby = Workspace:FindFirstChild("Lobby")
+                local tele = lobby and lobby:FindFirstChild("Teleport1")
 
-			if char and plrModel and plrModel:FindFirstChild("InLobby") and plrModel.InLobby.Value
-				and not plrModel:FindFirstChild("entered")
-				and not plrModel:FindFirstChild("isInArena")
-				and tele then
-					char:PivotTo(tele.CFrame + Vector3.new(0, 5, 0))
-			end
-		end
-	end
+                if char and plrModel and plrModel:FindFirstChild("InLobby") and plrModel.InLobby.Value
+                    and not plrModel:FindFirstChild("entered")
+                    and not plrModel:FindFirstChild("isInArena")
+                    and tele then
+                        char:PivotTo(tele.CFrame + Vector3.new(0, 5, 0))
+                end
+            end)
+        end
+    end
 end)
-
-
-
-
 
 -- 徽章手套分區
 local EgglerButtons = {
-	createButton("eggler手套", 1, BadgeGlove, 35),
-	createButton("bob手套", 2, BadgeGlove, 35),
-	createButton("slender手套", 3, BadgeGlove, 35)
+    createButton("eggler手套", 1, BadgeGlove, 35),
+    createButton("bob手套", 2, BadgeGlove, 35),
+    createButton("slender手套", 3, BadgeGlove, 35)
 }
--- 初始化時隱藏分區的按鈕
-for _, b in ipairs(CommonButtons) do b.Visible = false end
 
 EgglerButtons[1].MouseButton1Click:Connect(function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Eggler-badge-glove/refs/heads/main/Eggler%20badge%20glove'))()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Eggler-badge-glove/refs/heads/main/Eggler%20badge%20glove'))()
 end)
 EgglerButtons[2].MouseButton1Click:Connect(function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Bob-glove/refs/heads/main/Bob%20glove'))()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Bob-glove/refs/heads/main/Bob%20glove'))()
 end)
 EgglerButtons[3].MouseButton1Click:Connect(function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Slender-glove/refs/heads/main/Slender%20glove'))()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Slender-glove/refs/heads/main/Slender%20glove'))()
 end)
 
+-- 精通手套腳本
 local MasteryButtons = {
-	createButton("閃光(任務二)", 1, Content, 35),
-	createButton("加速器", 2, Content, 35),
-	createButton("空間", 3, Content, 35),
-	createButton("冰砂", 4, Content, 35),
-	createButton("公車", 5, Content, 35)
+    createButton("閃光(任務二)", 1, MasteryScroll, 35),
+    createButton("加速器", 2, MasteryScroll, 35),
+    createButton("空間", 3, MasteryScroll, 35),
+    createButton("冰砂", 4, MasteryScroll, 35),
+    createButton("公車", 5, MasteryScroll, 35)
 }
-
-for _, b in ipairs(MasteryButtons) do b.Visible = false end
 
 MasteryButtons[1].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Flash-mastery/refs/heads/main/Flash%20second%20task'))()
@@ -467,37 +472,80 @@ MasteryButtons[5].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Bus-mastery-need-null-help/refs/heads/main/Bus%20mastery'))()
 end)
 
-
-
--- 分區切換，新增 TPScroll.Visible 控制
+-- 分區切換
 Section1.MouseButton1Click:Connect(function()
-	TPScroll.Visible = true
-	CommonButtonsScroll.Visible = false
-	BadgeGlove.Visible = false
-	for _, b in ipairs(MasteryButtons) do b.Visible = false end
+    TPScroll.Visible = true
+    CommonButtonsScroll.Visible = false
+    BadgeGlove.Visible = false
+    MasteryScroll.Visible = false
+    
+    -- 切換按鈕顏色以顯示當前分區
+    Section1.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    Section2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section4.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 end)
 
 Section2.MouseButton1Click:Connect(function()
-	TPScroll.Visible = false
-	CommonButtonsScroll.Visible = true
-	BadgeGlove.Visible = false
-	for _, b in ipairs(MasteryButtons) do b.Visible = false end
+    TPScroll.Visible = false
+    CommonButtonsScroll.Visible = true
+    BadgeGlove.Visible = false
+    MasteryScroll.Visible = false
+    
+    Section1.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section2.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section4.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 end)
 
 Section3.MouseButton1Click:Connect(function()
-	TPScroll.Visible = false
-	CommonButtonsScroll.Visible = false
-	BadgeGlove.Visible = true
-	for _, b in ipairs(MasteryButtons) do b.Visible = false end
+    TPScroll.Visible = false
+    CommonButtonsScroll.Visible = false
+    BadgeGlove.Visible = true
+    MasteryScroll.Visible = false
+    
+    Section1.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section3.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    Section4.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 end)
 
 Section4.MouseButton1Click:Connect(function()
-	TPScroll.Visible = false
-	CommonButtonsScroll.Visible = false
-	BadgeGlove.Visible = false
-	for _, b in ipairs(MasteryButtons) do b.Visible = true end
+    TPScroll.Visible = false
+    CommonButtonsScroll.Visible = false
+    BadgeGlove.Visible = false
+    MasteryScroll.Visible = true
+    
+    Section1.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section4.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 end)
 
+-- 初始化高亮第一個分區按鈕
+Section1.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+
+-- 清理函數，當腳本被銷毀時調用
+local function cleanUp()
+    if generatedPlatform then
+        generatedPlatform:Destroy()
+        generatedPlatform = nil
+    end
+end
+
+-- 添加清理事件
+script.AncestryChanged:Connect(function(_, newParent)
+    if not newParent then
+        cleanUp()
+    end
+end)
+
+-- 防止重複執行的檢查
+if _G.maolingHubLoaded then
+    warn("貓玲的腳本已經在運行中")
+    return
+end
+_G.maolingHubLoaded = true
 
 
 
