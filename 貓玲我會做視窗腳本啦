@@ -263,14 +263,16 @@ TPButtons[10].MouseButton1Click:Connect(function()
 end)
 
 -- 常用分區 ScrollFrame
-local CommonButtons = {}
+
 local CommonButtonsScroll = Instance.new("ScrollingFrame", Content)
-CommonButtonsScroll.Size = UDim2.new(1, -20, 0, 385)
-CommonButtonsScroll.Position = UDim2.new(0, 10, 0, 40)
-CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+CommonButtonsScroll.Size = UDim2.new(1, 0, 1, 0)
+CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 385)  -- 高度設定視實際按鈕總高度
 CommonButtonsScroll.ScrollBarThickness = 6
-CommonButtonsScroll.Visible = false
 CommonButtonsScroll.BackgroundTransparency = 1
+CommonButtonsScroll.Visible = false
+CommonButtonsScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+CommonButtonsScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+CommonButtonsScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
 local UIListLayout = Instance.new("UIListLayout", CommonButtonsScroll)
 UIListLayout.Padding = UDim.new(0, 5)
