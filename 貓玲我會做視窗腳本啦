@@ -277,7 +277,15 @@ UIListLayout.Padding = UDim.new(0, 5)
 UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 -- 假名輸入框
-
+local nameBox = Instance.new("TextBox", CommonButtonsScroll)
+nameBox.Size = UDim2.new(0, 160, 0, 30)
+nameBox.PlaceholderText = "輸入假名"
+nameBox.Text = ""
+nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+nameBox.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+nameBox.Font = Enum.Font.Gotham
+nameBox.TextSize = 14
+table.insert(CommonButtonsScroll, nameBox)
 
 -- 假名設定按鈕
 local nameBtn = Instance.new("TextButton", CommonButtonsScroll)
@@ -287,7 +295,7 @@ nameBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 nameBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 nameBtn.Font = Enum.Font.Gotham
 nameBtn.TextSize = 14
-table.insert(CommonButtons, nameBtn)
+table.insert(CommonButtonsScroll, nameBtn)
 
 local function setNametag(text)
 	local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
@@ -319,7 +327,7 @@ platformBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 platformBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 platformBtn.Font = Enum.Font.Gotham
 platformBtn.TextSize = 14
-table.insert(CommonButtons, platformBtn)
+table.insert(CommonButtonsScroll, platformBtn)
 
 platformBtn.MouseButton1Click:Connect(function()
 	platformEnabled = not platformEnabled
@@ -352,7 +360,7 @@ antiAFKBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 antiAFKBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 antiAFKBtn.Font = Enum.Font.Gotham
 antiAFKBtn.TextSize = 14
-table.insert(CommonButtons, antiAFKBtn)
+table.insert(CommonButtonsScroll, antiAFKBtn)
 
 antiAFKBtn.MouseButton1Click:Connect(function()
 	antiAFK = not antiAFK
@@ -376,7 +384,7 @@ autoReturnBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 autoReturnBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 autoReturnBtn.Font = Enum.Font.Gotham
 autoReturnBtn.TextSize = 14
-table.insert(CommonButtons, autoReturnBtn)
+table.insert(CommonButtonsScroll, autoReturnBtn)
 
 autoReturnBtn.MouseButton1Click:Connect(function()
 	autoReturn = not autoReturn
