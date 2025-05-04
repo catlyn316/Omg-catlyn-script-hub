@@ -262,41 +262,39 @@ TPButtons[10].MouseButton1Click:Connect(function()
 	if cloud then LocalPlayer.Character.HumanoidRootPart.CFrame = cloud.CFrame + Vector3.new(0, 5, 0) end
 end)
 
--- 建立滾動欄
-local commonScroll = Instance.new("ScrollingFrame", Content)
-commonScroll.Size = UDim2.new(1, -10, 0, 385)
-commonScroll.Position = UDim2.new(0, 5, 0, 5)
-commonScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-commonScroll.ScrollBarThickness = 6
-commonScroll.BackgroundTransparency = 1
-commonScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-commonScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+-- 常用分區 ScrollFrame
+local CommonButtons = {}
+local CommonButtonsScroll = Instance.new("ScrollingFrame", Content)
+CommonButtonsScroll.Size = UDim2.new(1, -20, 0, 385)
+CommonButtonsScroll.Position = UDim2.new(0, 10, 0, 40)
+CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+CommonButtonsScroll.ScrollBarThickness = 6
+CommonButtonsScroll.Visible = false
+CommonButtonsScroll.BackgroundTransparency = 1
 
-local layout = Instance.new("UIListLayout", commonScroll)
-layout.Padding = UDim.new(0, 5)
-layout.SortOrder = Enum.SortOrder.LayoutOrder
+local UIListLayout = Instance.new("UIListLayout", CommonButtonsScroll)
+UIListLayout.Padding = UDim.new(0, 5)
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 -- 假名輸入框
-local nameBox = Instance.new("TextBox")
-nameBox.Size = UDim2.new(1, 0, 0, 30)
+local nameBox = Instance.new("TextBox", CommonButtonsScroll)
+nameBox.Size = UDim2.new(0, 160, 0, 30)
 nameBox.PlaceholderText = "輸入假名"
 nameBox.Text = ""
 nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 nameBox.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 nameBox.Font = Enum.Font.Gotham
 nameBox.TextSize = 14
-nameBox.Parent = commonScroll
 table.insert(CommonButtons, nameBox)
 
--- 設定假名按鈕
-local nameBtn = Instance.new("TextButton")
-nameBtn.Size = UDim2.new(1, 0, 0, 30)
+-- 假名設定按鈕
+local nameBtn = Instance.new("TextButton", CommonButtonsScroll)
+nameBtn.Size = UDim2.new(0, 160, 0, 30)
 nameBtn.Text = "設定假名"
 nameBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 nameBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 nameBtn.Font = Enum.Font.Gotham
 nameBtn.TextSize = 14
-nameBtn.Parent = commonScroll
 table.insert(CommonButtons, nameBtn)
 
 local function setNametag(text)
@@ -315,27 +313,25 @@ nameBtn.MouseButton1Click:Connect(function()
 end)
 
 LocalPlayer.CharacterAdded:Connect(function()
-	wait(0)
+	task.wait(0)
 	setNametag(nameBox.Text ~= "" and nameBox.Text or "catlyn")
 end)
 
--- 防虛空按鈕
-local createPlatformCheck = Instance.new("TextButton")
-createPlatformCheck.Size = UDim2.new(1, 0, 0, 30)
-createPlatformCheck.Text = "防虛空: 關"
-createPlatformCheck.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-createPlatformCheck.TextColor3 = Color3.fromRGB(255, 255, 255)
-createPlatformCheck.Font = Enum.Font.Gotham
-createPlatformCheck.TextSize = 14
-createPlatformCheck.Parent = commonScroll
-table.insert(CommonButtons, createPlatformCheck)
-
+-- 防虛空
 local platformEnabled = false
 local generatedPlatform = nil
+local platformBtn = Instance.new("TextButton", CommonButtonsScroll)
+platformBtn.Size = UDim2.new(0, 160, 0, 30)
+platformBtn.Text = "防虛空: 關"
+platformBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+platformBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+platformBtn.Font = Enum.Font.Gotham
+platformBtn.TextSize = 14
+table.insert(CommonButtons, platformBtn)
 
-createPlatformCheck.MouseButton1Click:Connect(function()
+platformBtn.MouseButton1Click:Connect(function()
 	platformEnabled = not platformEnabled
-	createPlatformCheck.Text = platformEnabled and "防虛空: 開" or "防虛空: 關"
+	platformBtn.Text = platformEnabled and "防虛空: 開" or "防虛空: 關"
 
 	if platformEnabled and not generatedPlatform then
 		generatedPlatform = Instance.new("Part")
@@ -354,78 +350,67 @@ createPlatformCheck.MouseButton1Click:Connect(function()
 	end
 end)
 
--- 防掛機按鈕
-local antiAfkButton = Instance.new("TextButton")
-antiAfkButton.Size = UDim2.new(1, 0, 0, 30)
-antiAfkButton.Text = "防掛機: 關"
-antiAfkButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-antiAfkButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-antiAfkButton.Font = Enum.Font.Gotham
-antiAfkButton.TextSize = 14
-antiAfkButton.Parent = commonScroll
-table.insert(CommonButtons, antiAfkButton)
+-- 防掛機
+local antiAFK = false
+local virtualUser = game:GetService("VirtualUser")
+local antiAFKBtn = Instance.new("TextButton", CommonButtonsScroll)
+antiAFKBtn.Size = UDim2.new(0, 160, 0, 30)
+antiAFKBtn.Text = "防掛機: 關"
+antiAFKBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+antiAFKBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+antiAFKBtn.Font = Enum.Font.Gotham
+antiAFKBtn.TextSize = 14
+table.insert(CommonButtons, antiAFKBtn)
 
-local antiAfkConnection = nil
+antiAFKBtn.MouseButton1Click:Connect(function()
+	antiAFK = not antiAFK
+	antiAFKBtn.Text = antiAFK and "防掛機: 開" or "防掛機: 關"
+end)
 
-antiAfkButton.MouseButton1Click:Connect(function()
-	if antiAfkConnection then
-		antiAfkConnection:Disconnect()
-		antiAfkConnection = nil
-		antiAfkButton.Text = "防掛機: 關"
-	else
-		antiAfkConnection = game:GetService("RunService").RenderStepped:Connect(function()
-			virtualUser:Button2Down(Vector2.new())
-			virtualUser:Button2Up(Vector2.new())
-		end)
-		antiAfkButton.Text = "防掛機: 開"
+game:GetService("Players").LocalPlayer.Idled:Connect(function()
+	if antiAFK then
+		virtualUser:Button2Down(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
+		task.wait(1)
+		virtualUser:Button2Up(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
 	end
 end)
 
--- 自動回傳送點按鈕
-local autoReturnButton = Instance.new("TextButton")
-autoReturnButton.Size = UDim2.new(1, 0, 0, 30)
-autoReturnButton.Text = "自動回傳送點: 關"
-autoReturnButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-autoReturnButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-autoReturnButton.Font = Enum.Font.Gotham
-autoReturnButton.TextSize = 14
-autoReturnButton.Parent = commonScroll
-table.insert(CommonButtons, autoReturnButton)
+-- 自動回場
+local autoReturn = false
+local autoReturnBtn = Instance.new("TextButton", CommonButtonsScroll)
+autoReturnBtn.Size = UDim2.new(0, 160, 0, 30)
+autoReturnBtn.Text = "自動回場: 關"
+autoReturnBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+autoReturnBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+autoReturnBtn.Font = Enum.Font.Gotham
+autoReturnBtn.TextSize = 14
+table.insert(CommonButtons, autoReturnBtn)
 
-local autoReturnRunning = false
-local autoReturnThread = nil
+autoReturnBtn.MouseButton1Click:Connect(function()
+	autoReturn = not autoReturn
+	autoReturnBtn.Text = autoReturn and "自動回場: 開" or "自動回場: 關"
+end)
 
-autoReturnButton.MouseButton1Click:Connect(function()
-	autoReturnRunning = not autoReturnRunning
-	autoReturnButton.Text = "自動回傳送點: " .. (autoReturnRunning and "開" or "關")
-
-	if autoReturnRunning then
-		autoReturnThread = task.spawn(function()
-			while autoReturnRunning do
-				local char = Workspace:FindFirstChild(LocalPlayer.Name)
-				if char then
-					local entered = char:FindFirstChild("entered")
-					local isInArena = char:FindFirstChild("isInArena")
-					local inLobby = char:FindFirstChild("InLobby")
-					if entered and isInArena and inLobby then
-						if not entered.Value and not isInArena.Value and inLobby.Value then
-							local hrp = char:FindFirstChild("HumanoidRootPart")
-							if hrp then
-								hrp.CFrame = Workspace.Lobby.Teleport1.CFrame
-							end
+task.spawn(function()
+	while true do
+		task.wait(1)
+		if autoReturn then
+			local char = LocalPlayer.Character
+			if char and Workspace:FindFirstChild(LocalPlayer.Name) then
+				local plrModel = Workspace[LocalPlayer.Name]
+				if not plrModel:FindFirstChild("entered") and not plrModel:FindFirstChild("isInArena") and plrModel:FindFirstChild("InLobby") then
+					if plrModel.InLobby.Value == true then
+						local tele = Workspace:FindFirstChild("Lobby") and Workspace.Lobby:FindFirstChild("Teleport1")
+						if tele then
+							char:PivotTo(tele.CFrame + Vector3.new(0, 5, 0))
 						end
 					end
 				end
-				task.wait(1)
 			end
-		end)
-	else
-		if autoReturnThread then
-			task.cancel(autoReturnThread)
-			autoReturnThread = nil
 		end
 	end
 end)
+
 
 
 
