@@ -3,6 +3,16 @@ local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 
+-- 一執行就先改名
+local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+	local head = char:WaitForChild("Head", 5)
+	if head then
+		local nametag = head:FindFirstChild("Nametag")
+		if nametag and nametag:FindFirstChild("TextLabel") then
+			nametag.TextLabel.Text = text ~= "" and text or "catlyn"
+		end
+	end
+
 -- 建立安全區平台
 local baseSize = Vector3.new(150, 5, 150)
 local basePosition = Vector3.new(5122, 119, 9513)
@@ -413,9 +423,9 @@ task.spawn(function()
                 local lobby = Workspace:FindFirstChild("Lobby")
                 local tele = lobby and lobby:FindFirstChild("Teleport1")
                 
-                -- 只檢查workspace.(使用者名).entered和workspace.(使用者名).isInArena
+                -- 只檢查workspace.(使用者名).isInArena
                 if char and plrModel and tele then
-                    if not plrModel:FindFirstChild("entered") and not plrModel:FindFirstChild("isInArena") then
+                    if not plrModel:FindFirstChild("isInArena") then
                         char:PivotTo(tele.CFrame + Vector3.new(0, 5, 0))
                     end
                 end
