@@ -398,6 +398,10 @@ LocalPlayer.Idled:Connect(function()
 end)
 
 -- 自動回場
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local LocalPlayer = Players.LocalPlayer
+
 local autoReturn = false
 local autoReturnBtn = Instance.new("TextButton", CommonButtonsScroll)
 autoReturnBtn.Size = UDim2.new(0, 160, 0, 30)
@@ -415,24 +419,24 @@ end)
 
 task.spawn(function()
     while true do
-        task.wait(1)
         if autoReturn then
-            pcall(function() -- 使用pcall避免錯誤中斷循環
+            pcall(function()
                 local char = LocalPlayer.Character
                 local plrModel = Workspace:FindFirstChild(LocalPlayer.Name)
                 local lobby = Workspace:FindFirstChild("Lobby")
                 local tele = lobby and lobby:FindFirstChild("Teleport1")
-                
-                -- 只檢查workspace.(使用者名).isInArena
-                if char and plrModel and tele then
+
+                if char and char:FindFirstChild("Humanoid") and char.Humanoid.Health > 0 and plrModel and tele then
                     if not plrModel:FindFirstChild("isInArena") then
                         char:PivotTo(tele.CFrame + Vector3.new(0, 5, 0))
                     end
                 end
             end)
         end
+        task.wait(1)
     end
 end)
+
 
 -- 徽章手套分區
 local EgglerButtons = {
