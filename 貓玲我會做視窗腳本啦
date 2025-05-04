@@ -277,15 +277,7 @@ UIListLayout.Padding = UDim.new(0, 5)
 UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 -- 假名輸入框
-local nameBox = Instance.new("TextBox", CommonButtonsScroll)
-nameBox.Size = UDim2.new(0, 160, 0, 30)
-nameBox.PlaceholderText = "輸入假名"
-nameBox.Text = ""
-nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-nameBox.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-nameBox.Font = Enum.Font.Gotham
-nameBox.TextSize = 14
-table.insert(CommonButtons, nameBox)
+
 
 -- 假名設定按鈕
 local nameBtn = Instance.new("TextButton", CommonButtonsScroll)
