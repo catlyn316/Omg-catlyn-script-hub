@@ -199,6 +199,8 @@ BadgeGlove.AutomaticCanvasSize = Enum.AutomaticSize.Y
 BadgeGlove.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 BadgeGlove.ScrollingDirection = Enum.ScrollingDirection.Y
 
+
+
 -- 修改按鈕生成器讓它生成在 TPScroll 裡
 local function createButton(text, order, parent, spacing)
 	local btn = Instance.new("TextButton", parent)
@@ -264,9 +266,11 @@ end)
 
 -- 常用分區 ScrollFrame
 
+
+-- 通用按鈕分頁
 local CommonButtonsScroll = Instance.new("ScrollingFrame", Content)
 CommonButtonsScroll.Size = UDim2.new(1, 0, 1, 0)
-CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 385)  -- 高度設定視實際按鈕總高度
+CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 385)
 CommonButtonsScroll.ScrollBarThickness = 6
 CommonButtonsScroll.BackgroundTransparency = 1
 CommonButtonsScroll.Visible = false
@@ -287,7 +291,6 @@ nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 nameBox.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 nameBox.Font = Enum.Font.Gotham
 nameBox.TextSize = 14
-table.insert(CommonButtonsScroll, nameBox)
 
 -- 假名設定按鈕
 local nameBtn = Instance.new("TextButton", CommonButtonsScroll)
@@ -297,7 +300,6 @@ nameBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 nameBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 nameBtn.Font = Enum.Font.Gotham
 nameBtn.TextSize = 14
-table.insert(CommonButtonsScroll, nameBtn)
 
 local function setNametag(text)
 	local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
@@ -319,9 +321,10 @@ LocalPlayer.CharacterAdded:Connect(function()
 	setNametag(nameBox.Text ~= "" and nameBox.Text or "catlyn")
 end)
 
--- 防虛空
+-- 防虛空平台
 local platformEnabled = false
 local generatedPlatform = nil
+
 local platformBtn = Instance.new("TextButton", CommonButtonsScroll)
 platformBtn.Size = UDim2.new(0, 160, 0, 30)
 platformBtn.Text = "防虛空: 關"
@@ -329,7 +332,6 @@ platformBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 platformBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 platformBtn.Font = Enum.Font.Gotham
 platformBtn.TextSize = 14
-table.insert(CommonButtonsScroll, platformBtn)
 
 platformBtn.MouseButton1Click:Connect(function()
 	platformEnabled = not platformEnabled
@@ -352,9 +354,10 @@ platformBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
--- 防掛機
+-- 防掛機功能
 local antiAFK = false
 local virtualUser = game:GetService("VirtualUser")
+
 local antiAFKBtn = Instance.new("TextButton", CommonButtonsScroll)
 antiAFKBtn.Size = UDim2.new(0, 160, 0, 30)
 antiAFKBtn.Text = "防掛機: 關"
@@ -362,23 +365,23 @@ antiAFKBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 antiAFKBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 antiAFKBtn.Font = Enum.Font.Gotham
 antiAFKBtn.TextSize = 14
-table.insert(CommonButtonsScroll, antiAFKBtn)
 
 antiAFKBtn.MouseButton1Click:Connect(function()
 	antiAFK = not antiAFK
 	antiAFKBtn.Text = antiAFK and "防掛機: 開" or "防掛機: 關"
 end)
 
-game:GetService("Players").LocalPlayer.Idled:Connect(function()
+Players.LocalPlayer.Idled:Connect(function()
 	if antiAFK then
-		virtualUser:Button2Down(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
+		virtualUser:Button2Down(Vector2.new(0, 0), Workspace.CurrentCamera.CFrame)
 		task.wait(1)
-		virtualUser:Button2Up(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
+		virtualUser:Button2Up(Vector2.new(0, 0), Workspace.CurrentCamera.CFrame)
 	end
 end)
 
 -- 自動回場
 local autoReturn = false
+
 local autoReturnBtn = Instance.new("TextButton", CommonButtonsScroll)
 autoReturnBtn.Size = UDim2.new(0, 160, 0, 30)
 autoReturnBtn.Text = "自動回場: 關"
@@ -386,7 +389,6 @@ autoReturnBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 autoReturnBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 autoReturnBtn.Font = Enum.Font.Gotham
 autoReturnBtn.TextSize = 14
-table.insert(CommonButtonsScroll, autoReturnBtn)
 
 autoReturnBtn.MouseButton1Click:Connect(function()
 	autoReturn = not autoReturn
@@ -398,20 +400,20 @@ task.spawn(function()
 		task.wait(1)
 		if autoReturn then
 			local char = LocalPlayer.Character
-			if char and Workspace:FindFirstChild(LocalPlayer.Name) then
-				local plrModel = Workspace[LocalPlayer.Name]
-				if not plrModel:FindFirstChild("entered") and not plrModel:FindFirstChild("isInArena") and plrModel:FindFirstChild("InLobby") then
-					if plrModel.InLobby.Value == true then
-						local tele = Workspace:FindFirstChild("Lobby") and Workspace.Lobby:FindFirstChild("Teleport1")
-						if tele then
-							char:PivotTo(tele.CFrame + Vector3.new(0, 5, 0))
-						end
-					end
-				end
+			local plrModel = Workspace:FindFirstChild(LocalPlayer.Name)
+			local lobby = Workspace:FindFirstChild("Lobby")
+			local tele = lobby and lobby:FindFirstChild("Teleport1")
+
+			if char and plrModel and plrModel:FindFirstChild("InLobby") and plrModel.InLobby.Value
+				and not plrModel:FindFirstChild("entered")
+				and not plrModel:FindFirstChild("isInArena")
+				and tele then
+					char:PivotTo(tele.CFrame + Vector3.new(0, 5, 0))
 			end
 		end
 	end
 end)
+
 
 
 
