@@ -321,7 +321,7 @@ nameBtn.MouseButton1Click:Connect(function()
 end)
 
 LocalPlayer.CharacterAdded:Connect(function()
-    task.wait(1) -- 改為1秒以確保角色正確加載
+    task.wait(0) -- 固定為0秒，不能改
     setNametag(nameBox.Text ~= "" and nameBox.Text or "catlyn")
 end)
 
@@ -413,7 +413,7 @@ task.spawn(function()
                 local lobby = Workspace:FindFirstChild("Lobby")
                 local tele = lobby and lobby:FindFirstChild("Teleport1")
                 
-                -- 只檢查entered和isInArena，如果兩者皆為否則傳送
+                -- 只檢查workspace.(使用者名).entered和workspace.(使用者名).isInArena
                 if char and plrModel and tele then
                     if not plrModel:FindFirstChild("entered") and not plrModel:FindFirstChild("isInArena") then
                         char:PivotTo(tele.CFrame + Vector3.new(0, 5, 0))
