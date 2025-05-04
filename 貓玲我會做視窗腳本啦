@@ -397,12 +397,14 @@ LocalPlayer.Idled:Connect(function()
     end
 end)
 
--- 自動回場
+--自動進場
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 
 local autoReturn = false
+local isReturning = false -- 避免多次觸發
+
 local autoReturnBtn = Instance.new("TextButton", CommonButtonsScroll)
 autoReturnBtn.Size = UDim2.new(0, 160, 0, 30)
 autoReturnBtn.Text = "自動回場: 關"
@@ -419,23 +421,36 @@ end)
 
 task.spawn(function()
     while true do
-        if autoReturn then
+        task.wait(1)
+        if autoReturn and not isReturning then
             pcall(function()
                 local char = LocalPlayer.Character
                 local plrModel = Workspace:FindFirstChild(LocalPlayer.Name)
                 local lobby = Workspace:FindFirstChild("Lobby")
                 local tele = lobby and lobby:FindFirstChild("Teleport1")
 
-                if char and char:FindFirstChild("Humanoid") and char.Humanoid.Health > 0 and plrModel and tele then
-                    if not plrModel:FindFirstChild("isInArena") then
-                        char:PivotTo(tele.CFrame + Vector3.new(0, 5, 0))
+                if char and char:FindFirstChild("Humanoid") and char.Humanoid.Health <= 0 then
+                    isReturning = true
+                    task.wait(4)
+
+                    if LocalPlayer.Character and tele then
+                        LocalPlayer.Character:PivotTo(tele.CFrame + Vector3.new(0, 5, 0))
+                        print("已自動回場")
+
+                        -- 再等一點時間，確保角色重生完畢
+                        task.wait(2)
+
+                        -- 在這裡恢復第一項功能（如位置固定）
+                        -- 比如：isPositionLocked = true
+                        -- 如果有函數可以呼叫，像 restoreLock() 也可寫在這裡
                     end
+                    isReturning = false
                 end
             end)
         end
-        task.wait(1)
     end
 end)
+
 
 
 -- 徽章手套分區
