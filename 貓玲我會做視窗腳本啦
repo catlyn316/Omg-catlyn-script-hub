@@ -407,7 +407,7 @@ local isReturning = false -- 避免多次觸發
 
 local autoReturnBtn = Instance.new("TextButton", CommonButtonsScroll)
 autoReturnBtn.Size = UDim2.new(0, 160, 0, 30)
-autoReturnBtn.Text = "自動回場: 關"
+autoReturnBtn.Text = "死後回場: 關"
 autoReturnBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 autoReturnBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 autoReturnBtn.Font = Enum.Font.Gotham
@@ -416,7 +416,7 @@ Instance.new("UICorner", autoReturnBtn).CornerRadius = UDim.new(0, 6)
 
 autoReturnBtn.MouseButton1Click:Connect(function()
     autoReturn = not autoReturn
-    autoReturnBtn.Text = autoReturn and "自動回場: 開" or "自動回場: 關"
+    autoReturnBtn.Text = autoReturn and "死後回場: 開" or "死後回場: 關"
 end)
 
 task.spawn(function()
@@ -438,7 +438,7 @@ task.spawn(function()
                         print("已自動回場")
 
                         -- 再等一點時間，確保角色重生完畢
-                        task.wait(2)
+                        task.wait(1)
 
                         -- 在這裡恢復第一項功能（如位置固定）
                         -- 比如：isPositionLocked = true
