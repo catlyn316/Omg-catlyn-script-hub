@@ -465,11 +465,7 @@ MasteryButtons[5].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Bus-mastery-need-null-help/refs/heads/main/Bus%20mastery'))()
 end)
 
--- 預設只顯示 TPScroll，其他隱藏
-TPScroll.Visible = true
-CommonButtonsScroll.Visible = false
-BadgeGlove.Visible = false
-for _, b in ipairs(MasteryButtons) do b.Visible = false end
+
 
 -- 分區切換，新增 TPScroll.Visible 控制
 Section1.MouseButton1Click:Connect(function()
