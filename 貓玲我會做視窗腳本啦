@@ -238,7 +238,11 @@ local TPButtons = {
     createButton("大炮島", 7, TPScroll, 35),
     createButton("巴西", 8, TPScroll, 35),
     createButton("盤子", 9, TPScroll, 35),
-    createButton("彩虹雲", 10, TPScroll, 35)
+    createButton("彩虹雲", 10, TPScroll, 35),
+    createButton("左島", 11, TPScroll, 35),
+    createButton("右島", 12, TPScroll, 35),
+    createButton("死亡方塊島", 13, TPScroll, 35),
+
 }
 
 -- 傳送功能綁定
@@ -275,6 +279,15 @@ end)
 TPButtons[10].MouseButton1Click:Connect(function()
     local cloud = Workspace:FindFirstChild("Arena") and Workspace.Arena.Fort and Workspace.Arena.Fort:FindFirstChild("Floor")
     if cloud then LocalPlayer.Character.HumanoidRootPart.CFrame = cloud.CFrame + Vector3.new(0, 5, 0) end
+end)
+TPButtons[11].MouseButton1Click:Connect(function()
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5, -5, -216)
+end)
+TPButtons[12].MouseButton1Click:Connect(function()
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9, -5, 212)
+end)
+TPButtons[13].MouseButton1Click:Connect(function()
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-215, -5, -3)
 end)
 
 -- 通用按鈕分頁
