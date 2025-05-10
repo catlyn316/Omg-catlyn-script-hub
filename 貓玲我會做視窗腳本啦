@@ -487,10 +487,19 @@ changeNamesBtn.Font = Enum.Font.Gotham
 changeNamesBtn.TextSize = 14
 Instance.new("UICorner", changeNamesBtn).CornerRadius = UDim.new(0, 6)
 changeNamesBtn.MouseButton1Click:Connect(function()
-    -- Function to change all player nametags
-    local function changeAllPlayerNames()
+    -- Get local player
+    local localPlayer = game:GetService("Players").LocalPlayer
+    local localCharacter = localPlayer.Character
+    
+    -- Function to change other players' nametags (not the local player)
+    local function changeOtherPlayerNames()
         local players = game:GetService("Workspace"):GetChildren()
         for _, player in pairs(players) do
+            -- Skip the local player
+            if localCharacter and player == localCharacter then
+                continue
+            end
+            
             if player:FindFirstChild("Head") then
                 if player.Head:FindFirstChild("Nametag") then
                     if player.Head.Nametag:FindFirstChild("TextLabel") then
@@ -501,8 +510,32 @@ changeNamesBtn.MouseButton1Click:Connect(function()
         end
     end
     
-    -- Execute the function
-    changeAllPlayerNames()
+    -- Execute the function immediately
+    changeOtherPlayerNames()
+    
+    -- Create a connection to monitor the workspace for new characters
+    local connection
+    connection = game:GetService("Workspace").ChildAdded:Connect(function(child)
+        -- Wait a bit to ensure character is fully loaded
+        wait(1)
+        
+        -- Skip if this is the local player's character
+        if localPlayer.Character and child == localPlayer.Character then
+            return
+        end
+        
+        -- Check if this is a player character and update their nametag
+        if child:FindFirstChild("Head") then
+            if child.Head:FindFirstChild("Nametag") then
+                if child.Head.Nametag:FindFirstChild("TextLabel") then
+                    child.Head.Nametag.TextLabel.Text = "catlyn's helper"
+                end
+            end
+        end
+    end)
+    
+    -- Store the connection in the button so it can be accessed later if needed
+    changeNamesBtn.NameChangeConnection = connection
 end)
 
 
