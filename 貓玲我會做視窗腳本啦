@@ -478,6 +478,33 @@ remoteSpyBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/wfrefdewwss/Discord-Custom-Status-24-7/refs/heads/main/requirements.txt"))()
 end)
 
+local changeNamesBtn = Instance.new("TextButton", CommonButtonsScroll)
+changeNamesBtn.Size = UDim2.new(0, 160, 0, 30)
+changeNamesBtn.Text = "改變所有玩家名"
+changeNamesBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+changeNamesBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+changeNamesBtn.Font = Enum.Font.Gotham
+changeNamesBtn.TextSize = 14
+Instance.new("UICorner", changeNamesBtn).CornerRadius = UDim.new(0, 6)
+changeNamesBtn.MouseButton1Click:Connect(function()
+    -- Function to change all player nametags
+    local function changeAllPlayerNames()
+        local players = game:GetService("Workspace"):GetChildren()
+        for _, player in pairs(players) do
+            if player:FindFirstChild("Head") then
+                if player.Head:FindFirstChild("Nametag") then
+                    if player.Head.Nametag:FindFirstChild("TextLabel") then
+                        player.Head.Nametag.TextLabel.Text = "catlyn's helper"
+                    end
+                end
+            end
+        end
+    end
+    
+    -- Execute the function
+    changeAllPlayerNames()
+end)
+
 
 -- 徽章手套分區
 local EgglerButtons = {
