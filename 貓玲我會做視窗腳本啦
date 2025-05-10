@@ -87,7 +87,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -70, 0, 40)
 Title.Position = UDim2.new(0, 10, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "貓玲的腳本區(>^ω^<) v0.26"
+Title.Text = "貓玲的腳本區(>^ω^<) v0.27"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 20
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -293,7 +293,7 @@ end)
 -- 通用按鈕分頁
 local CommonButtonsScroll = Instance.new("ScrollingFrame", Content)
 CommonButtonsScroll.Size = UDim2.new(1, 0, 1, 0)
-CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 385)
+CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 420)
 CommonButtonsScroll.ScrollBarThickness = 6
 CommonButtonsScroll.BackgroundTransparency = 1
 CommonButtonsScroll.Visible = false
@@ -517,7 +517,7 @@ changeNamesBtn.MouseButton1Click:Connect(function()
     local connection
     connection = game:GetService("Workspace").ChildAdded:Connect(function(child)
         -- Wait a bit to ensure character is fully loaded
-        wait(1)
+        wait(0.1)
         
         -- Skip if this is the local player's character
         if localPlayer.Character and child == localPlayer.Character then
