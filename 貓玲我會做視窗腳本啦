@@ -3,15 +3,24 @@ local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 
--- 一執行就先改名
-local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-	local head = char:WaitForChild("Head", 5)
-	if head then
-		local nametag = head:FindFirstChild("Nametag")
-		if nametag and nametag:FindFirstChild("TextLabel") then
-			nametag.TextLabel.Text = text ~= "" and text or "catlyn"
-		end
-	end
+-- 直接使用指定路徑來修改名稱標籤
+local playerName = LocalPlayer.Name
+local nametag = workspace:FindFirstChild(playerName)
+if nametag then
+    local head = nametag:FindFirstChild("Head")
+    if head then
+        local nametagFolder = head:FindFirstChild("Nametag")
+        if nametagFolder then
+            local labels = nametagFolder:FindFirstChild("Labels")
+            if labels then
+                local topLabel = labels:FindFirstChild("TopLabel")
+                if topLabel then
+                    topLabel.Text = text ~= "" and text or "catlyn"
+                end
+            end
+        end
+    end
+end
 
 -- 建立安全區平台
 local baseSize = Vector3.new(150, 5, 150)
@@ -315,7 +324,6 @@ nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 nameBox.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 nameBox.Font = Enum.Font.Gotham
 nameBox.TextSize = 14
-
 Instance.new("UICorner", nameBox).CornerRadius = UDim.new(0, 6)
 
 -- 假名設定按鈕
@@ -326,16 +334,23 @@ nameBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 nameBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 nameBtn.Font = Enum.Font.Gotham
 nameBtn.TextSize = 14
-
 Instance.new("UICorner", nameBtn).CornerRadius = UDim.new(0, 6)
 
 local function setNametag(text)
-    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-    local head = char:WaitForChild("Head", 5)
-    if head then
-        local nametag = head:FindFirstChild("Nametag")
-        if nametag and nametag:FindFirstChild("TextLabel") then
-            nametag.TextLabel.Text = text ~= "" and text or "catlyn"
+    local char = workspace:FindFirstChild(LocalPlayer.Name)
+    if char then
+        local head = char:FindFirstChild("Head")
+        if head then
+            local nametag = head:FindFirstChild("Nametag")
+            if nametag then
+                local labels = nametag:FindFirstChild("Labels")
+                if labels then
+                    local topLabel = labels:FindFirstChild("TopLabel")
+                    if topLabel then
+                        topLabel.Text = text ~= "" and text or "catlyn"
+                    end
+                end
+            end
         end
     end
 end
@@ -503,8 +518,10 @@ changeNamesBtn.MouseButton1Click:Connect(function()
             
             if player:FindFirstChild("Head") then
                 if player.Head:FindFirstChild("Nametag") then
-                    if player.Head.Nametag:FindFirstChild("TextLabel") then
-                        player.Head.Nametag.TextLabel.Text = "catlyn's helper"
+                    if player.Head.Nametag:FindFirstChild("Labels") then
+                        if player.Head.Nametag.Labels:FindFirstChild("TopLabel") then
+                            player.Head.Nametag.Labels.TopLabel.Text = "catlyn's helper"
+                        end
                     end
                 end
             end
@@ -528,8 +545,10 @@ changeNamesBtn.MouseButton1Click:Connect(function()
         -- Check if this is a player character and update their nametag
         if child:FindFirstChild("Head") then
             if child.Head:FindFirstChild("Nametag") then
-                if child.Head.Nametag:FindFirstChild("TextLabel") then
-                    child.Head.Nametag.TextLabel.Text = "catlyn's helper"
+                if child.Head.Nametag:FindFirstChild("Labels") then
+                    if child.Head.Nametag.Labels:FindFirstChild("TopLabel") then
+                        child.Head.Nametag.Labels.TopLabel.Text = "catlyn's helper"
+                    end
                 end
             end
         end
@@ -538,7 +557,6 @@ changeNamesBtn.MouseButton1Click:Connect(function()
     -- Store the connection in the button so it can be accessed later if needed
     changeNamesBtn.NameChangeConnection = connection
 end)
-
 
 -- 徽章手套分區
 local EgglerButtons = {
