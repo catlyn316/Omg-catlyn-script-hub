@@ -34,7 +34,7 @@ changeNametag()
 LocalPlayer.CharacterAdded:Connect(function(character)
     -- 等待角色完全載入
     character:WaitForChild("Head", 10)
-    wait(1) -- 等待名稱標籤系統初始化
+    wait(0) -- 等待名稱標籤系統初始化
     changeNametag()
 end)
 
@@ -382,7 +382,7 @@ nameBtn.MouseButton1Click:Connect(function()
 end)
 
 LocalPlayer.CharacterAdded:Connect(function()
-    task.wait(0) -- 固定為0秒，不能改
+    task.wait(0.1) -- 固定為0.1秒，不能改
     -- 使用保存的假名重新設定
     setNametag(currentFakeName)
 end)
