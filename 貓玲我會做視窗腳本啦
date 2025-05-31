@@ -3,24 +3,40 @@ local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 
--- 直接使用指定路徑來修改名稱標籤
-local playerName = LocalPlayer.Name
-local nametag = workspace:FindFirstChild(playerName)
-if nametag then
-    local head = nametag:FindFirstChild("Head")
-    if head then
-        local nametagFolder = head:FindFirstChild("Nametag")
-        if nametagFolder then
-            local labels = nametagFolder:FindFirstChild("Labels")
-            if labels then
-                local topLabel = labels:FindFirstChild("TopLabel")
-                if topLabel then
-                    topLabel.Text = text ~= "" and text or "catlyn"
+-- 儲存自定義名稱
+local savedName = text ~= "" and text or "catlyn"
+
+-- 修改名稱標籤的函數
+local function changeNametag()
+    local playerName = LocalPlayer.Name
+    local character = workspace:FindFirstChild(playerName)
+    if character then
+        local head = character:FindFirstChild("Head")
+        if head then
+            local nametagFolder = head:FindFirstChild("Nametag")
+            if nametagFolder then
+                local labels = nametagFolder:FindFirstChild("Labels")
+                if labels then
+                    local topLabel = labels:FindFirstChild("TopLabel")
+                    if topLabel then
+                        topLabel.Text = savedName
+                    end
                 end
             end
         end
     end
 end
+
+-- 初次執行修改名稱
+changeNametag()
+
+-- 監聽角色重生事件，重生後重新應用名稱
+LocalPlayer.CharacterAdded:Connect(function(character)
+    -- 等待角色完全載入
+    character:WaitForChild("Head", 10)
+    wait(1) -- 等待名稱標籤系統初始化
+    changeNametag()
+end)
 
 -- 建立安全區平台
 local baseSize = Vector3.new(150, 5, 150)
@@ -315,6 +331,9 @@ local UIListLayout = Instance.new("UIListLayout", CommonButtonsScroll)
 UIListLayout.Padding = UDim.new(0, 5)
 UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
+-- 保存當前設定的假名
+local currentFakeName = "catlyn"
+
 -- 假名輸入框
 local nameBox = Instance.new("TextBox", CommonButtonsScroll)
 nameBox.Size = UDim2.new(0, 160, 0, 30)
@@ -337,6 +356,9 @@ nameBtn.TextSize = 14
 Instance.new("UICorner", nameBtn).CornerRadius = UDim.new(0, 6)
 
 local function setNametag(text)
+    -- 更新保存的假名
+    currentFakeName = text ~= "" and text or "catlyn"
+    
     local char = workspace:FindFirstChild(LocalPlayer.Name)
     if char then
         local head = char:FindFirstChild("Head")
@@ -347,7 +369,7 @@ local function setNametag(text)
                 if labels then
                     local topLabel = labels:FindFirstChild("TopLabel")
                     if topLabel then
-                        topLabel.Text = text ~= "" and text or "catlyn"
+                        topLabel.Text = currentFakeName
                     end
                 end
             end
@@ -361,7 +383,8 @@ end)
 
 LocalPlayer.CharacterAdded:Connect(function()
     task.wait(0) -- 固定為0秒，不能改
-    setNametag(nameBox.Text ~= "" and nameBox.Text or "catlyn")
+    -- 使用保存的假名重新設定
+    setNametag(currentFakeName)
 end)
 
 -- 防虛空平台
@@ -505,59 +528,90 @@ Instance.new("UICorner", changeNamesBtn).CornerRadius = UDim.new(0, 6)
 changeNamesBtn.MouseButton1Click:Connect(function()
     -- Get local player
     local localPlayer = game:GetService("Players").LocalPlayer
-    local localCharacter = localPlayer.Character
     
-    -- Function to change other players' nametags (not the local player)
-    local function changeOtherPlayerNames()
-        local players = game:GetService("Workspace"):GetChildren()
-        for _, player in pairs(players) do
-            -- Skip the local player
-            if localCharacter and player == localCharacter then
-                continue
-            end
-            
-            if player:FindFirstChild("Head") then
-                if player.Head:FindFirstChild("Nametag") then
-                    if player.Head.Nametag:FindFirstChild("Labels") then
-                        if player.Head.Nametag.Labels:FindFirstChild("TopLabel") then
-                            player.Head.Nametag.Labels.TopLabel.Text = "catlyn's helper"
-                        end
+    -- Function to change a player's nametag
+    local function changePlayerName(character)
+        -- Skip the local player
+        if localPlayer.Character and character == localPlayer.Character then
+            return
+        end
+        
+        if character:FindFirstChild("Head") then
+            if character.Head:FindFirstChild("Nametag") then
+                if character.Head.Nametag:FindFirstChild("Labels") then
+                    if character.Head.Nametag.Labels:FindFirstChild("TopLabel") then
+                        character.Head.Nametag.Labels.TopLabel.Text = "catlyn's helper"
                     end
                 end
             end
         end
     end
     
-    -- Execute the function immediately
-    changeOtherPlayerNames()
-    
-    -- Create a connection to monitor the workspace for new characters
-    local connection
-    connection = game:GetService("Workspace").ChildAdded:Connect(function(child)
-        -- Wait a bit to ensure character is fully loaded
-        wait(0.1)
-        
-        -- Skip if this is the local player's character
-        if localPlayer.Character and child == localPlayer.Character then
-            return
-        end
-        
-        -- Check if this is a player character and update their nametag
-        if child:FindFirstChild("Head") then
-            if child.Head:FindFirstChild("Nametag") then
-                if child.Head.Nametag:FindFirstChild("Labels") then
-                    if child.Head.Nametag.Labels:FindFirstChild("TopLabel") then
-                        child.Head.Nametag.Labels.TopLabel.Text = "catlyn's helper"
-                    end
-                end
+    -- Function to change all current players' nametags
+    local function changeAllPlayerNames()
+        local players = game:GetService("Workspace"):GetChildren()
+        for _, player in pairs(players) do
+            if player:IsA("Model") and player:FindFirstChild("Humanoid") then
+                changePlayerName(player)
             end
+        end
+    end
+    
+    -- Execute the function immediately for current players
+    changeAllPlayerNames()
+    
+    -- Create connections to monitor for new characters and respawns
+    local connections = {}
+    
+    -- Monitor workspace for new characters (new players joining)
+    connections.childAdded = game:GetService("Workspace").ChildAdded:Connect(function(child)
+        if child:IsA("Model") and child:FindFirstChild("Humanoid") then
+            -- Wait for character to fully load
+            spawn(function()
+                wait(0.1)
+                changePlayerName(child)
+                
+                -- Monitor this character for respawns by watching for nametag changes
+                local nametagConnection
+                nametagConnection = child.ChildAdded:Connect(function(part)
+                    if part.Name == "Head" then
+                        spawn(function()
+                            wait(0.1) -- Wait for nametag to load
+                            changePlayerName(child)
+                        end)
+                    end
+                end)
+            end)
         end
     end)
     
-    -- Store the connection in the button so it can be accessed later if needed
-    changeNamesBtn.NameChangeConnection = connection
+    -- Monitor players service for character spawning (respawns)
+    connections.playerAdded = game:GetService("Players").PlayerAdded:Connect(function(player)
+        if player ~= localPlayer then
+            player.CharacterAdded:Connect(function(character)
+                spawn(function()
+                    wait(0.1) -- Wait for character to fully load
+                    changePlayerName(character)
+                end)
+            end)
+        end
+    end)
+    
+    -- Handle existing players' respawns
+    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+        if player ~= localPlayer then
+            player.CharacterAdded:Connect(function(character)
+                spawn(function()
+                    wait(0.1) -- Wait for character to fully load
+                    changePlayerName(character)
+                end)
+            end)
+        end
+    end
+    
+    -- Store the connections in the button so they can be accessed later if needed
+    changeNamesBtn.NameChangeConnections = connections
 end)
-
 -- 徽章手套分區
 local EgglerButtons = {
     createButton("eggler手套", 1, BadgeGlove, 35),
