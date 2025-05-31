@@ -576,7 +576,7 @@ changeNamesBtn.MouseButton1Click:Connect(function()
                 nametagConnection = child.ChildAdded:Connect(function(part)
                     if part.Name == "Head" then
                         spawn(function()
-                            wait(0.1) -- Wait for nametag to load
+                            wait(0.5) -- Wait for nametag to load
                             changePlayerName(child)
                         end)
                     end
@@ -591,7 +591,7 @@ changeNamesBtn.MouseButton1Click:Connect(function()
             -- Handle when player's character spawns (first time and respawns)
             player.CharacterAdded:Connect(function(character)
                 spawn(function()
-                    wait(0.1) -- Wait for character to fully load
+                    wait(0.5) -- Wait for character to fully load
                     changePlayerName(character)
                 end)
             end)
@@ -599,7 +599,7 @@ changeNamesBtn.MouseButton1Click:Connect(function()
             -- If player already has a character when they join, change their name immediately
             if player.Character then
                 spawn(function()
-                    wait(0.1)
+                    wait(0.5)
                     changePlayerName(player.Character)
                 end)
             end
@@ -612,7 +612,7 @@ changeNamesBtn.MouseButton1Click:Connect(function()
             -- Add character spawning listener for existing players
             player.CharacterAdded:Connect(function(character)
                 spawn(function()
-                    wait(0.1) -- Wait for character to fully load
+                    wait(0.5) -- Wait for character to fully load
                     changePlayerName(character)
                 end)
             end)
@@ -620,7 +620,7 @@ changeNamesBtn.MouseButton1Click:Connect(function()
             -- If existing player already has a character, change their name immediately
             if player.Character then
                 spawn(function()
-                    wait(0.1)
+                    wait(0.5)
                     changePlayerName(player.Character)
                 end)
             end
@@ -629,6 +629,45 @@ changeNamesBtn.MouseButton1Click:Connect(function()
     
     -- Store the connections in the button so they can be accessed later if needed
     changeNamesBtn.NameChangeConnections = connections
+end)
+
+-- Giang Hub Button
+local giangHubBtn = Instance.new("TextButton", CommonButtonsScroll)
+giangHubBtn.Size = UDim2.new(0, 160, 0, 30)
+giangHubBtn.Text = "Giang hub"
+giangHubBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+giangHubBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+giangHubBtn.Font = Enum.Font.Gotham
+giangHubBtn.TextSize = 14
+Instance.new("UICorner", giangHubBtn).CornerRadius = UDim.new(0, 6)
+giangHubBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Slap_Battles/main/Slap_Battles.lua",true))()
+end)
+
+-- Kyky Hub Button
+local kykyHubBtn = Instance.new("TextButton", CommonButtonsScroll)
+kykyHubBtn.Size = UDim2.new(0, 160, 0, 30)
+kykyHubBtn.Text = "kyky hub"
+kykyHubBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+kykyHubBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+kykyHubBtn.Font = Enum.Font.Gotham
+kykyHubBtn.TextSize = 14
+Instance.new("UICorner", kykyHubBtn).CornerRadius = UDim.new(0, 6)
+kykyHubBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://rawscripts.net/raw/Slap-Battles-KykyryzoB-Hub-SB-9008"))()
+end)
+
+-- Mastery Button
+local masteryBtn = Instance.new("TextButton", CommonButtonsScroll)
+masteryBtn.Size = UDim2.new(0, 160, 0, 30)
+masteryBtn.Text = "mastery"
+masteryBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+masteryBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+masteryBtn.Font = Enum.Font.Gotham
+masteryBtn.TextSize = 14
+Instance.new("UICorner", masteryBtn).CornerRadius = UDim.new(0, 6)
+masteryBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/MasteryHelper.NewestVersion'))()
 end)
 -- 徽章手套分區
 local EgglerButtons = {
