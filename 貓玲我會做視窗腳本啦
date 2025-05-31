@@ -585,27 +585,45 @@ changeNamesBtn.MouseButton1Click:Connect(function()
         end
     end)
     
-    -- Monitor players service for character spawning (respawns)
+    -- Monitor players service for character spawning (respawns and rejoins)
     connections.playerAdded = game:GetService("Players").PlayerAdded:Connect(function(player)
         if player ~= localPlayer then
+            -- Handle when player's character spawns (first time and respawns)
             player.CharacterAdded:Connect(function(character)
                 spawn(function()
                     wait(0.1) -- Wait for character to fully load
                     changePlayerName(character)
                 end)
             end)
+            
+            -- If player already has a character when they join, change their name immediately
+            if player.Character then
+                spawn(function()
+                    wait(0.1)
+                    changePlayerName(player.Character)
+                end)
+            end
         end
     end)
     
-    -- Handle existing players' respawns
+    -- Handle existing players' respawns and ensure they get renamed
     for _, player in pairs(game:GetService("Players"):GetPlayers()) do
         if player ~= localPlayer then
+            -- Add character spawning listener for existing players
             player.CharacterAdded:Connect(function(character)
                 spawn(function()
                     wait(0.1) -- Wait for character to fully load
                     changePlayerName(character)
                 end)
             end)
+            
+            -- If existing player already has a character, change their name immediately
+            if player.Character then
+                spawn(function()
+                    wait(0.1)
+                    changePlayerName(player.Character)
+                end)
+            end
         end
     end
     
