@@ -112,7 +112,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -70, 0, 40)
 Title.Position = UDim2.new(0, 10, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "貓玲的腳本區(>^ω^<) v0.28"
+Title.Text = "貓玲的腳本區(>^ω^<) v0.29"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 20
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -693,7 +693,8 @@ local MasteryButtons = {
     createButton("空間", 3, MasteryScroll, 35),
     createButton("冰砂", 4, MasteryScroll, 35),
     createButton("公車", 5, MasteryScroll, 35),
-    createButton("階段", 6, MasteryScroll, 35)
+    createButton("階段", 6, MasteryScroll, 35),
+    createButton("大亨和蜜蜂", 7, MasteryScroll, 35)
 }
 
 MasteryButtons[1].MouseButton1Click:Connect(function()
@@ -718,6 +719,10 @@ end)
 
 MasteryButtons[6].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Phase-mastery/refs/heads/main/Phase%20mastery'))()
+end)
+
+MasteryButtons[7].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Tycoon-and-hive-mastery/refs/heads/main/Tycoon%2Bhive%20mastery'))()
 end)
 
 -- 分區切換
