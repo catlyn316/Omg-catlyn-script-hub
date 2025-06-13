@@ -99,14 +99,30 @@ createWall(baseSize, basePosition + Vector3.new(0, wallHeight, 0))
 local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
 ScreenGui.Name = "MaolingHub"
 
+-- 1. 修改主框架樣式 (替換原本的 Frame 創建部分)
 local Frame = Instance.new("Frame", ScreenGui)
-Frame.Size = UDim2.new(0, 400, 0, 300)
-Frame.Position = UDim2.new(0.3, 0, 0.3, 0)
-Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.Size = UDim2.new(0, 450, 0, 350) -- 增大尺寸
+Frame.Position = UDim2.new(0.5, -225, 0.5, -175) -- 居中顯示
+Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35) -- 更深的背景色
+Frame.BorderSizePixel = 0 -- 移除邊框
 Frame.Active = true
 Frame.Draggable = true
 
-Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 10)
+-- 添加漸層效果
+local gradient = Instance.new("UIGradient", Frame)
+gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 35)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(35, 35, 50))
+}
+gradient.Rotation = 45
+
+-- 添加外發光效果
+local stroke = Instance.new("UIStroke", Frame)
+stroke.Color = Color3.fromRGB(100, 150, 255)
+stroke.Thickness = 2
+stroke.Transparency = 0.5
+
+Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 15)
 
 local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -70, 0, 40)
@@ -244,7 +260,7 @@ BadgeGlove.ScrollingDirection = Enum.ScrollingDirection.Y
 -- 精通腳本分區
 local MasteryScroll = Instance.new("ScrollingFrame", Content)
 MasteryScroll.Size = UDim2.new(1, 0, 1, 0)
-MasteryScroll.CanvasSize = UDim2.new(0, 0, 0, 280)
+MasteryScroll.CanvasSize = UDim2.new(0, 0, 0, 500)
 MasteryScroll.ScrollBarThickness = 6
 MasteryScroll.BackgroundTransparency = 1
 MasteryScroll.Visible = false
