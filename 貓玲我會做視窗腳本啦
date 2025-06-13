@@ -134,7 +134,7 @@ Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3. fromRGB(255, 255, 255)
 Title.TextXAlignment = Enum.TextXAlignment.Left
--— 添加標題發光效果
+-- 添加標題發光效果
 local titleStroke = Instance.new("UIStroke", Title)
 titleStroke.Color = Color3.fromRGB(100, 150, 255)
 titleStroke.Thickness = 1
