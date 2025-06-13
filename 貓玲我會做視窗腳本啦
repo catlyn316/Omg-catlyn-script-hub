@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50) -- 增加高度
 Title.Position = UDim2.new(0, 15, 0, 5)
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.29"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.3"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -141,47 +141,89 @@ titleStroke.Color = Color3.fromRGB(100, 150, 255)
 titleStroke.Thickness = 1
 titleStroke.Transparency = 0.3
 
+-- 3. 修改關閉按鈕樣式
 local Close = Instance.new("TextButton", Frame)
-Close.Size = UDim2.new(0, 30, 0, 30)
-Close.Position = UDim2.new(1, -35, 0, 5)
-Close.Text = "X"
-Close.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+Close.Size = UDim2.new(0, 35, 0, 35)
+Close.Position = UDim2.new(1, -40, 0, 8)
+Close.Text = "✕"
+Close.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
 Close.TextColor3 = Color3.fromRGB(255, 255, 255)
 Close.Font = Enum.Font.GothamBold
-Close.TextSize = 16
-Close.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+Close.TextSize = 18
+Close.BorderSizePixel = 0
 
-Instance.new("UICorner", Close).CornerRadius = UDim.new(0, 6)
+-- 添加關閉按鈕效果
+local closeGradient = Instance.new("UIGradient", Close)
+closeGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(220, 60, 60)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 40, 40))
+}
 
+Instance.new("UICorner", Close).CornerRadius = UDim.new(0, 8)
+
+-- 4. 修改最小化按鈕樣式
 local Minimize = Instance.new("TextButton", Frame)
-Minimize.Size = UDim2.new(0, 30, 0, 30)
-Minimize.Position = UDim2.new(1, -70, 0, 5)
-Minimize.Text = "-"
-Minimize.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+Minimize.Size = UDim2.new(0, 35, 0, 35)
+Minimize.Position = UDim2.new(1, -80, 0, 8)
+Minimize.Text = "─"
+Minimize.BackgroundColor3 = Color3.fromRGB(100, 100, 120)
 Minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
 Minimize.Font = Enum.Font.GothamBold
 Minimize.TextSize = 16
+Minimize.BorderSizePixel = 0
 
-Instance.new("UICorner", Minimize).CornerRadius = UDim.new(0, 6)
+local minimizeGradient = Instance.new("UIGradient", Minimize)
+minimizeGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 100, 120)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(80, 80, 100))
+}
 
-local SideBar = Instance.new("Frame", Frame)
-SideBar.Size = UDim2.new(0, 100, 1, -40)
-SideBar.Position = UDim2.new(0, 0, 0, 40)
-SideBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Instance.new("UICorner", Minimize).CornerRadius = UDim.new(0, 8)
 
-Instance.new("UICorner", SideBar).CornerRadius = UDim.new(0, 6)
+-- 5. 修改側邊欄為可滾動 (替換原本的 SideBar)
+local SideBar = Instance.new("ScrollingFrame", Frame)
+SideBar.Size = UDim2.new(0, 130, 1, -55) -- 增加寬度
+SideBar.Position = UDim2.new(0, 5, 0, 50)
+SideBar.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+SideBar.BorderSizePixel = 0
+SideBar.ScrollBarThickness = 6
+SideBar.CanvasSize = UDim2.new(0, 0, 0, 200) -- 可根據按鈕數量調整
+SideBar.AutomaticCanvasSize = Enum.AutomaticSize.Y
+SideBar.ScrollingDirection = Enum.ScrollingDirection.Y
 
+-- 添加側邊欄樣式
+local sidebarGradient = Instance.new("UIGradient", SideBar)
+sidebarGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 35, 50)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(45, 45, 65))
+}
+
+Instance.new("UICorner", SideBar).CornerRadius = UDim.new(0, 10)
+
+-- 添加UIListLayout到側邊欄
+local sidebarLayout = Instance.new("UIListLayout", SideBar)
+sidebarLayout.Padding = UDim.new(0, 8)
+sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+-- 6. 修改內容區域
 local Content = Instance.new("Frame", Frame)
-Content.Size = UDim2.new(1, -100, 1, -40)
-Content.Position = UDim2.new(0, 100, 0, 40)
-Content.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Content.Size = UDim2.new(1, -145, 1, -55)
+Content.Position = UDim2.new(0, 140, 0, 50)
+Content.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+Content.BorderSizePixel = 0
 
-Instance.new("UICorner", Content).CornerRadius = UDim.new(0, 6)
+local contentGradient = Instance.new("UIGradient", Content)
+contentGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 60)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 75))
+}
 
--- 縮小功能
+Instance.new("UICorner", Content).CornerRadius = UDim.new(0, 10)
+
+-- 9. 修改縮小功能的尺寸
 local isMinimized = false
-local fullSize = UDim2.new(0, 400, 0, 300)
-local miniSize = UDim2.new(0, 400, 0, 40)
+local fullSize = UDim2.new(0, 450, 0, 350) -- 更新為新尺寸
+local miniSize = UDim2.new(0, 450, 0, 50)
 Minimize.MouseButton1Click:Connect(function()
     isMinimized = not isMinimized
     SideBar.Visible = not isMinimized
@@ -189,56 +231,80 @@ Minimize.MouseButton1Click:Connect(function()
     Frame.Size = isMinimized and miniSize or fullSize
 end)
 
--- 分區按鈕
-local Section1 = Instance.new("TextButton", SideBar)
-Section1.Size = UDim2.new(1, 0, 0, 40)
-Section1.Position = UDim2.new(0, 0, 0, 0)
-Section1.Text = "傳送"
-Section1.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-Section1.TextColor3 = Color3.fromRGB(255, 255, 255)
+-- 7. 修改分區按鈕樣式 (替換原本的 Section 按鈕創建)
+local function createSectionButton(text, order, parent)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(0, 120, 0, 45) -- 增加高度
+    btn.Text = text
+    btn.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 14
+    btn.BorderSizePixel = 0
+    
+    -- 添加漸層
+    local btnGradient = Instance.new("UIGradient", btn)
+    btnGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(70, 70, 90)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 70))
+    }
+    
+    -- 添加圓角
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
+    
+    -- 添加描邊
+    local btnStroke = Instance.new("UIStroke", btn)
+    btnStroke.Color = Color3.fromRGB(100, 150, 255)
+    btnStroke.Thickness = 1
+    btnStroke.Transparency = 0.7
+    
+    return btn
+end
 
-Instance.new("UICorner", Section1).CornerRadius = UDim.new(0, 6)
+-- 重新創建分區按鈕
+local Section1 = createSectionButton("🚀 傳送", 1, SideBar)
+local Section2 = createSectionButton("⚙️ 常用", 2, SideBar)
+local Section3 = createSectionButton("🏅 徽章手套", 3, SideBar)
+local Section4 = createSectionButton("🎯 精通腳本", 4, SideBar)
 
-local Section2 = Instance.new("TextButton", SideBar)
-Section2.Size = UDim2.new(1, 0, 0, 40)
-Section2.Position = UDim2.new(0, 0, 0, 45)
-Section2.Text = "常用"
-Section2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-Section2.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-Instance.new("UICorner", Section2).CornerRadius = UDim.new(0, 6)
-
-local Section3 = Instance.new("TextButton", SideBar)
-Section3.Size = UDim2.new(1, 0, 0, 40)
-Section3.Position = UDim2.new(0, 0, 0, 90)
-Section3.Text = "徽章手套"
-Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-Section3.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-Instance.new("UICorner", Section3).CornerRadius = UDim.new(0, 6)
-
-local Section4 = Instance.new("TextButton", SideBar)
-Section4.Size = UDim2.new(1, 0, 0, 40)
-Section4.Position = UDim2.new(0, 0, 0, 135)
-Section4.Text = "精通手套腳本"
-Section4.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-Section4.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-Instance.new("UICorner", Section4).CornerRadius = UDim.new(0, 6)
-
--- 按鈕生成器
+-- 8. 修改一般按鈕樣式 (替換 createButton 函數)
 local function createButton(text, order, parent, spacing)
     local btn = Instance.new("TextButton", parent)
-    btn.Size = UDim2.new(0, 160, 0, 30)
-    btn.Position = UDim2.new(0.5, -80, 0, 10 + (order - 1) * spacing)
+    btn.Size = UDim2.new(0, 180, 0, 35) -- 增加寬度和高度
+    btn.Position = UDim2.new(0.5, -90, 0, 10 + (order - 1) * spacing)
     btn.Text = text
-    btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    btn.BackgroundColor3 = Color3.fromRGB(60, 120, 200)
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.Font = Enum.Font.Gotham
     btn.TextSize = 14
+    btn.BorderSizePixel = 0
+    
+    -- 添加漸層效果
+    local btnGradient = Instance.new("UIGradient", btn)
+    btnGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 120, 200)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 100, 180))
+    }
     
     -- 添加圓角
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+    
+    -- 添加描邊
+    local btnStroke = Instance.new("UIStroke", btn)
+    btnStroke.Color = Color3.fromRGB(100, 150, 255)
+    btnStroke.Thickness = 1
+    btnStroke.Transparency = 0.5
+    
+    -- 添加hover效果
+    btn.MouseEnter:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(80, 140, 220)
+        btnStroke.Transparency = 0.2
+    end)
+    
+    btn.MouseLeave:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(60, 120, 200)
+        btnStroke.Transparency = 0.5
+    end)
     
     return btn
 end
@@ -274,6 +340,27 @@ MasteryScroll.Visible = false
 MasteryScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 MasteryScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 MasteryScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+
+-- 11. 添加滾動框樣式改善
+local function styleScrollFrame(scrollFrame)
+    scrollFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+    scrollFrame.BorderSizePixel = 0
+    scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 150, 255)
+    
+    local scrollGradient = Instance.new("UIGradient", scrollFrame)
+    scrollGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(45, 45, 65)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(55, 55, 80))
+    }
+    
+    Instance.new("UICorner", scrollFrame).CornerRadius = UDim.new(0, 8)
+end
+
+-- 應用到所有滾動框
+styleScrollFrame(TPScroll)
+styleScrollFrame(BadgeGlove)
+styleScrollFrame(MasteryScroll)
+styleScrollFrame(CommonButtonsScroll)
 
 -- 傳送分區（共 10 個按鈕）
 local TPButtons = {
@@ -357,16 +444,30 @@ UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 -- 保存當前設定的假名
 local currentFakeName = "catlyn"
 
--- 假名輸入框
+-- 10. 修改文字輸入框樣式 (針對假名輸入框)
 local nameBox = Instance.new("TextBox", CommonButtonsScroll)
-nameBox.Size = UDim2.new(0, 160, 0, 30)
-nameBox.PlaceholderText = "輸入假名"
+nameBox.Size = UDim2.new(0, 180, 0, 35)
+nameBox.PlaceholderText = "✏️ 輸入假名"
 nameBox.Text = ""
 nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-nameBox.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+nameBox.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
 nameBox.Font = Enum.Font.Gotham
 nameBox.TextSize = 14
-Instance.new("UICorner", nameBox).CornerRadius = UDim.new(0, 6)
+nameBox.BorderSizePixel = 0
+
+-- 添加輸入框效果
+local boxGradient = Instance.new("UIGradient", nameBox)
+boxGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(50, 50, 70)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 60, 80))
+}
+
+Instance.new("UICorner", nameBox).CornerRadius = UDim.new(0, 8)
+
+local boxStroke = Instance.new("UIStroke", nameBox)
+boxStroke.Color = Color3.fromRGB(100, 150, 255)
+boxStroke.Thickness = 1
+boxStroke.Transparency = 0.7
 
 -- 假名設定按鈕
 local nameBtn = Instance.new("TextButton", CommonButtonsScroll)
