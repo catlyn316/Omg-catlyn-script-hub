@@ -4,7 +4,7 @@ local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 
 -- 儲存自定義名稱
-local savedName = text ~= "" and text or "catlyn"
+local savedName = "catlyn" -- 修正：移除了 text 變數
 
 -- 修改名稱標籤的函數
 local function changeNametag()
@@ -99,12 +99,12 @@ createWall(baseSize, basePosition + Vector3.new(0, wallHeight, 0))
 local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
 ScreenGui.Name = "MaolingHub"
 
--- 1. 修改主框架樣式 (替換原本的 Frame 創建部分)
+-- 修正：主框架樣式
 local Frame = Instance.new("Frame", ScreenGui)
-Frame.Size = UDim2.new(0, 450, 0, 350) -- 增大尺寸
-Frame.Position = UDim2.new(0.5, -225, 0.5, -175) -- 居中顯示
-Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35) -- 更深的背景色
-Frame.BorderSizePixel = 0 -- 移除邊框
+Frame.Size = UDim2.new(0, 450, 0, 350)
+Frame.Position = UDim2.new(0.5, -225, 0.5, -175)
+Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+Frame.BorderSizePixel = 0
 Frame.Active = true
 Frame.Draggable = true
 
@@ -124,9 +124,9 @@ stroke.Transparency = 0.5
 
 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 15)
 
--- 2. 修改標題樣式
+-- 修正：標題樣式
 local Title = Instance.new("TextLabel", Frame)
-Title.Size = UDim2.new(1, -80, 0, 50) -- 增加高度
+Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 5)
 Title.BackgroundTransparency = 1
 Title.Text = "✨ 貓玲的腳本區 ✨ v0.3"
@@ -141,7 +141,7 @@ titleStroke.Color = Color3.fromRGB(100, 150, 255)
 titleStroke.Thickness = 1
 titleStroke.Transparency = 0.3
 
--- 3. 修改關閉按鈕樣式
+-- 修正：關閉按鈕樣式和功能
 local Close = Instance.new("TextButton", Frame)
 Close.Size = UDim2.new(0, 35, 0, 35)
 Close.Position = UDim2.new(1, -40, 0, 8)
@@ -161,7 +161,13 @@ closeGradient.Color = ColorSequence.new{
 
 Instance.new("UICorner", Close).CornerRadius = UDim.new(0, 8)
 
--- 4. 修改最小化按鈕樣式
+-- 修正：關閉按鈕功能
+Close.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+    _G.maolingHubLoaded = false -- 重置載入狀態
+end)
+
+-- 修正：最小化按鈕樣式
 local Minimize = Instance.new("TextButton", Frame)
 Minimize.Size = UDim2.new(0, 35, 0, 35)
 Minimize.Position = UDim2.new(1, -80, 0, 8)
@@ -180,14 +186,14 @@ minimizeGradient.Color = ColorSequence.new{
 
 Instance.new("UICorner", Minimize).CornerRadius = UDim.new(0, 8)
 
--- 5. 修改側邊欄為可滾動 (替換原本的 SideBar)
+-- 修正：側邊欄為可滾動
 local SideBar = Instance.new("ScrollingFrame", Frame)
-SideBar.Size = UDim2.new(0, 130, 1, -55) -- 增加寬度
+SideBar.Size = UDim2.new(0, 130, 1, -55)
 SideBar.Position = UDim2.new(0, 5, 0, 50)
 SideBar.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
 SideBar.BorderSizePixel = 0
 SideBar.ScrollBarThickness = 6
-SideBar.CanvasSize = UDim2.new(0, 0, 0, 200) -- 可根據按鈕數量調整
+SideBar.CanvasSize = UDim2.new(0, 0, 0, 200)
 SideBar.AutomaticCanvasSize = Enum.AutomaticSize.Y
 SideBar.ScrollingDirection = Enum.ScrollingDirection.Y
 
@@ -205,7 +211,7 @@ local sidebarLayout = Instance.new("UIListLayout", SideBar)
 sidebarLayout.Padding = UDim.new(0, 8)
 sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
--- 6. 修改內容區域
+-- 修正：內容區域
 local Content = Instance.new("Frame", Frame)
 Content.Size = UDim2.new(1, -145, 1, -55)
 Content.Position = UDim2.new(0, 140, 0, 50)
@@ -220,10 +226,11 @@ contentGradient.Color = ColorSequence.new{
 
 Instance.new("UICorner", Content).CornerRadius = UDim.new(0, 10)
 
--- 9. 修改縮小功能的尺寸
+-- 修正：縮小功能的尺寸
 local isMinimized = false
-local fullSize = UDim2.new(0, 450, 0, 350) -- 更新為新尺寸
+local fullSize = UDim2.new(0, 450, 0, 350)
 local miniSize = UDim2.new(0, 450, 0, 50)
+
 Minimize.MouseButton1Click:Connect(function()
     isMinimized = not isMinimized
     SideBar.Visible = not isMinimized
@@ -231,10 +238,10 @@ Minimize.MouseButton1Click:Connect(function()
     Frame.Size = isMinimized and miniSize or fullSize
 end)
 
--- 7. 修改分區按鈕樣式 (替換原本的 Section 按鈕創建)
+-- 修正：分區按鈕樣式
 local function createSectionButton(text, order, parent)
     local btn = Instance.new("TextButton", parent)
-    btn.Size = UDim2.new(0, 120, 0, 45) -- 增加高度
+    btn.Size = UDim2.new(0, 120, 0, 45)
     btn.Text = text
     btn.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -267,10 +274,10 @@ local Section2 = createSectionButton("⚙️ 常用", 2, SideBar)
 local Section3 = createSectionButton("🏅 徽章手套", 3, SideBar)
 local Section4 = createSectionButton("🎯 精通腳本", 4, SideBar)
 
--- 8. 修改一般按鈕樣式 (替換 createButton 函數)
+-- 修正：一般按鈕樣式
 local function createButton(text, order, parent, spacing)
     local btn = Instance.new("TextButton", parent)
-    btn.Size = UDim2.new(0, 180, 0, 35) -- 增加寬度和高度
+    btn.Size = UDim2.new(0, 180, 0, 35)
     btn.Position = UDim2.new(0.5, -90, 0, 10 + (order - 1) * spacing)
     btn.Text = text
     btn.BackgroundColor3 = Color3.fromRGB(60, 120, 200)
@@ -312,7 +319,7 @@ end
 -- 傳送分區使用 ScrollingFrame
 local TPScroll = Instance.new("ScrollingFrame", Content)
 TPScroll.Size = UDim2.new(1, 0, 1, 0)
-TPScroll.CanvasSize = UDim2.new(0, 0, 0, 385)  -- 高度設定視實際按鈕總高度
+TPScroll.CanvasSize = UDim2.new(0, 0, 0, 500) -- 修正：設定正確的畫布大小
 TPScroll.ScrollBarThickness = 6
 TPScroll.BackgroundTransparency = 1
 TPScroll.Visible = true
@@ -320,9 +327,20 @@ TPScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 TPScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 TPScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
+-- 修正：通用按鈕分頁 - 先聲明變數
+local CommonButtonsScroll = Instance.new("ScrollingFrame", Content)
+CommonButtonsScroll.Size = UDim2.new(1, 0, 1, 0)
+CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 500) -- 修正：設定正確的畫布大小
+CommonButtonsScroll.ScrollBarThickness = 6
+CommonButtonsScroll.BackgroundTransparency = 1
+CommonButtonsScroll.Visible = false
+CommonButtonsScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+CommonButtonsScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+CommonButtonsScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+
 local BadgeGlove = Instance.new("ScrollingFrame", Content)
 BadgeGlove.Size = UDim2.new(1, 0, 1, 0)
-BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 280)  -- 高度設定視實際按鈕總高度
+BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 280)
 BadgeGlove.ScrollBarThickness = 6
 BadgeGlove.BackgroundTransparency = 1
 BadgeGlove.Visible = false
@@ -341,7 +359,7 @@ MasteryScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 MasteryScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 MasteryScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
--- 11. 添加滾動框樣式改善
+-- 添加滾動框樣式改善
 local function styleScrollFrame(scrollFrame)
     scrollFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
     scrollFrame.BorderSizePixel = 0
@@ -362,22 +380,21 @@ styleScrollFrame(BadgeGlove)
 styleScrollFrame(MasteryScroll)
 styleScrollFrame(CommonButtonsScroll)
 
--- 傳送分區（共 10 個按鈕）
+-- 傳送分區（13 個按鈕）
 local TPButtons = {
-    createButton("安全區", 1, TPScroll, 35),
-    createButton("紅門", 2, TPScroll, 35),
-    createButton("主場地", 3, TPScroll, 35),
-    createButton("大廳", 4, TPScroll, 35),
-    createButton("樹果島", 5, TPScroll, 35),
-    createButton("石像島", 6, TPScroll, 35),
-    createButton("大炮島", 7, TPScroll, 35),
-    createButton("巴西", 8, TPScroll, 35),
-    createButton("盤子", 9, TPScroll, 35),
-    createButton("彩虹雲", 10, TPScroll, 35),
-    createButton("左島", 11, TPScroll, 35),
-    createButton("右島", 12, TPScroll, 35),
-    createButton("死亡方塊島", 13, TPScroll, 35),
-
+    createButton("安全區", 1, TPScroll, 40),
+    createButton("紅門", 2, TPScroll, 40),
+    createButton("主場地", 3, TPScroll, 40),
+    createButton("大廳", 4, TPScroll, 40),
+    createButton("樹果島", 5, TPScroll, 40),
+    createButton("石像島", 6, TPScroll, 40),
+    createButton("大炮島", 7, TPScroll, 40),
+    createButton("巴西", 8, TPScroll, 40),
+    createButton("盤子", 9, TPScroll, 40),
+    createButton("彩虹雲", 10, TPScroll, 40),
+    createButton("左島", 11, TPScroll, 40),
+    createButton("右島", 12, TPScroll, 40),
+    createButton("死亡方塊島", 13, TPScroll, 40),
 }
 
 -- 傳送功能綁定
@@ -426,17 +443,7 @@ TPButtons[13].MouseButton1Click:Connect(function()
     LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-215, -5, -3)
 end)
 
--- 通用按鈕分頁
-local CommonButtonsScroll = Instance.new("ScrollingFrame", Content)
-CommonButtonsScroll.Size = UDim2.new(1, 0, 1, 0)
-CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 420)
-CommonButtonsScroll.ScrollBarThickness = 6
-CommonButtonsScroll.BackgroundTransparency = 1
-CommonButtonsScroll.Visible = false
-CommonButtonsScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-CommonButtonsScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-CommonButtonsScroll.ScrollingDirection = Enum.ScrollingDirection.Y
-
+-- 修正：CommonButtonsScroll 的 UIListLayout
 local UIListLayout = Instance.new("UIListLayout", CommonButtonsScroll)
 UIListLayout.Padding = UDim.new(0, 5)
 UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -444,7 +451,7 @@ UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 -- 保存當前設定的假名
 local currentFakeName = "catlyn"
 
--- 10. 修改文字輸入框樣式 (針對假名輸入框)
+-- 修正：文字輸入框樣式
 local nameBox = Instance.new("TextBox", CommonButtonsScroll)
 nameBox.Size = UDim2.new(0, 180, 0, 35)
 nameBox.PlaceholderText = "✏️ 輸入假名"
