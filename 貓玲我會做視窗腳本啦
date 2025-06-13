@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 5)
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.295"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.3"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -476,15 +476,9 @@ boxStroke.Color = Color3.fromRGB(100, 150, 255)
 boxStroke.Thickness = 1
 boxStroke.Transparency = 0.7
 
+
 -- 假名設定按鈕
-local nameBtn = Instance.new("TextButton", CommonButtonsScroll)
-nameBtn.Size = UDim2.new(0, 160, 0, 30)
-nameBtn.Text = "設定假名"
-nameBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-nameBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-nameBtn.Font = Enum.Font.Gotham
-nameBtn.TextSize = 14
-Instance.new("UICorner", nameBtn).CornerRadius = UDim.new(0, 6)
+local nameBtn = createButton("設定假名", 1, CommonButtonsScroll, 40)
 
 local function setNametag(text)
     -- 更新保存的假名
@@ -522,15 +516,7 @@ end)
 local platformEnabled = false
 local generatedPlatform = nil
 
-local platformBtn = Instance.new("TextButton", CommonButtonsScroll)
-platformBtn.Size = UDim2.new(0, 160, 0, 30)
-platformBtn.Text = "防虛空: 關"
-platformBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-platformBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-platformBtn.Font = Enum.Font.Gotham
-platformBtn.TextSize = 14
-
-Instance.new("UICorner", platformBtn).CornerRadius = UDim.new(0, 6)
+local platformBtn = createButton("防虛空: 關", 2, CommonButtonsScroll, 40)
 
 platformBtn.MouseButton1Click:Connect(function()
     platformEnabled = not platformEnabled
@@ -557,15 +543,7 @@ end)
 local antiAFK = false
 local virtualUser = game:GetService("VirtualUser")
 
-local antiAFKBtn = Instance.new("TextButton", CommonButtonsScroll)
-antiAFKBtn.Size = UDim2.new(0, 160, 0, 30)
-antiAFKBtn.Text = "防掛機: 關"
-antiAFKBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-antiAFKBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-antiAFKBtn.Font = Enum.Font.Gotham
-antiAFKBtn.TextSize = 14
-
-Instance.new("UICorner", antiAFKBtn).CornerRadius = UDim.new(0, 6)
+local antiAFKBtn = createButton("防掛機: 關", 3, CommonButtonsScroll, 40)
 
 antiAFKBtn.MouseButton1Click:Connect(function()
     antiAFK = not antiAFK
@@ -588,14 +566,7 @@ local LocalPlayer = Players.LocalPlayer
 local autoReturn = false
 local isReturning = false -- 避免多次觸發
 
-local autoReturnBtn = Instance.new("TextButton", CommonButtonsScroll)
-autoReturnBtn.Size = UDim2.new(0, 160, 0, 30)
-autoReturnBtn.Text = "死後回場: 關"
-autoReturnBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-autoReturnBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-autoReturnBtn.Font = Enum.Font.Gotham
-autoReturnBtn.TextSize = 14
-Instance.new("UICorner", autoReturnBtn).CornerRadius = UDim.new(0, 6)
+local autoReturnBtn = createButton("死後回場: 關", 4, CommonButtonsScroll, 40)
 
 autoReturnBtn.MouseButton1Click:Connect(function()
     autoReturn = not autoReturn
@@ -635,27 +606,15 @@ task.spawn(function()
 end)
 
 -- Remote Spy Mobile按鈕
-local remoteSpyBtn = Instance.new("TextButton", CommonButtonsScroll)
-remoteSpyBtn.Size = UDim2.new(0, 160, 0, 30)
-remoteSpyBtn.Text = "Remote Spy Mobile"
-remoteSpyBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-remoteSpyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-remoteSpyBtn.Font = Enum.Font.Gotham
-remoteSpyBtn.TextSize = 14
-Instance.new("UICorner", remoteSpyBtn).CornerRadius = UDim.new(0, 6)
+local remoteSpyBtn = createButton("Remote Spy Mobile", 5, CommonButtonsScroll, 40)
 
 remoteSpyBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/wfrefdewwss/Discord-Custom-Status-24-7/refs/heads/main/requirements.txt"))()
 end)
 
-local changeNamesBtn = Instance.new("TextButton", CommonButtonsScroll)
-changeNamesBtn.Size = UDim2.new(0, 160, 0, 30)
-changeNamesBtn.Text = "改變所有玩家名"
-changeNamesBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-changeNamesBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-changeNamesBtn.Font = Enum.Font.Gotham
-changeNamesBtn.TextSize = 14
-Instance.new("UICorner", changeNamesBtn).CornerRadius = UDim.new(0, 6)
+-- 改變所有玩家名按鈕
+local changeNamesBtn = createButton("改變所有玩家名", 6, CommonButtonsScroll, 45)
+
 changeNamesBtn.MouseButton1Click:Connect(function()
     -- Get local player
     local localPlayer = game:GetService("Players").LocalPlayer
@@ -763,43 +722,21 @@ changeNamesBtn.MouseButton1Click:Connect(function()
 end)
 
 -- Giang Hub Button
-local giangHubBtn = Instance.new("TextButton", CommonButtonsScroll)
-giangHubBtn.Size = UDim2.new(0, 160, 0, 30)
-giangHubBtn.Text = "Giang hub"
-giangHubBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-giangHubBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-giangHubBtn.Font = Enum.Font.Gotham
-giangHubBtn.TextSize = 14
-Instance.new("UICorner", giangHubBtn).CornerRadius = UDim.new(0, 6)
+local giangHubBtn = createButton("Giang hub", 7, CommonButtonsScroll, 45)
+
 giangHubBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Slap_Battles/main/Slap_Battles.lua",true))()
 end)
 
 -- Kyky Hub Button
-local kykyHubBtn = Instance.new("TextButton", CommonButtonsScroll)
-kykyHubBtn.Size = UDim2.new(0, 160, 0, 30)
-kykyHubBtn.Text = "kyky hub"
-kykyHubBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-kykyHubBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-kykyHubBtn.Font = Enum.Font.Gotham
-kykyHubBtn.TextSize = 14
-Instance.new("UICorner", kykyHubBtn).CornerRadius = UDim.new(0, 6)
+local kykyHubBtn = createButton("kyky hub", 8, CommonButtonsScroll, 45)
+
 kykyHubBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://rawscripts.net/raw/Slap-Battles-KykyryzoB-Hub-SB-9008"))()
 end)
 
 -- Mastery Button
-local masteryBtn = Instance.new("TextButton", CommonButtonsScroll)
-masteryBtn.Size = UDim2.new(0, 160, 0, 30)
-masteryBtn.Text = "mastery"
-masteryBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-masteryBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-masteryBtn.Font = Enum.Font.Gotham
-masteryBtn.TextSize = 14
-Instance.new("UICorner", masteryBtn).CornerRadius = UDim.new(0, 6)
-masteryBtn.MouseButton1Click:Connect(function()
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/MasteryHelper.NewestVersion'))()
-end)
+local masteryBtn = createButton("mastery", 9, CommonButtonsScroll, 45)
 -- 徽章手套分區
 local EgglerButtons = {
     createButton("eggler手套", 1, BadgeGlove, 40),
