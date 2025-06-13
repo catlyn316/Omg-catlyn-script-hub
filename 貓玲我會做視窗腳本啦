@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 5)
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.3"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.295"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -145,7 +145,7 @@ titleStroke.Transparency = 0.3
 local Close = Instance.new("TextButton", Frame)
 Close.Size = UDim2.new(0, 35, 0, 35)
 Close.Position = UDim2.new(1, -40, 0, 8)
-Close.Text = "✕"
+Close.Text = "x"
 Close.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
 Close.TextColor3 = Color3.fromRGB(255, 255, 255)
 Close.Font = Enum.Font.GothamBold
@@ -802,9 +802,9 @@ masteryBtn.MouseButton1Click:Connect(function()
 end)
 -- 徽章手套分區
 local EgglerButtons = {
-    createButton("eggler手套", 1, BadgeGlove, 35),
-    createButton("bob手套", 2, BadgeGlove, 35),
-    createButton("slender手套", 3, BadgeGlove, 35)
+    createButton("eggler手套", 1, BadgeGlove, 40),
+    createButton("bob手套", 2, BadgeGlove, 40),
+    createButton("slender手套", 3, BadgeGlove, 40)
 }
 
 EgglerButtons[1].MouseButton1Click:Connect(function()
@@ -819,13 +819,13 @@ end)
 
 -- 精通手套腳本
 local MasteryButtons = {
-    createButton("閃光(任務二)", 1, MasteryScroll, 35),
-    createButton("加速器", 2, MasteryScroll, 35),
-    createButton("空間", 3, MasteryScroll, 35),
-    createButton("冰砂", 4, MasteryScroll, 35),
-    createButton("公車", 5, MasteryScroll, 35),
-    createButton("階段", 6, MasteryScroll, 35),
-    createButton("大亨和蜜蜂", 7, MasteryScroll, 35)
+    createButton("閃光(任務二)", 1, MasteryScroll, 40),
+    createButton("加速器", 2, MasteryScroll, 40),
+    createButton("空間", 3, MasteryScroll, 40),
+    createButton("冰砂", 4, MasteryScroll, 40),
+    createButton("公車", 5, MasteryScroll, 40),
+    createButton("階段", 6, MasteryScroll, 40),
+    createButton("大亨和蜜蜂", 7, MasteryScroll, 40)
 }
 
 MasteryButtons[1].MouseButton1Click:Connect(function()
