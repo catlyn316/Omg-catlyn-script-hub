@@ -741,7 +741,8 @@ local masteryBtn = createButton("mastery", 9, CommonButtonsScroll, 45)
 local EgglerButtons = {
     createButton("eggler手套", 1, BadgeGlove, 40),
     createButton("bob手套", 2, BadgeGlove, 40),
-    createButton("slender手套", 3, BadgeGlove, 40)
+    createButton("slender手套", 3, BadgeGlove, 40),
+    createButton("slasher手套", 4, BadgeGlove, 40)
 }
 
 EgglerButtons[1].MouseButton1Click:Connect(function()
@@ -752,6 +753,9 @@ EgglerButtons[2].MouseButton1Click:Connect(function()
 end)
 EgglerButtons[3].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Slender-glove/refs/heads/main/Slender%20glove'))()
+end)
+EgglerButtons[4].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Slasher-glove/refs/heads/main/Slasher'))()
 end)
 
 -- 精通手套腳本
