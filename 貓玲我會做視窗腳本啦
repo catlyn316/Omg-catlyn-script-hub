@@ -759,6 +759,10 @@ end)
 
 -- Mastery Button
 local masteryBtn = createButton("mastery", 9, CommonButtonsScroll, 45)
+
+masteryBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/MasteryHelper.NewestVersion'))()
+end)
 -- 徽章手套分區
 local EgglerButtons = {
     createButton("eggler手套", 1, BadgeGlove, 40),
