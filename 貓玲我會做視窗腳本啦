@@ -127,7 +127,7 @@ Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 15)
 -- 修正：標題樣式
 local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
-Title.Position = UDim2.new(0, 15, 0, 5)
+Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
 Title.Text = "✨ 貓玲的腳本區 ✨ v0.3"
 Title.Font = Enum.Font.GothamBold
