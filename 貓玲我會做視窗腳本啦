@@ -275,17 +275,23 @@ local Section2 = createSectionButton("⚙️ 常用", 2, SideBar)
 local Section3 = createSectionButton("🏅 徽章手套", 3, SideBar)
 local Section4 = createSectionButton("🎯 精通腳本", 4, SideBar)
 
--- 修正：一般按鈕樣式
+-- 修正：提升文字亮度的按鈕樣式
 local function createButton(text, order, parent, spacing)
     local btn = Instance.new("TextButton", parent)
     btn.Size = UDim2.new(0, 180, 0, 35)
     btn.Position = UDim2.new(0.5, -90, 0, 10 + (order - 1) * spacing)
     btn.Text = text
     btn.BackgroundColor3 = Color3.fromRGB(60, 120, 200)
+    
+    -- 方法1: 使用純白色文字 (最亮)
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.TextTransparency = 0  -- 確保文字完全不透明
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 14
+    
+    -- 方法2: 增加文字大小讓文字更清晰
+    btn.TextSize = 16  -- 從14增加到16
+    
+    -- 方法3: 使用更粗的字體
+    btn.Font = Enum.Font.GothamBold  -- 從Gotham改為GothamBold
+    
     btn.BorderSizePixel = 0
     
     -- 添加漸層效果
@@ -304,14 +310,23 @@ local function createButton(text, order, parent, spacing)
     btnStroke.Thickness = 1
     btnStroke.Transparency = 0.5
     
-    -- 添加hover效果
+    -- 方法4: 添加文字描邊效果讓文字更突出
+    local textStroke = Instance.new("UIStroke", btn)
+    textStroke.Color = Color3.fromRGB(0, 0, 0)  -- 黑色描邊
+    textStroke.Thickness = 1
+    textStroke.Transparency = 0.3
+    textStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    
+    -- hover效果也調整文字顏色
     btn.MouseEnter:Connect(function()
         btn.BackgroundColor3 = Color3.fromRGB(80, 140, 220)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 保持最亮白色
         btnStroke.Transparency = 0.2
     end)
     
     btn.MouseLeave:Connect(function()
         btn.BackgroundColor3 = Color3.fromRGB(60, 120, 200)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 保持最亮白色
         btnStroke.Transparency = 0.5
     end)
     
