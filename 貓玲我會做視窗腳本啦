@@ -245,6 +245,7 @@ local function createSectionButton(text, order, parent)
     btn.Text = text
     btn.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextTransparency = 0  -- 確保文字完全不透明
     btn.Font = Enum.Font.GothamBold
     btn.TextSize = 14
     btn.BorderSizePixel = 0
@@ -282,6 +283,7 @@ local function createButton(text, order, parent, spacing)
     btn.Text = text
     btn.BackgroundColor3 = Color3.fromRGB(60, 120, 200)
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextTransparency = 0  -- 確保文字完全不透明
     btn.Font = Enum.Font.Gotham
     btn.TextSize = 14
     btn.BorderSizePixel = 0
