@@ -238,45 +238,57 @@ Minimize.MouseButton1Click:Connect(function()
     Frame.Size = isMinimized and miniSize or fullSize
 end)
 
--- 修正：提升文字亮度的分區按鈕樣式 (簡化版)
+-- 修正：高對比度分區按鈕樣式
 local function createSectionButton(text, order, parent)
     local btn = Instance.new("TextButton", parent)
     btn.Size = UDim2.new(0, 120, 0, 45)
     btn.Text = text
-    btn.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
+    btn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)  -- 更深的背景色
     
-    -- 提升文字亮度
+    -- 超亮文字設定
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 純白色
-    btn.TextTransparency = 0  -- 確保文字完全不透明
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 16  -- 從14增加到16
+    btn.TextTransparency = 0  -- 完全不透明
+    btn.Font = Enum.Font.GothamBold  -- 粗體字
+    btn.TextSize = 18  -- 更大的文字
+    btn.TextScaled = false  -- 不自動縮放
     btn.BorderSizePixel = 0
     
-    -- 添加漸層
+    -- 添加更強烈的漸層對比
     local btnGradient = Instance.new("UIGradient", btn)
     btnGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(70, 70, 90)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 70))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(55, 55, 75)),  -- 上方稍亮
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(35, 35, 55))   -- 下方更深
     }
     
     -- 添加圓角
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
     
-    -- 添加描邊
+    -- 添加更明顯的描邊
     local btnStroke = Instance.new("UIStroke", btn)
-    btnStroke.Color = Color3.fromRGB(100, 150, 255)
-    btnStroke.Thickness = 1
-    btnStroke.Transparency = 0.7
+    btnStroke.Color = Color3.fromRGB(130, 170, 255)  -- 更亮的藍色
+    btnStroke.Thickness = 2  -- 更粗的描邊
+    btnStroke.Transparency = 0.5  -- 更不透明
     
-    -- 添加hover效果
+    -- 添加內發光效果
+    local innerGlow = Instance.new("UIStroke", btn)
+    innerGlow.Color = Color3.fromRGB(255, 255, 255)
+    innerGlow.Thickness = 1
+    innerGlow.Transparency = 0.8
+    innerGlow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    
+    -- 強化hover效果
     btn.MouseEnter:Connect(function()
-        btn.BackgroundColor3 = Color3.fromRGB(90, 90, 110)
-        btnStroke.Transparency = 0.4
+        btn.BackgroundColor3 = Color3.fromRGB(65, 65, 85)  -- 更亮的hover色
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 保持純白
+        btnStroke.Transparency = 0.2  -- 描邊更明顯
+        innerGlow.Transparency = 0.6  -- 內發光更明顯
     end)
     
     btn.MouseLeave:Connect(function()
-        btn.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
-        btnStroke.Transparency = 0.7
+        btn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btnStroke.Transparency = 0.5
+        innerGlow.Transparency = 0.8
     end)
     
     return btn
