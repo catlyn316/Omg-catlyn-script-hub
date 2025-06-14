@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 5)
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.3"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.30"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -238,17 +238,26 @@ Minimize.MouseButton1Click:Connect(function()
     Frame.Size = isMinimized and miniSize or fullSize
 end)
 
--- 修正：分區按鈕樣式
+-- 修正：提升文字亮度的分區按鈕樣式
 local function createSectionButton(text, order, parent)
     local btn = Instance.new("TextButton", parent)
     btn.Size = UDim2.new(0, 120, 0, 45)
     btn.Text = text
     btn.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    
+    -- 提升文字亮度
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 純白色
     btn.TextTransparency = 0  -- 確保文字完全不透明
     btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 14
+    btn.TextSize = 16  -- 從14增加到16
     btn.BorderSizePixel = 0
+    
+    -- 添加文字描邊效果
+    local textStroke = Instance.new("UIStroke", btn)
+    textStroke.Color = Color3.fromRGB(0, 0, 0)  -- 黑色描邊
+    textStroke.Thickness = 1
+    textStroke.Transparency = 0.4
+    textStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
     
     -- 添加漸層
     local btnGradient = Instance.new("UIGradient", btn)
@@ -265,6 +274,21 @@ local function createSectionButton(text, order, parent)
     btnStroke.Color = Color3.fromRGB(100, 150, 255)
     btnStroke.Thickness = 1
     btnStroke.Transparency = 0.7
+    
+    -- 添加hover效果讓文字更亮
+    btn.MouseEnter:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(90, 90, 110)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 保持純白
+        btnStroke.Transparency = 0.4
+        textStroke.Transparency = 0.2  -- 描邊更明顯
+    end)
+    
+    btn.MouseLeave:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 保持純白
+        btnStroke.Transparency = 0.7
+        textStroke.Transparency = 0.4  -- 恢復原本描邊
+    end)
     
     return btn
 end
