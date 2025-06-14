@@ -460,30 +460,43 @@ UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 -- 保存當前設定的假名
 local currentFakeName = "catlyn"
 
--- 修正：文字輸入框樣式
+-- 修正：簡單高亮文字的輸入框樣式
 local nameBox = Instance.new("TextBox", CommonButtonsScroll)
 nameBox.Size = UDim2.new(0, 180, 0, 35)
 nameBox.PlaceholderText = "✏️ 輸入假名"
 nameBox.Text = ""
-nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-nameBox.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
-nameBox.Font = Enum.Font.Gotham
-nameBox.TextSize = 14
+nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 純白文字
+nameBox.BackgroundColor3 = Color3.fromRGB(70, 70, 90)  -- 比原本更亮的背景
+nameBox.Font = Enum.Font.GothamBold  -- 改為粗體
+nameBox.TextSize = 16  -- 從14增加到16
 nameBox.BorderSizePixel = 0
 
--- 添加輸入框效果
-local boxGradient = Instance.new("UIGradient", nameBox)
-boxGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(50, 50, 70)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 60, 80))
-}
+-- 設定提示文字顏色更亮
+nameBox.PlaceholderColor3 = Color3.fromRGB(200, 200, 200)  -- 亮灰色提示文字
 
+-- 移除漸層，使用純色背景讓文字更清楚
+
+-- 添加圓角
 Instance.new("UICorner", nameBox).CornerRadius = UDim.new(0, 8)
 
+-- 簡化描邊
 local boxStroke = Instance.new("UIStroke", nameBox)
-boxStroke.Color = Color3.fromRGB(100, 150, 255)
+boxStroke.Color = Color3.fromRGB(120, 170, 255)
 boxStroke.Thickness = 1
-boxStroke.Transparency = 0.7
+boxStroke.Transparency = 0.6
+
+-- 添加焦點效果
+nameBox.Focused:Connect(function()
+    nameBox.BackgroundColor3 = Color3.fromRGB(90, 90, 110)  -- 焦點時更亮
+    boxStroke.Transparency = 0.3
+    boxStroke.Color = Color3.fromRGB(150, 200, 255)
+end)
+
+nameBox.FocusLost:Connect(function()
+    nameBox.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
+    boxStroke.Transparency = 0.6
+    boxStroke.Color = Color3.fromRGB(120, 170, 255)
+end)
 
 
 -- 假名設定按鈕
