@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.31"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.32"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -793,7 +793,8 @@ local MasteryButtons = {
     createButton("公車", 5, MasteryScroll, 40),
     createButton("階段", 6, MasteryScroll, 40),
     createButton("大亨和蜜蜂", 7, MasteryScroll, 40),
-    createButton("🗿", 8, MasteryScroll, 40)
+    createButton("🗿", 8, MasteryScroll, 40),
+    createButton("屏障", 9, MasteryScroll, 40)
 }
 
 MasteryButtons[1].MouseButton1Click:Connect(function()
@@ -826,6 +827,10 @@ end)
 
 MasteryButtons[8].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/moai-mastery/refs/heads/main/moai%20mastery'))()
+end)
+
+MasteryButtons[9].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Defense-mastery/refs/heads/main/Defense'))()
 end)
 
 -- 分區切換
