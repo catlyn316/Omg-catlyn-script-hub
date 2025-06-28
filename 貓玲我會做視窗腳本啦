@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.32"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.33"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -768,7 +768,8 @@ local EgglerButtons = {
     createButton("eggler手套", 1, BadgeGlove, 40),
     createButton("bob手套", 2, BadgeGlove, 40),
     createButton("slender手套", 3, BadgeGlove, 40),
-    createButton("slasher手套", 4, BadgeGlove, 40)
+    createButton("slasher手套", 4, BadgeGlove, 40),
+    createButton("car keys手套", 5, BadgeGlove, 40)
 }
 
 EgglerButtons[1].MouseButton1Click:Connect(function()
@@ -783,6 +784,9 @@ end)
 EgglerButtons[4].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Slasher-glove/refs/heads/main/Slasher'))()
 end)
+EgglerButtons[5].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Car/refs/heads/main/Car%20keys%20badge'))()
+end)
 
 -- 精通手套腳本
 local MasteryButtons = {
@@ -794,7 +798,8 @@ local MasteryButtons = {
     createButton("階段", 6, MasteryScroll, 40),
     createButton("大亨和蜜蜂", 7, MasteryScroll, 40),
     createButton("🗿", 8, MasteryScroll, 40),
-    createButton("屏障", 9, MasteryScroll, 40)
+    createButton("屏障", 9, MasteryScroll, 40),
+    createButton("車鑰匙", 10, MasteryScroll, 40)
 }
 
 MasteryButtons[1].MouseButton1Click:Connect(function()
@@ -831,6 +836,10 @@ end)
 
 MasteryButtons[9].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Defense-mastery/refs/heads/main/Defense'))()
+end)
+
+MasteryButtons[10].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Car-key-mastery/refs/heads/main/Car%20key%20mastery'))()
 end)
 
 -- 分區切換
