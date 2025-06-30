@@ -863,7 +863,7 @@ end)
 -- 創建其他分區的按鈕（在精通手套腳本按鈕後面添加）：
 local OtherButtons = {
     createButton("隱形直到重置", 1, OtherScroll, 40),
-    createButton("守護+全壘打bug", 2, OtherScroll, 40),
+    createButton("守護+全壘打bug(在大廳按主場地)", 2, OtherScroll, 40),
     createButton("自動拍擊: 關", 3, OtherScroll, 40)
 }
 
