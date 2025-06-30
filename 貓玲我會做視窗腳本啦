@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.34"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.33"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -950,22 +950,46 @@ OtherButtons[3].MouseButton1Click:Connect(function()
     OtherButtons[3].Text = autoSlap and "自動拍擊: 開" or "自動拍擊: 關"
     
     if autoSlap then
-        local UserInputService = game:GetService("UserInputService")
-        local camera = workspace.CurrentCamera
-        local screenSize = camera.ViewportSize
-        local centerPosition = Vector2.new(screenSize.X / 2, screenSize.Y / 2)
-        
         autoSlapConnection = task.spawn(function()
             while autoSlap do
-                -- 模擬點擊屏幕中心
                 pcall(function()
-                    UserInputService:GetService("GuiService"):GetGuiInset()
-                    local virtualInputManager = game:GetService("VirtualInputManager")
-                    virtualInputManager:SendMouseButtonEvent(centerPosition.X, centerPosition.Y, 0, true, game, 0)
-                    wait(0.01)
-                    virtualInputManager:SendMouseButtonEvent(centerPosition.X, centerPosition.Y, 0, false, game, 0)
+                    -- 方法1: 使用 UserInputService 模擬按鍵
+                    local UserInputService = game:GetService("UserInputService")
+                    local success1 = pcall(function()
+                        -- 模擬按下鼠標左鍵
+                        UserInputService.InputBegan:Fire({
+                            UserInputType = Enum.UserInputType.MouseButton1,
+                            UserInputState = Enum.UserInputState.Begin
+                        })
+                        task.wait(0.05)
+                        UserInputService.InputEnded:Fire({
+                            UserInputType = Enum.UserInputType.MouseButton1,
+                            UserInputState = Enum.UserInputState.End
+                        })
+                    end)
+                    
+                    -- 方法2: 如果方法1失敗，使用 VirtualInputManager
+                    if not success1 then
+                        local virtualInputManager = game:GetService("VirtualInputManager")
+                        local camera = workspace.CurrentCamera
+                        local screenSize = camera.ViewportSize
+                        local centerX, centerY = screenSize.X / 2, screenSize.Y / 2
+                        
+                        virtualInputManager:SendMouseButtonEvent(centerX, centerY, 0, true, game, 1)
+                        task.wait(0.05)
+                        virtualInputManager:SendMouseButtonEvent(centerX, centerY, 0, false, game, 1)
+                    end
+                    
+                    -- 方法3: 直接觸發工具的激活事件
+                    local character = LocalPlayer.Character
+                    if character then
+                        local tool = character:FindFirstChildOfClass("Tool")
+                        if tool then
+                            tool:Activate()
+                        end
+                    end
                 end)
-                wait(0.6)
+                task.wait(0.6)
             end
         end)
     else
@@ -975,6 +999,7 @@ OtherButtons[3].MouseButton1Click:Connect(function()
         end
     end
 end)
+
 
 -- 分區切換
 Section1.MouseButton1Click:Connect(function()
