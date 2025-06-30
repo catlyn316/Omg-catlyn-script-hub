@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.33"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.34"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -283,6 +283,9 @@ local Section1 = createSectionButton("🚀 傳送", 1, SideBar)
 local Section2 = createSectionButton("⚙️ 常用", 2, SideBar)
 local Section3 = createSectionButton("🏅 徽章手套", 3, SideBar)
 local Section4 = createSectionButton("🎯 精通腳本", 4, SideBar)
+-- 在創建其他分區按鈕的地方（Section4 後面）添加：
+local Section5 = createSectionButton("🔧 其他", 5, SideBar)
+
 
 -- 修正：簡單高亮文字的一般按鈕樣式
 local function createButton(text, order, parent, spacing)
@@ -368,6 +371,18 @@ MasteryScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 MasteryScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 MasteryScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
+-- 在創建其他滾動框的地方（MasteryScroll 後面）添加：
+local OtherScroll = Instance.new("ScrollingFrame", Content)
+OtherScroll.Size = UDim2.new(1, 0, 1, 0)
+OtherScroll.CanvasSize = UDim2.new(0, 0, 0, 300)
+OtherScroll.ScrollBarThickness = 6
+OtherScroll.BackgroundTransparency = 1
+OtherScroll.Visible = false
+OtherScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+OtherScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+OtherScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+
+
 -- 添加滾動框樣式改善
 local function styleScrollFrame(scrollFrame)
     scrollFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
@@ -388,6 +403,9 @@ styleScrollFrame(TPScroll)
 styleScrollFrame(BadgeGlove)
 styleScrollFrame(MasteryScroll)
 styleScrollFrame(CommonButtonsScroll)
+-- 應用樣式到新的滾動框（在 styleScrollFrame 應用部分添加）：
+styleScrollFrame(OtherScroll)
+
 
 -- 傳送分區（13 個按鈕）
 local TPButtons = {
@@ -842,18 +860,136 @@ MasteryButtons[10].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Car-key-mastery/refs/heads/main/Car%20key%20mastery'))()
 end)
 
+-- 創建其他分區的按鈕（在精通手套腳本按鈕後面添加）：
+local OtherButtons = {
+    createButton("隱形直到重置", 1, OtherScroll, 40),
+    createButton("守護+全壘打bug", 2, OtherScroll, 40),
+    createButton("自動拍擊: 關", 3, OtherScroll, 40)
+}
+
+-- 獲取最近玩家的函數
+local function getClosestPlayer()
+    local localPlayer = game:GetService("Players").LocalPlayer
+    local localCharacter = localPlayer.Character
+    if not localCharacter or not localCharacter:FindFirstChild("HumanoidRootPart") then
+        return nil
+    end
+    
+    local localPosition = localCharacter.HumanoidRootPart.Position
+    local closestPlayer = nil
+    local closestDistance = math.huge
+    
+    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local distance = (player.Character.HumanoidRootPart.Position - localPosition).Magnitude
+            if distance < closestDistance then
+                closestDistance = distance
+                closestPlayer = player
+            end
+        end
+    end
+    
+    return closestPlayer
+end
+
+-- 自動拍擊變數
+local autoSlap = false
+local autoSlapConnection = nil
+
+-- 按鈕功能綁定
+-- 隱形直到重置
+OtherButtons[1].MouseButton1Click:Connect(function()
+    pcall(function()
+        fireclickdetector(workspace.Lobby["Ghost"].ClickDetector)
+        wait(0.1)
+        game:GetService("ReplicatedStorage").Ghostinvisibilityactivated:FireServer()
+        wait(0.1)
+        fireclickdetector(workspace.Lobby["Whirlwind"].ClickDetector)
+    end)
+end)
+
+-- 守護+全壘打bug
+OtherButtons[2].MouseButton1Click:Connect(function()
+    pcall(function()
+        fireclickdetector(workspace.Lobby["Guardian Angel"].ClickDetector)
+        wait(0.1)
+        
+        local closestPlayer = getClosestPlayer()
+        if closestPlayer then
+            local args = {
+                [1] = closestPlayer
+            }
+            game:GetService("ReplicatedStorage").GeneralAbility:FireServer(unpack(args))
+        end
+        wait(0.1)
+        
+        fireclickdetector(workspace.Lobby["Home Run"].ClickDetector)
+        wait(0.1)
+        
+        local args = {
+            [1] = {
+                ["start"] = true
+            }
+        }
+        game:GetService("ReplicatedStorage").HomeRun:FireServer(unpack(args))
+        
+        wait(6)
+        
+        local args = {
+            [1] = {
+                ["finished"] = true
+            }
+        }
+        game:GetService("ReplicatedStorage").HomeRun:FireServer(unpack(args))
+    end)
+end)
+
+-- 自動拍擊
+OtherButtons[3].MouseButton1Click:Connect(function()
+    autoSlap = not autoSlap
+    OtherButtons[3].Text = autoSlap and "自動拍擊: 開" or "自動拍擊: 關"
+    
+    if autoSlap then
+        local UserInputService = game:GetService("UserInputService")
+        local camera = workspace.CurrentCamera
+        local screenSize = camera.ViewportSize
+        local centerPosition = Vector2.new(screenSize.X / 2, screenSize.Y / 2)
+        
+        autoSlapConnection = task.spawn(function()
+            while autoSlap do
+                -- 模擬點擊屏幕中心
+                pcall(function()
+                    UserInputService:GetService("GuiService"):GetGuiInset()
+                    local virtualInputManager = game:GetService("VirtualInputManager")
+                    virtualInputManager:SendMouseButtonEvent(centerPosition.X, centerPosition.Y, 0, true, game, 0)
+                    wait(0.01)
+                    virtualInputManager:SendMouseButtonEvent(centerPosition.X, centerPosition.Y, 0, false, game, 0)
+                end)
+                wait(0.6)
+            end
+        end)
+    else
+        if autoSlapConnection then
+            task.cancel(autoSlapConnection)
+            autoSlapConnection = nil
+        end
+    end
+end)
+
 -- 分區切換
 Section1.MouseButton1Click:Connect(function()
     TPScroll.Visible = true
     CommonButtonsScroll.Visible = false
     BadgeGlove.Visible = false
     MasteryScroll.Visible = false
+    OtherScroll.Visible = false
     
     -- 切換按鈕顏色以顯示當前分區
     Section1.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
     Section2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     Section4.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section5.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 end)
 
 Section2.MouseButton1Click:Connect(function()
@@ -861,11 +997,13 @@ Section2.MouseButton1Click:Connect(function()
     CommonButtonsScroll.Visible = true
     BadgeGlove.Visible = false
     MasteryScroll.Visible = false
+    OtherScroll.Visible = false
     
     Section1.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     Section2.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
     Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     Section4.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section5.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 end)
 
 Section3.MouseButton1Click:Connect(function()
@@ -873,11 +1011,13 @@ Section3.MouseButton1Click:Connect(function()
     CommonButtonsScroll.Visible = false
     BadgeGlove.Visible = true
     MasteryScroll.Visible = false
+    OtherScroll.Visible = false
     
     Section1.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     Section2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     Section3.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
     Section4.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section5.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 end)
 
 Section4.MouseButton1Click:Connect(function()
@@ -885,23 +1025,48 @@ Section4.MouseButton1Click:Connect(function()
     CommonButtonsScroll.Visible = false
     BadgeGlove.Visible = false
     MasteryScroll.Visible = true
+    OtherScroll.Visible = false
     
     Section1.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     Section2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     Section4.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    Section5.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+end)
+
+-- 在分區切換部分添加Section5的處理（在 Section4.MouseButton1Click 後面添加）：
+Section5.MouseButton1Click:Connect(function()
+    TPScroll.Visible = false
+    CommonButtonsScroll.Visible = false
+    BadgeGlove.Visible = false
+    MasteryScroll.Visible = false
+    OtherScroll.Visible = true
+    
+    Section1.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section4.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Section5.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 end)
 
 -- 初始化高亮第一個分區按鈕
 Section1.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 
--- 清理函數，當腳本被銷毀時調用
+
+-- 清理函數中添加自動拍擊的清理（在原有的 cleanUp 函數中添加）：
 local function cleanUp()
     if generatedPlatform then
         generatedPlatform:Destroy()
         generatedPlatform = nil
     end
+    -- 添加以下內容：
+    if autoSlapConnection then
+        task.cancel(autoSlapConnection)
+        autoSlapConnection = nil
+    end
+    autoSlap = false
 end
+
 
 -- 添加清理事件
 script.AncestryChanged:Connect(function(_, newParent)
