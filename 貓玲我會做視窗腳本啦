@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.346"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.347"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -915,6 +915,32 @@ executeBtn.MouseButton1Click:Connect(function()
         joinSmallestServer()
     end
 end)
+
+-- 重新排序所有按鈕
+wait(0.1) -- 確保所有元素都創建完成
+
+-- 按照想要的順序重新排列
+local orderedElements = {
+    nameBox,           -- 輸入框
+    nameBtn,           -- 設定假名
+    platformBtn,       -- 防虛空
+    antiAFKBtn,        -- 防掛機
+    autoReturnBtn,     -- 死後回場
+    remoteSpyBtn,      -- Remote Spy Mobile
+    changeNamesBtn,    -- 改變所有玩家名
+    giangHubBtn,       -- Giang hub
+    kykyHubBtn,        -- kyky hub
+    masteryBtn,        -- mastery
+    serverHopContainer, -- 跳到少人服下拉選單
+    executeBtn         -- 執行跳服
+}
+
+-- 重新設定每個元素的 LayoutOrder
+for i, element in ipairs(orderedElements) do
+    if element then
+        element.LayoutOrder = i
+    end
+end
 
 -- 徽章手套分區
 local EgglerButtons = {
