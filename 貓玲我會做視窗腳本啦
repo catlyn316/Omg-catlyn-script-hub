@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.35"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.341"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -782,37 +782,35 @@ masteryBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/MasteryHelper.NewestVersion'))()
 end)
 
--- 跳到少人服下拉選單
-local serverHopFrame = Instance.new("Frame", CommonButtonsScroll)
-serverHopFrame.Size = UDim2.new(0, 180, 0, 70)
-serverHopFrame.Position = UDim2.new(0, 10, 0, 10 * 50) -- 排在第10個位置（mastery後面）
-serverHopFrame.BackgroundTransparency = 1
-
--- 下拉選單按鈕
-local dropdownBtn = Instance.new("TextButton", serverHopFrame)
-dropdownBtn.Size = UDim2.new(1, 0, 0, 35)
-dropdownBtn.Position = UDim2.new(0, 0, 0, 0)
-dropdownBtn.Text = "跳到少人服 ▼"
+-- 下拉選單按鈕（使用 createButton 確保正確排序）
+local dropdownBtn = createButton("跳到少人服 ▼", 10, CommonButtonsScroll, 45)
 dropdownBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
-dropdownBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 dropdownBtn.Font = Enum.Font.GothamBold
 dropdownBtn.TextSize = 16
-dropdownBtn.BorderSizePixel = 0
 
-Instance.new("UICorner", dropdownBtn).CornerRadius = UDim.new(0, 8)
-
+-- 為下拉按鈕添加邊框
 local dropdownStroke = Instance.new("UIStroke", dropdownBtn)
 dropdownStroke.Color = Color3.fromRGB(120, 170, 255)
 dropdownStroke.Thickness = 1
 dropdownStroke.Transparency = 0.6
 
+-- 獲取下拉按鈕的父容器來添加選項框
+local buttonParent = dropdownBtn.Parent
+
+-- 下拉選項框容器
+local optionsContainer = Instance.new("Frame", buttonParent)
+optionsContainer.Size = UDim2.new(0, 180, 0, 70)
+optionsContainer.Position = UDim2.new(0, 10, 0, 10 * 50 + 45) -- 在下拉按鈕下方
+optionsContainer.BackgroundTransparency = 1
+optionsContainer.Visible = false
+optionsContainer.ZIndex = 10
+
 -- 下拉選項框
-local optionsFrame = Instance.new("Frame", serverHopFrame)
-optionsFrame.Size = UDim2.new(1, 0, 0, 70)
-optionsFrame.Position = UDim2.new(0, 0, 0, 35)
+local optionsFrame = Instance.new("Frame", optionsContainer)
+optionsFrame.Size = UDim2.new(1, 0, 1, 0)
+optionsFrame.Position = UDim2.new(0, 0, 0, 0)
 optionsFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
 optionsFrame.BorderSizePixel = 0
-optionsFrame.Visible = false
 
 Instance.new("UICorner", optionsFrame).CornerRadius = UDim.new(0, 8)
 
@@ -850,7 +848,7 @@ Instance.new("UICorner", option2).CornerRadius = UDim.new(0, 8)
 -- 當前選擇的選項
 local selectedOption = 1
 
--- 執行按鈕（初始化在下拉選單後面）
+-- 執行按鈕
 local executeBtn = createButton("執行跳服", 11, CommonButtonsScroll, 45)
 
 -- 下拉選單功能
@@ -859,21 +857,30 @@ local isDropdownOpen = false
 -- 更新執行按鈕位置的函數
 local function updateExecuteBtnPosition()
     if isDropdownOpen then
-        -- 當下拉選單展開時，執行按鈕需要往下移動以避免重疊
-        -- 計算需要額外的空間：下拉選項框的高度(70) - 原始按鈕高度(45) = 25
-        executeBtn.Position = UDim2.new(0, 10, 0, 12 * 50) -- 移到第12個位置
+        -- 當下拉選單展開時，執行按鈕需要往下移動
+        executeBtn.Position = UDim2.new(0, 10, 0, 11 * 50 + 70) -- 額外加上選項框的高度
     else
         -- 當下拉選單收起時，執行按鈕回到正常位置
-        executeBtn.Position = UDim2.new(0, 10, 0, 11 * 50) -- 第11個位置
+        executeBtn.Position = UDim2.new(0, 10, 0, 11 * 50)
+    end
+end
+
+-- 更新選項容器位置的函數
+local function updateOptionsPosition()
+    if isDropdownOpen then
+        optionsContainer.Position = UDim2.new(0, 10, 0, 10 * 50 + 45)
+        optionsContainer.Visible = true
+    else
+        optionsContainer.Visible = false
     end
 end
 
 dropdownBtn.MouseButton1Click:Connect(function()
     isDropdownOpen = not isDropdownOpen
-    optionsFrame.Visible = isDropdownOpen
     dropdownBtn.Text = isDropdownOpen and "跳到少人服 ▲" or "跳到少人服 ▼"
     
-    -- 更新執行按鈕位置
+    -- 更新選項框和執行按鈕位置
+    updateOptionsPosition()
     updateExecuteBtnPosition()
 end)
 
@@ -881,10 +888,10 @@ end)
 option1.MouseButton1Click:Connect(function()
     selectedOption = 1
     dropdownBtn.Text = "會拿樹果和光球 ▼"
-    optionsFrame.Visible = false
     isDropdownOpen = false
     
-    -- 更新執行按鈕位置
+    -- 更新選項框和執行按鈕位置
+    updateOptionsPosition()
     updateExecuteBtnPosition()
 end)
 
@@ -892,10 +899,10 @@ end)
 option2.MouseButton1Click:Connect(function()
     selectedOption = 2
     dropdownBtn.Text = "單純跳服 ▼"
-    optionsFrame.Visible = false
     isDropdownOpen = false
     
-    -- 更新執行按鈕位置
+    -- 更新選項框和執行按鈕位置
+    updateOptionsPosition()
     updateExecuteBtnPosition()
 end)
 
@@ -940,6 +947,7 @@ executeBtn.MouseButton1Click:Connect(function()
         joinSmallestServer()
     end
 end)
+
 -- 徽章手套分區
 local EgglerButtons = {
     createButton("eggler手套", 1, BadgeGlove, 40),
