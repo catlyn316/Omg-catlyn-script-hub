@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.347"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.35"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -782,138 +782,50 @@ masteryBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/MasteryHelper.NewestVersion'))()
 end)
 
--- 創建下拉選單容器
-local serverHopContainer = Instance.new("Frame", CommonButtonsScroll)
-serverHopContainer.Name = "ServerHopContainer_" .. tick()
-serverHopContainer.Size = UDim2.new(0, 180, 0, 35)
-serverHopContainer.BackgroundTransparency = 1
+-- 跳到少人服（會拿樹果和光球）按鈕
+local serverHopWithItemsBtn = createButton("跳到少人服（會拿樹果和光球）", 10, CommonButtonsScroll, 45)
 
--- 下拉選單按鈕
-local dropdownBtn = Instance.new("TextButton", serverHopContainer)
-dropdownBtn.Size = UDim2.new(1, 0, 1, 0)
-dropdownBtn.Position = UDim2.new(0, 0, 0, 0)
-dropdownBtn.Text = "跳到少人服 ▼"
-dropdownBtn.BackgroundColor3 = Color3.fromRGB(80, 140, 220)
-dropdownBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-dropdownBtn.Font = Enum.Font.GothamBold
-dropdownBtn.TextSize = 14
-dropdownBtn.BorderSizePixel = 0
-
-Instance.new("UICorner", dropdownBtn).CornerRadius = UDim.new(0, 8)
-
--- 下拉選項框
-local optionsFrame = Instance.new("Frame", serverHopContainer)
-optionsFrame.Size = UDim2.new(1, 0, 0, 70)
-optionsFrame.Position = UDim2.new(0, 0, 1, 0)
-optionsFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
-optionsFrame.BorderSizePixel = 0
-optionsFrame.Visible = false
-optionsFrame.ZIndex = 200
-
-Instance.new("UICorner", optionsFrame).CornerRadius = UDim.new(0, 8)
-
-local optionsStroke = Instance.new("UIStroke", optionsFrame)
-optionsStroke.Color = Color3.fromRGB(120, 170, 255)
-optionsStroke.Thickness = 1
-optionsStroke.Transparency = 0.6
-
--- 選項1: 會拿樹果和光球
-local option1 = Instance.new("TextButton", optionsFrame)
-option1.Size = UDim2.new(1, 0, 0, 35)
-option1.Position = UDim2.new(0, 0, 0, 0)
-option1.Text = "會拿樹果和光球"
-option1.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
-option1.TextColor3 = Color3.fromRGB(255, 255, 255)
-option1.Font = Enum.Font.GothamBold
-option1.TextSize = 12
-option1.BorderSizePixel = 0
-option1.ZIndex = 201
-
-Instance.new("UICorner", option1).CornerRadius = UDim.new(0, 8)
-
--- 選項2: 單純跳服
-local option2 = Instance.new("TextButton", optionsFrame)
-option2.Size = UDim2.new(1, 0, 0, 35)
-option2.Position = UDim2.new(0, 0, 0, 35)
-option2.Text = "單純跳服"
-option2.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
-option2.TextColor3 = Color3.fromRGB(255, 255, 255)
-option2.Font = Enum.Font.GothamBold
-option2.TextSize = 12
-option2.BorderSizePixel = 0
-option2.ZIndex = 201
-
-Instance.new("UICorner", option2).CornerRadius = UDim.new(0, 8)
-
--- 執行按鈕（現在放在下拉選單後面）
-local executeBtn = createButton("執行跳服", 11, CommonButtonsScroll, 45)
-
--- 當前選擇的選項
-local selectedOption = 1
-
--- 下拉選單功能
-local isDropdownOpen = false
-
-dropdownBtn.MouseButton1Click:Connect(function()
-    isDropdownOpen = not isDropdownOpen
-    dropdownBtn.Text = isDropdownOpen and "跳到少人服 ▲" or "跳到少人服 ▼"
-    optionsFrame.Visible = isDropdownOpen
+serverHopWithItemsBtn.MouseButton1Click:Connect(function()
+    -- 執行會拿樹果和光球的腳本
+    serverhop = true
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/Pro666Pro/autofarm-serverhop/main/main.lua'))()
 end)
 
--- 選項1點擊事件
-option1.MouseButton1Click:Connect(function()
-    selectedOption = 1
-    dropdownBtn.Text = "會拿樹果和光球 ▼"
-    optionsFrame.Visible = false
-    isDropdownOpen = false
-end)
+-- 單純跳到少人服按鈕
+local simpleServerHopBtn = createButton("單純跳到少人服", 11, CommonButtonsScroll, 45)
 
--- 選項2點擊事件
-option2.MouseButton1Click:Connect(function()
-    selectedOption = 2
-    dropdownBtn.Text = "單純跳服 ▼"
-    optionsFrame.Visible = false
-    isDropdownOpen = false
-end)
-
-executeBtn.MouseButton1Click:Connect(function()
-    if selectedOption == 1 then
-        -- 執行會拿樹果和光球的腳本
-        serverhop = true
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/Pro666Pro/autofarm-serverhop/main/main.lua'))()
-    elseif selectedOption == 2 then
-        -- 執行單純跳服功能
-        local HttpService = game:GetService("HttpService")
-        local TeleportService = game:GetService("TeleportService")
-        
-        local function joinSmallestServer()
-            local success, result = pcall(function()
-                local response = HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"))
-                
-                if response.data and #response.data > 0 then
-                    table.sort(response.data, function(a, b)
-                        return a.playing < b.playing
-                    end)
-                    
-                    local targetServer = response.data[8] or response.data[1]
-                    
-                    if targetServer and targetServer.id then
-                        TeleportService:TeleportToPlaceInstance(game.PlaceId, targetServer.id)
-                    else
-                        warn("無法找到適合的伺服器")
-                    end
-                else
-                    warn("無法獲取伺服器列表")
-                end
-            end)
+simpleServerHopBtn.MouseButton1Click:Connect(function()
+    -- 執行單純跳服功能
+    local HttpService = game:GetService("HttpService")
+    local TeleportService = game:GetService("TeleportService")
+    
+    local function joinSmallestServer()
+        local success, result = pcall(function()
+            local response = HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"))
             
-            if not success then
-                warn("跳服失敗: " .. tostring(result))
+            if response.data and #response.data > 0 then
+                table.sort(response.data, function(a, b)
+                    return a.playing < b.playing
+                end)
+                
+                local targetServer = response.data[8] or response.data[1]
+                
+                if targetServer and targetServer.id then
+                    TeleportService:TeleportToPlaceInstance(game.PlaceId, targetServer.id)
+                else
+                    warn("無法找到適合的伺服器")
+                end
+            else
+                warn("無法獲取伺服器列表")
             end
-        end
+        end)
         
-        joinSmallestServer()
+        if not success then
+            warn("跳服失敗: " .. tostring(result))
+        end
     end
+    
+    joinSmallestServer()
 end)
 
 -- 重新排序所有按鈕
@@ -921,18 +833,18 @@ wait(0.1) -- 確保所有元素都創建完成
 
 -- 按照想要的順序重新排列
 local orderedElements = {
-    nameBox,           -- 輸入框
-    nameBtn,           -- 設定假名
-    platformBtn,       -- 防虛空
-    antiAFKBtn,        -- 防掛機
-    autoReturnBtn,     -- 死後回場
-    remoteSpyBtn,      -- Remote Spy Mobile
-    changeNamesBtn,    -- 改變所有玩家名
-    giangHubBtn,       -- Giang hub
-    kykyHubBtn,        -- kyky hub
-    masteryBtn,        -- mastery
-    serverHopContainer, -- 跳到少人服下拉選單
-    executeBtn         -- 執行跳服
+    nameBox,                  -- 輸入框
+    nameBtn,                 -- 設定假名
+    platformBtn,             -- 防虛空
+    antiAFKBtn,              -- 防掛機
+    autoReturnBtn,           -- 死後回場
+    remoteSpyBtn,            -- Remote Spy Mobile
+    changeNamesBtn,          -- 改變所有玩家名
+    giangHubBtn,             -- Giang hub
+    kykyHubBtn,              -- kyky hub
+    masteryBtn,              -- mastery
+    serverHopWithItemsBtn,   -- 跳到少人服（會拿樹果和光球）
+    simpleServerHopBtn       -- 單純跳到少人服
 }
 
 -- 重新設定每個元素的 LayoutOrder
