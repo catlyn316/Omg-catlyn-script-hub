@@ -796,11 +796,11 @@ local masteryY = masteryPosition.Y.Offset
 local serverHopContainer = Instance.new("Frame", CommonButtonsScroll)
 serverHopContainer.Name = "ServerHopContainer_" .. tick() -- 唯一名稱避免衝突
 serverHopContainer.Size = UDim2.new(0, 180, 0, 35)
-serverHopContainer.Position = UDim2.new(0.5, -90, 0, masteryY + 45) -- mastery按鈕下方45像素
+serverHopContainer.Position = UDim2.new(0.5, -90, 0, 370 + 45) -- mastery按鈕下方45像素
 serverHopContainer.BackgroundTransparency = 1
 
 -- 手動調整executeBtn的位置，讓它在下拉選單後面
-executeBtn.Position = UDim2.new(0.5, -90, 0, masteryY + 90) -- 在下拉選單下方45像素
+executeBtn.Position = UDim2.new(0.5, -90, 0, 370 + 90) -- 在下拉選單下方45像素
 
 -- 下拉選單按鈕
 local dropdownBtn = Instance.new("TextButton", serverHopContainer)
