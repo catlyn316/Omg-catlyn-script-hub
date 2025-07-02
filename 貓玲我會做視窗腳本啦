@@ -785,6 +785,7 @@ end)
 -- 跳到少人服下拉選單
 local serverHopFrame = Instance.new("Frame", CommonButtonsScroll)
 serverHopFrame.Size = UDim2.new(0, 180, 0, 70)
+serverHopFrame.Position = UDim2.new(0, 10, 0, 10 * 50) -- 排在第10個位置（mastery後面）
 serverHopFrame.BackgroundTransparency = 1
 
 -- 下拉選單按鈕
@@ -849,13 +850,31 @@ Instance.new("UICorner", option2).CornerRadius = UDim.new(0, 8)
 -- 當前選擇的選項
 local selectedOption = 1
 
+-- 執行按鈕（初始化在下拉選單後面）
+local executeBtn = createButton("執行跳服", 11, CommonButtonsScroll, 45)
+
 -- 下拉選單功能
 local isDropdownOpen = false
+
+-- 更新執行按鈕位置的函數
+local function updateExecuteBtnPosition()
+    if isDropdownOpen then
+        -- 當下拉選單展開時，執行按鈕需要往下移動以避免重疊
+        -- 計算需要額外的空間：下拉選項框的高度(70) - 原始按鈕高度(45) = 25
+        executeBtn.Position = UDim2.new(0, 10, 0, 12 * 50) -- 移到第12個位置
+    else
+        -- 當下拉選單收起時，執行按鈕回到正常位置
+        executeBtn.Position = UDim2.new(0, 10, 0, 11 * 50) -- 第11個位置
+    end
+end
 
 dropdownBtn.MouseButton1Click:Connect(function()
     isDropdownOpen = not isDropdownOpen
     optionsFrame.Visible = isDropdownOpen
     dropdownBtn.Text = isDropdownOpen and "跳到少人服 ▲" or "跳到少人服 ▼"
+    
+    -- 更新執行按鈕位置
+    updateExecuteBtnPosition()
 end)
 
 -- 選項1點擊事件
@@ -864,6 +883,9 @@ option1.MouseButton1Click:Connect(function()
     dropdownBtn.Text = "會拿樹果和光球 ▼"
     optionsFrame.Visible = false
     isDropdownOpen = false
+    
+    -- 更新執行按鈕位置
+    updateExecuteBtnPosition()
 end)
 
 -- 選項2點擊事件
@@ -872,10 +894,10 @@ option2.MouseButton1Click:Connect(function()
     dropdownBtn.Text = "單純跳服 ▼"
     optionsFrame.Visible = false
     isDropdownOpen = false
+    
+    -- 更新執行按鈕位置
+    updateExecuteBtnPosition()
 end)
-
--- 執行按鈕
-local executeBtn = createButton("執行跳服", 10, CommonButtonsScroll, 45)
 
 executeBtn.MouseButton1Click:Connect(function()
     if selectedOption == 1 then
