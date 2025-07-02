@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.34"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.35"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -775,11 +775,148 @@ kykyHubBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://rawscripts.net/raw/Slap-Battles-KykyryzoB-Hub-SB-9008"))()
 end)
 
--- Mastery Button
+-- mastery Button
 local masteryBtn = createButton("mastery", 9, CommonButtonsScroll, 45)
 
 masteryBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/MasteryHelper.NewestVersion'))()
+end)
+
+-- 跳到少人服下拉選單
+local serverHopFrame = Instance.new("Frame", CommonButtonsScroll)
+serverHopFrame.Size = UDim2.new(0, 180, 0, 70)
+serverHopFrame.BackgroundTransparency = 1
+
+-- 下拉選單按鈕
+local dropdownBtn = Instance.new("TextButton", serverHopFrame)
+dropdownBtn.Size = UDim2.new(1, 0, 0, 35)
+dropdownBtn.Position = UDim2.new(0, 0, 0, 0)
+dropdownBtn.Text = "跳到少人服 ▼"
+dropdownBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
+dropdownBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+dropdownBtn.Font = Enum.Font.GothamBold
+dropdownBtn.TextSize = 16
+dropdownBtn.BorderSizePixel = 0
+
+Instance.new("UICorner", dropdownBtn).CornerRadius = UDim.new(0, 8)
+
+local dropdownStroke = Instance.new("UIStroke", dropdownBtn)
+dropdownStroke.Color = Color3.fromRGB(120, 170, 255)
+dropdownStroke.Thickness = 1
+dropdownStroke.Transparency = 0.6
+
+-- 下拉選項框
+local optionsFrame = Instance.new("Frame", serverHopFrame)
+optionsFrame.Size = UDim2.new(1, 0, 0, 70)
+optionsFrame.Position = UDim2.new(0, 0, 0, 35)
+optionsFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+optionsFrame.BorderSizePixel = 0
+optionsFrame.Visible = false
+
+Instance.new("UICorner", optionsFrame).CornerRadius = UDim.new(0, 8)
+
+local optionsStroke = Instance.new("UIStroke", optionsFrame)
+optionsStroke.Color = Color3.fromRGB(120, 170, 255)
+optionsStroke.Thickness = 1
+optionsStroke.Transparency = 0.6
+
+-- 選項1: 會拿樹果和光球
+local option1 = Instance.new("TextButton", optionsFrame)
+option1.Size = UDim2.new(1, 0, 0, 35)
+option1.Position = UDim2.new(0, 0, 0, 0)
+option1.Text = "會拿樹果和光球"
+option1.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
+option1.TextColor3 = Color3.fromRGB(255, 255, 255)
+option1.Font = Enum.Font.GothamBold
+option1.TextSize = 14
+option1.BorderSizePixel = 0
+
+Instance.new("UICorner", option1).CornerRadius = UDim.new(0, 8)
+
+-- 選項2: 單純跳服
+local option2 = Instance.new("TextButton", optionsFrame)
+option2.Size = UDim2.new(1, 0, 0, 35)
+option2.Position = UDim2.new(0, 0, 0, 35)
+option2.Text = "單純跳服"
+option2.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
+option2.TextColor3 = Color3.fromRGB(255, 255, 255)
+option2.Font = Enum.Font.GothamBold
+option2.TextSize = 14
+option2.BorderSizePixel = 0
+
+Instance.new("UICorner", option2).CornerRadius = UDim.new(0, 8)
+
+-- 當前選擇的選項
+local selectedOption = 1
+
+-- 下拉選單功能
+local isDropdownOpen = false
+
+dropdownBtn.MouseButton1Click:Connect(function()
+    isDropdownOpen = not isDropdownOpen
+    optionsFrame.Visible = isDropdownOpen
+    dropdownBtn.Text = isDropdownOpen and "跳到少人服 ▲" or "跳到少人服 ▼"
+end)
+
+-- 選項1點擊事件
+option1.MouseButton1Click:Connect(function()
+    selectedOption = 1
+    dropdownBtn.Text = "會拿樹果和光球 ▼"
+    optionsFrame.Visible = false
+    isDropdownOpen = false
+end)
+
+-- 選項2點擊事件
+option2.MouseButton1Click:Connect(function()
+    selectedOption = 2
+    dropdownBtn.Text = "單純跳服 ▼"
+    optionsFrame.Visible = false
+    isDropdownOpen = false
+end)
+
+-- 執行按鈕
+local executeBtn = createButton("執行跳服", 10, CommonButtonsScroll, 45)
+
+executeBtn.MouseButton1Click:Connect(function()
+    if selectedOption == 1 then
+        -- 執行會拿樹果和光球的腳本
+        serverhop = true
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/Pro666Pro/autofarm-serverhop/main/main.lua'))()
+    elseif selectedOption == 2 then
+        -- 執行單純跳服功能
+        local HttpService = game:GetService("HttpService")
+        local TeleportService = game:GetService("TeleportService")
+        
+        local function joinSmallestServer()
+            local success, result = pcall(function()
+                local response = HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"))
+                
+                if response.data and #response.data > 0 then
+                    -- 按玩家數量排序（從少到多）
+                    table.sort(response.data, function(a, b)
+                        return a.playing < b.playing
+                    end)
+                    
+                    -- 選擇第8個伺服器（如果存在）
+                    local targetServer = response.data[8] or response.data[1] -- 如果沒有第8個就選第1個
+                    
+                    if targetServer and targetServer.id then
+                        TeleportService:TeleportToPlaceInstance(game.PlaceId, targetServer.id)
+                    else
+                        warn("無法找到適合的伺服器")
+                    end
+                else
+                    warn("無法獲取伺服器列表")
+                end
+            end)
+            
+            if not success then
+                warn("跳服失敗: " .. tostring(result))
+            end
+        end
+        
+        joinSmallestServer()
+    end
 end)
 -- 徽章手套分區
 local EgglerButtons = {
