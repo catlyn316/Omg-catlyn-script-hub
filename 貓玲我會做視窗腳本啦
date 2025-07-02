@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.345"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.346"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -782,25 +782,11 @@ masteryBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/MasteryHelper.NewestVersion'))()
 end)
 
--- 執行按鈕（先創建，稍後會調整位置）
-local executeBtn = createButton("執行跳服", 11, CommonButtonsScroll, 45)
-
--- 等待確保所有按鈕都創建完成
-wait(0.2)
-
--- 找到mastery按鈕的位置，在它後面插入下拉選單
-local masteryPosition = masteryBtn.Position
-local masteryY = masteryPosition.Y.Offset
-
--- 創建下拉選單容器，位置在mastery按鈕下方
+-- 創建下拉選單容器
 local serverHopContainer = Instance.new("Frame", CommonButtonsScroll)
-serverHopContainer.Name = "ServerHopContainer_" .. tick() -- 唯一名稱避免衝突
+serverHopContainer.Name = "ServerHopContainer_" .. tick()
 serverHopContainer.Size = UDim2.new(0, 180, 0, 35)
-serverHopContainer.Position = UDim2.new(0.5, -90, 0, 370 + 45) -- mastery按鈕下方45像素
 serverHopContainer.BackgroundTransparency = 1
-
--- 手動調整executeBtn的位置，讓它在下拉選單後面
-executeBtn.Position = UDim2.new(0.5, -90, 0, 370 + 90) -- 在下拉選單下方45像素
 
 -- 下拉選單按鈕
 local dropdownBtn = Instance.new("TextButton", serverHopContainer)
@@ -818,11 +804,11 @@ Instance.new("UICorner", dropdownBtn).CornerRadius = UDim.new(0, 8)
 -- 下拉選項框
 local optionsFrame = Instance.new("Frame", serverHopContainer)
 optionsFrame.Size = UDim2.new(1, 0, 0, 70)
-optionsFrame.Position = UDim2.new(0, 0, 1, 0) -- 在按鈕正下方
+optionsFrame.Position = UDim2.new(0, 0, 1, 0)
 optionsFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
 optionsFrame.BorderSizePixel = 0
 optionsFrame.Visible = false
-optionsFrame.ZIndex = 200 -- 很高的層級
+optionsFrame.ZIndex = 200
 
 Instance.new("UICorner", optionsFrame).CornerRadius = UDim.new(0, 8)
 
@@ -859,31 +845,19 @@ option2.ZIndex = 201
 
 Instance.new("UICorner", option2).CornerRadius = UDim.new(0, 8)
 
+-- 執行按鈕（現在放在下拉選單後面）
+local executeBtn = createButton("執行跳服", 11, CommonButtonsScroll, 45)
+
 -- 當前選擇的選項
 local selectedOption = 1
 
 -- 下拉選單功能
 local isDropdownOpen = false
 
--- 更新執行按鈕位置的函數
-local function updateExecuteBtnPosition()
-    if isDropdownOpen then
-        -- 當下拉選單展開時，執行按鈕需要往下移動
-        executeBtn.Position = UDim2.new(0.5, -90, 0, masteryY + 90 + 70) -- 原位置 + 選項框高度
-    else
-        -- 當下拉選單收起時，執行按鈕回到正常位置
-        executeBtn.Position = UDim2.new(0.5, -90, 0, masteryY + 90)
-    end
-end
-
 dropdownBtn.MouseButton1Click:Connect(function()
     isDropdownOpen = not isDropdownOpen
     dropdownBtn.Text = isDropdownOpen and "跳到少人服 ▲" or "跳到少人服 ▼"
-    
     optionsFrame.Visible = isDropdownOpen
-    
-    -- 更新執行按鈕位置
-    updateExecuteBtnPosition()
 end)
 
 -- 選項1點擊事件
@@ -892,9 +866,6 @@ option1.MouseButton1Click:Connect(function()
     dropdownBtn.Text = "會拿樹果和光球 ▼"
     optionsFrame.Visible = false
     isDropdownOpen = false
-    
-    -- 更新執行按鈕位置
-    updateExecuteBtnPosition()
 end)
 
 -- 選項2點擊事件
@@ -903,9 +874,6 @@ option2.MouseButton1Click:Connect(function()
     dropdownBtn.Text = "單純跳服 ▼"
     optionsFrame.Visible = false
     isDropdownOpen = false
-    
-    -- 更新執行按鈕位置
-    updateExecuteBtnPosition()
 end)
 
 executeBtn.MouseButton1Click:Connect(function()
@@ -923,13 +891,11 @@ executeBtn.MouseButton1Click:Connect(function()
                 local response = HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"))
                 
                 if response.data and #response.data > 0 then
-                    -- 按玩家數量排序（從少到多）
                     table.sort(response.data, function(a, b)
                         return a.playing < b.playing
                     end)
                     
-                    -- 選擇第8個伺服器（如果存在）
-                    local targetServer = response.data[8] or response.data[1] -- 如果沒有第8個就選第1個
+                    local targetServer = response.data[8] or response.data[1]
                     
                     if targetServer and targetServer.id then
                         TeleportService:TeleportToPlaceInstance(game.PlaceId, targetServer.id)
