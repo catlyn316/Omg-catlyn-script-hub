@@ -352,7 +352,7 @@ CommonButtonsScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
 local BadgeGlove = Instance.new("ScrollingFrame", Content)
 BadgeGlove.Size = UDim2.new(1, 0, 1, 0)
-BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 500)
+BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 350)
 BadgeGlove.ScrollBarThickness = 6
 BadgeGlove.BackgroundTransparency = 1
 BadgeGlove.Visible = false
@@ -374,7 +374,7 @@ MasteryScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 -- 在創建其他滾動框的地方（MasteryScroll 後面）添加：
 local OtherScroll = Instance.new("ScrollingFrame", Content)
 OtherScroll.Size = UDim2.new(1, 0, 1, 0)
-OtherScroll.CanvasSize = UDim2.new(0, 0, 0, 500)
+OtherScroll.CanvasSize = UDim2.new(0, 0, 0, 300)
 OtherScroll.ScrollBarThickness = 6
 OtherScroll.BackgroundTransparency = 1
 OtherScroll.Visible = false
