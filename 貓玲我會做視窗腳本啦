@@ -331,7 +331,7 @@ end
 -- 傳送分區使用 ScrollingFrame
 local TPScroll = Instance.new("ScrollingFrame", Content)
 TPScroll.Size = UDim2.new(1, 0, 1, 0)
-TPScroll.CanvasSize = UDim2.new(0, 0, 0, 500) -- 修正：設定正確的畫布大小
+TPScroll.CanvasSize = UDim2.new(0, 0, 0, 600) -- 修正：設定正確的畫布大小
 TPScroll.ScrollBarThickness = 6
 TPScroll.BackgroundTransparency = 1
 TPScroll.Visible = true
@@ -342,7 +342,7 @@ TPScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 -- 修正：通用按鈕分頁 - 先聲明變數
 local CommonButtonsScroll = Instance.new("ScrollingFrame", Content)
 CommonButtonsScroll.Size = UDim2.new(1, 0, 1, 0)
-CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 500) -- 修正：設定正確的畫布大小
+CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 600) -- 修正：設定正確的畫布大小
 CommonButtonsScroll.ScrollBarThickness = 6
 CommonButtonsScroll.BackgroundTransparency = 1
 CommonButtonsScroll.Visible = false
@@ -352,7 +352,7 @@ CommonButtonsScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
 local BadgeGlove = Instance.new("ScrollingFrame", Content)
 BadgeGlove.Size = UDim2.new(1, 0, 1, 0)
-BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 280)
+BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 500)
 BadgeGlove.ScrollBarThickness = 6
 BadgeGlove.BackgroundTransparency = 1
 BadgeGlove.Visible = false
@@ -363,7 +363,7 @@ BadgeGlove.ScrollingDirection = Enum.ScrollingDirection.Y
 -- 精通腳本分區
 local MasteryScroll = Instance.new("ScrollingFrame", Content)
 MasteryScroll.Size = UDim2.new(1, 0, 1, 0)
-MasteryScroll.CanvasSize = UDim2.new(0, 0, 0, 500)
+MasteryScroll.CanvasSize = UDim2.new(0, 0, 0, 600)
 MasteryScroll.ScrollBarThickness = 6
 MasteryScroll.BackgroundTransparency = 1
 MasteryScroll.Visible = false
@@ -374,7 +374,7 @@ MasteryScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 -- 在創建其他滾動框的地方（MasteryScroll 後面）添加：
 local OtherScroll = Instance.new("ScrollingFrame", Content)
 OtherScroll.Size = UDim2.new(1, 0, 1, 0)
-OtherScroll.CanvasSize = UDim2.new(0, 0, 0, 300)
+OtherScroll.CanvasSize = UDim2.new(0, 0, 0, 500)
 OtherScroll.ScrollBarThickness = 6
 OtherScroll.BackgroundTransparency = 1
 OtherScroll.Visible = false
