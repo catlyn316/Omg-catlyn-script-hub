@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.38"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.39"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -861,7 +861,8 @@ local EgglerButtons = {
     createButton("slender手套", 3, BadgeGlove, 40),
     createButton("slasher手套", 4, BadgeGlove, 40),
     createButton("car keys手套", 5, BadgeGlove, 40),
-    createButton("suction手套", 6, BadgeGlove, 40)
+    createButton("suction手套", 6, BadgeGlove, 40),
+    createButton("reflect手套", 7, BadgeGlove, 40)
 }
 
 EgglerButtons[1].MouseButton1Click:Connect(function()
@@ -881,6 +882,9 @@ EgglerButtons[5].MouseButton1Click:Connect(function()
 end)
 EgglerButtons[6].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Suction-glove/refs/heads/main/Suction%20glove'))()
+end)
+EgglerButtons[7].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/reflect/refs/heads/main/reflect%20glove'))()
 end)
 
 -- 精通手套腳本
