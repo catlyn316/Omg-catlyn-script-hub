@@ -421,7 +421,7 @@ local TPButtons = {
     createButton("彩虹雲", 10, TPScroll, 40),
     createButton("左島", 11, TPScroll, 40),
     createButton("右島", 12, TPScroll, 40),
-    createButton("死亡方塊島", 13, TPScroll, 40),
+    createButton("死亡方塊島", 13, TPScroll, 40)
 }
 
 -- 傳送功能綁定
@@ -828,11 +828,12 @@ simpleServerHopBtn.MouseButton1Click:Connect(function()
     joinSmallestServer()
 end)
 
-local infyieldBtn = createButton("mastery", 12, CommonButtonsScroll, 45)
+local infyieldBtn = createButton("infyield", 12, CommonButtonsScroll, 45)
 
 infyieldBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source'))()
 end)
+
 -- 重新排序所有按鈕
 wait(0.1) -- 確保所有元素都創建完成
 
@@ -849,7 +850,7 @@ local orderedElements = {
     kykyHubBtn,              -- kyky hub
     masteryBtn,              -- mastery
     serverHopWithItemsBtn,   -- 跳到少人服（會拿樹果和光球）
-    simpleServerHopBtn       -- 單純跳到少人服
+    simpleServerHopBtn,      -- 單純跳到少人服
     infyieldBtn
 }
 
