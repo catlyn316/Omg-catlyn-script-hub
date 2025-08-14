@@ -342,7 +342,7 @@ TPScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 -- 修正：通用按鈕分頁 - 先聲明變數
 local CommonButtonsScroll = Instance.new("ScrollingFrame", Content)
 CommonButtonsScroll.Size = UDim2.new(1, 0, 1, 0)
-CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 600) -- 修正：設定正確的畫布大小
+CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 700) -- 修正：設定正確的畫布大小
 CommonButtonsScroll.ScrollBarThickness = 6
 CommonButtonsScroll.BackgroundTransparency = 1
 CommonButtonsScroll.Visible = false
@@ -352,7 +352,7 @@ CommonButtonsScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
 local BadgeGlove = Instance.new("ScrollingFrame", Content)
 BadgeGlove.Size = UDim2.new(1, 0, 1, 0)
-BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 350)
+BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 450)
 BadgeGlove.ScrollBarThickness = 6
 BadgeGlove.BackgroundTransparency = 1
 BadgeGlove.Visible = false
@@ -828,6 +828,11 @@ simpleServerHopBtn.MouseButton1Click:Connect(function()
     joinSmallestServer()
 end)
 
+local infyieldBtn = createButton("mastery", 12, CommonButtonsScroll, 45)
+
+infyieldBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source'))()
+end)
 -- 重新排序所有按鈕
 wait(0.1) -- 確保所有元素都創建完成
 
@@ -845,6 +850,7 @@ local orderedElements = {
     masteryBtn,              -- mastery
     serverHopWithItemsBtn,   -- 跳到少人服（會拿樹果和光球）
     simpleServerHopBtn       -- 單純跳到少人服
+    infyieldBtn
 }
 
 -- 重新設定每個元素的 LayoutOrder
