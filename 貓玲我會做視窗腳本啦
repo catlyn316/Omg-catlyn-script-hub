@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.41"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.42"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -915,7 +915,8 @@ local MasteryButtons = {
     createButton("屏障", 9, MasteryScroll, 40),
     createButton("車鑰匙", 10, MasteryScroll, 40),
     createButton("巫毒", 11, MasteryScroll, 40),
-    createButton("櫻桃", 12, MasteryScroll, 40)
+    createButton("櫻桃", 12, MasteryScroll, 40),
+    createButton("BONK", 13, MasteryScroll, 40)
 }
 
 MasteryButtons[1].MouseButton1Click:Connect(function()
@@ -964,6 +965,10 @@ end)
 
 MasteryButtons[12].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Cherry-mastery/refs/heads/main/Cherry%20mastery'))()
+end)
+
+MasteryButtons[13].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/BONK-mastery/refs/heads/main/bonk'))()
 end)
 
 -- 創建其他分區的按鈕（在精通手套腳本按鈕後面添加）：
