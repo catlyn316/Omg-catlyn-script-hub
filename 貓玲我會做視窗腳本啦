@@ -834,6 +834,12 @@ infyieldBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source'))()
 end)
 
+local bringflyBtn = createButton("bringfly", 12, CommonButtonsScroll, 45)
+
+bringflyBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Bring-fly/refs/heads/main/Bring%20fly'))()
+end)
+
 -- 重新排序所有按鈕
 wait(0.1) -- 確保所有元素都創建完成
 
@@ -851,7 +857,8 @@ local orderedElements = {
     masteryBtn,              -- mastery
     serverHopWithItemsBtn,   -- 跳到少人服（會拿樹果和光球）
     simpleServerHopBtn,      -- 單純跳到少人服
-    infyieldBtn
+    infyieldBtn,
+    bringfly
 }
 
 -- 重新設定每個元素的 LayoutOrder
