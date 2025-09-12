@@ -352,7 +352,7 @@ CommonButtonsScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
 local BadgeGlove = Instance.new("ScrollingFrame", Content)
 BadgeGlove.Size = UDim2.new(1, 0, 1, 0)
-BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 450)
+BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 500)
 BadgeGlove.ScrollBarThickness = 6
 BadgeGlove.BackgroundTransparency = 1
 BadgeGlove.Visible = false
@@ -879,7 +879,8 @@ local EgglerButtons = {
     createButton("reflect手套", 7, BadgeGlove, 40),
     createButton("dave和mortis戰", 8, BadgeGlove, 40),
     createButton("bounty手套", 9, BadgeGlove, 40),
-    createButton("debug手套", 10, BadgeGlove, 40)
+    createButton("debug手套", 10, BadgeGlove, 40),
+    createButton("paint手套", 11, BadgeGlove, 40),
 }
 
 EgglerButtons[1].MouseButton1Click:Connect(function()
@@ -911,6 +912,9 @@ EgglerButtons[9].MouseButton1Click:Connect(function()
 end)
 EgglerButtons[10].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Debug-glove/refs/heads/main/Debug%20nah%20still%20exploit'))()
+end)
+EgglerButtons[11].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Paint-mode/refs/heads/main/Paint%20mode'))()
 end)
 
 -- 精通手套腳本
