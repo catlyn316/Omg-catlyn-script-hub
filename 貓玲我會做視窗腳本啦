@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.44"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.45"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -363,7 +363,7 @@ BadgeGlove.ScrollingDirection = Enum.ScrollingDirection.Y
 -- 精通腳本分區
 local MasteryScroll = Instance.new("ScrollingFrame", Content)
 MasteryScroll.Size = UDim2.new(1, 0, 1, 0)
-MasteryScroll.CanvasSize = UDim2.new(0, 0, 0, 600)
+MasteryScroll.CanvasSize = UDim2.new(0, 0, 0, 640)
 MasteryScroll.ScrollBarThickness = 6
 MasteryScroll.BackgroundTransparency = 1
 MasteryScroll.Visible = false
@@ -880,7 +880,7 @@ local EgglerButtons = {
     createButton("dave和mortis戰", 8, BadgeGlove, 40),
     createButton("bounty手套", 9, BadgeGlove, 40),
     createButton("debug手套", 10, BadgeGlove, 40),
-    createButton("paint手套", 11, BadgeGlove, 40),
+    createButton("paint手套", 11, BadgeGlove, 40)
 }
 
 EgglerButtons[1].MouseButton1Click:Connect(function()
@@ -931,7 +931,8 @@ local MasteryButtons = {
     createButton("車鑰匙", 10, MasteryScroll, 40),
     createButton("巫毒", 11, MasteryScroll, 40),
     createButton("櫻桃", 12, MasteryScroll, 40),
-    createButton("BONK", 13, MasteryScroll, 40)
+    createButton("BONK", 13, MasteryScroll, 40),
+    createButton("chain", 14, MasteryScroll, 40)
 }
 
 MasteryButtons[1].MouseButton1Click:Connect(function()
@@ -984,6 +985,10 @@ end)
 
 MasteryButtons[13].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/BONK-mastery/refs/heads/main/bonk'))()
+end)
+
+MasteryButtons[14].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Chain-mastery/refs/heads/main/No%20more%20alt%20need'))()
 end)
 
 -- 創建其他分區的按鈕（在精通手套腳本按鈕後面添加）：
