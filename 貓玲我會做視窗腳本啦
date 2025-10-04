@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的腳本區 ✨ v0.45"
+Title.Text = "✨ 貓玲的腳本區 ✨ v0.46"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -352,7 +352,7 @@ CommonButtonsScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
 local BadgeGlove = Instance.new("ScrollingFrame", Content)
 BadgeGlove.Size = UDim2.new(1, 0, 1, 0)
-BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 500)
+BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 540)
 BadgeGlove.ScrollBarThickness = 6
 BadgeGlove.BackgroundTransparency = 1
 BadgeGlove.Visible = false
@@ -880,7 +880,8 @@ local EgglerButtons = {
     createButton("dave和mortis戰", 8, BadgeGlove, 40),
     createButton("bounty手套", 9, BadgeGlove, 40),
     createButton("debug手套", 10, BadgeGlove, 40),
-    createButton("paint手套", 11, BadgeGlove, 40)
+    createButton("paint手套", 11, BadgeGlove, 40),
+    createButton("plate手套", 12, BadgeGlove, 40)
 }
 
 EgglerButtons[1].MouseButton1Click:Connect(function()
@@ -915,6 +916,9 @@ EgglerButtons[10].MouseButton1Click:Connect(function()
 end)
 EgglerButtons[11].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Paint-mode/refs/heads/main/Paint%20mode'))()
+end)
+EgglerButtons[12].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Plate-glove/refs/heads/main/Plate'))()
 end)
 
 -- 精通手套腳本
