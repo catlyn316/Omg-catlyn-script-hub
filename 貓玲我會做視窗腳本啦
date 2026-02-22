@@ -124,12 +124,12 @@ stroke.Transparency = 0.5
 
 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 15)
 
--- 修正：標題樣式
+-- 修正：標題樣式（改為回歸中）
 local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
-Title.Position = UDim2.new(0, 15, 0, 0)  -- 往上移動5像素原為5
+Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的slap battle腳本區 ✨ v0.46(已停止更新)"
+Title.Text = "✨ 貓玲的slap battle腳本區 ✨ v0.47(回歸中)"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -243,30 +243,23 @@ local function createSectionButton(text, order, parent)
     local btn = Instance.new("TextButton", parent)
     btn.Size = UDim2.new(0, 120, 0, 45)
     btn.Text = text
-    btn.BackgroundColor3 = Color3.fromRGB(85, 85, 105)  -- 比原本更亮的背景
+    btn.BackgroundColor3 = Color3.fromRGB(85, 85, 105)
     
-    -- 最亮的文字設定
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 純白色
-    btn.TextTransparency = 0  -- 完全不透明
-    btn.Font = Enum.Font.GothamBold  -- 粗體字
-    btn.TextSize = 16  -- 適中大小
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextTransparency = 0
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 16
     btn.BorderSizePixel = 0
     
-    -- 移除漸層，使用純色背景
-    -- 這樣文字會更清楚
-    
-    -- 添加圓角
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
     
-    -- 簡化描邊
     local btnStroke = Instance.new("UIStroke", btn)
     btnStroke.Color = Color3.fromRGB(150, 180, 255)
     btnStroke.Thickness = 1
     btnStroke.Transparency = 0.6
     
-    -- 簡單hover效果
     btn.MouseEnter:Connect(function()
-        btn.BackgroundColor3 = Color3.fromRGB(105, 105, 125)  -- hover時更亮
+        btn.BackgroundColor3 = Color3.fromRGB(105, 105, 125)
         btnStroke.Transparency = 0.3
     end)
     
@@ -283,7 +276,6 @@ local Section1 = createSectionButton("🚀 傳送", 1, SideBar)
 local Section2 = createSectionButton("⚙️ 常用", 2, SideBar)
 local Section3 = createSectionButton("🏅 徽章手套", 3, SideBar)
 local Section4 = createSectionButton("🎯 精通腳本", 4, SideBar)
--- 在創建其他分區按鈕的地方（Section4 後面）添加：
 local Section5 = createSectionButton("🔧 其他", 5, SideBar)
 
 
@@ -293,35 +285,29 @@ local function createButton(text, order, parent, spacing)
     btn.Size = UDim2.new(0, 180, 0, 35)
     btn.Position = UDim2.new(0.5, -90, 0, 10 + (order - 1) * spacing)
     btn.Text = text
-    btn.BackgroundColor3 = Color3.fromRGB(80, 140, 220)  -- 比原本更亮的背景
+    btn.BackgroundColor3 = Color3.fromRGB(80, 140, 220)
     
-    -- 最亮的文字設定
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 純白色
-    btn.TextSize = 16  -- 適中大小
-    btn.Font = Enum.Font.GothamBold  -- 粗體字
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 16
+    btn.Font = Enum.Font.GothamBold
     btn.BorderSizePixel = 0
     
-    -- 移除漸層，使用純色背景讓文字更清楚
-    
-    -- 添加圓角
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
     
-    -- 簡化描邊
     local btnStroke = Instance.new("UIStroke", btn)
     btnStroke.Color = Color3.fromRGB(120, 170, 255)
     btnStroke.Thickness = 1
     btnStroke.Transparency = 0.6
     
-    -- 簡單hover效果
     btn.MouseEnter:Connect(function()
-        btn.BackgroundColor3 = Color3.fromRGB(100, 160, 240)  -- hover時更亮
-        btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 保持純白
+        btn.BackgroundColor3 = Color3.fromRGB(100, 160, 240)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
         btnStroke.Transparency = 0.3
     end)
     
     btn.MouseLeave:Connect(function()
         btn.BackgroundColor3 = Color3.fromRGB(80, 140, 220)
-        btn.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 保持純白
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
         btnStroke.Transparency = 0.6
     end)
     
@@ -331,7 +317,7 @@ end
 -- 傳送分區使用 ScrollingFrame
 local TPScroll = Instance.new("ScrollingFrame", Content)
 TPScroll.Size = UDim2.new(1, 0, 1, 0)
-TPScroll.CanvasSize = UDim2.new(0, 0, 0, 600) -- 修正：設定正確的畫布大小
+TPScroll.CanvasSize = UDim2.new(0, 0, 0, 600)
 TPScroll.ScrollBarThickness = 6
 TPScroll.BackgroundTransparency = 1
 TPScroll.Visible = true
@@ -339,10 +325,10 @@ TPScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 TPScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 TPScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
--- 修正：通用按鈕分頁 - 先聲明變數
+-- 通用按鈕分頁
 local CommonButtonsScroll = Instance.new("ScrollingFrame", Content)
 CommonButtonsScroll.Size = UDim2.new(1, 0, 1, 0)
-CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 700) -- 修正：設定正確的畫布大小
+CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 700)
 CommonButtonsScroll.ScrollBarThickness = 6
 CommonButtonsScroll.BackgroundTransparency = 1
 CommonButtonsScroll.Visible = false
@@ -371,10 +357,9 @@ MasteryScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 MasteryScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 MasteryScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
--- 在創建其他滾動框的地方（MasteryScroll 後面）添加：
 local OtherScroll = Instance.new("ScrollingFrame", Content)
 OtherScroll.Size = UDim2.new(1, 0, 1, 0)
-OtherScroll.CanvasSize = UDim2.new(0, 0, 0, 300)
+OtherScroll.CanvasSize = UDim2.new(0, 0, 0, 500)
 OtherScroll.ScrollBarThickness = 6
 OtherScroll.BackgroundTransparency = 1
 OtherScroll.Visible = false
@@ -398,13 +383,16 @@ local function styleScrollFrame(scrollFrame)
     Instance.new("UICorner", scrollFrame).CornerRadius = UDim.new(0, 8)
 end
 
--- 應用到所有滾動框
 styleScrollFrame(TPScroll)
 styleScrollFrame(BadgeGlove)
 styleScrollFrame(MasteryScroll)
 styleScrollFrame(CommonButtonsScroll)
--- 應用樣式到新的滾動框（在 styleScrollFrame 應用部分添加）：
 styleScrollFrame(OtherScroll)
+local otherLayout = Instance.new("UIListLayout", OtherScroll)
+otherLayout.Padding = UDim.new(0, 8)
+otherLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+local otherPadding = Instance.new("UIPadding", OtherScroll)
+otherPadding.PaddingTop = UDim.new(0, 8)
 
 
 -- 傳送分區（13 個按鈕）
@@ -478,34 +466,27 @@ UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 -- 保存當前設定的假名
 local currentFakeName = "catlyn"
 
--- 修正：簡單高亮文字的輸入框樣式
+-- 輸入框樣式
 local nameBox = Instance.new("TextBox", CommonButtonsScroll)
 nameBox.Size = UDim2.new(0, 180, 0, 35)
 nameBox.PlaceholderText = "✏️ 輸入假名"
 nameBox.Text = ""
-nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 純白文字
-nameBox.BackgroundColor3 = Color3.fromRGB(70, 70, 90)  -- 比原本更亮的背景
-nameBox.Font = Enum.Font.GothamBold  -- 改為粗體
-nameBox.TextSize = 16  -- 從14增加到16
+nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+nameBox.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
+nameBox.Font = Enum.Font.GothamBold
+nameBox.TextSize = 16
 nameBox.BorderSizePixel = 0
+nameBox.PlaceholderColor3 = Color3.fromRGB(200, 200, 200)
 
--- 設定提示文字顏色更亮
-nameBox.PlaceholderColor3 = Color3.fromRGB(200, 200, 200)  -- 亮灰色提示文字
-
--- 移除漸層，使用純色背景讓文字更清楚
-
--- 添加圓角
 Instance.new("UICorner", nameBox).CornerRadius = UDim.new(0, 8)
 
--- 簡化描邊
 local boxStroke = Instance.new("UIStroke", nameBox)
 boxStroke.Color = Color3.fromRGB(120, 170, 255)
 boxStroke.Thickness = 1
 boxStroke.Transparency = 0.6
 
--- 添加焦點效果
 nameBox.Focused:Connect(function()
-    nameBox.BackgroundColor3 = Color3.fromRGB(90, 90, 110)  -- 焦點時更亮
+    nameBox.BackgroundColor3 = Color3.fromRGB(90, 90, 110)
     boxStroke.Transparency = 0.3
     boxStroke.Color = Color3.fromRGB(150, 200, 255)
 end)
@@ -521,7 +502,6 @@ end)
 local nameBtn = createButton("設定假名", 1, CommonButtonsScroll, 40)
 
 local function setNametag(text)
-    -- 更新保存的假名
     currentFakeName = text ~= "" and text or "catlyn"
     
     local char = workspace:FindFirstChild(LocalPlayer.Name)
@@ -547,8 +527,7 @@ nameBtn.MouseButton1Click:Connect(function()
 end)
 
 LocalPlayer.CharacterAdded:Connect(function()
-    task.wait(0.5) -- 固定為0.5秒，不能改
-    -- 使用保存的假名重新設定
+    task.wait(0.5)
     setNametag(currentFakeName)
 end)
 
@@ -604,7 +583,7 @@ local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 
 local autoReturn = false
-local isReturning = false -- 避免多次觸發
+local isReturning = false
 
 local autoReturnBtn = createButton("死後回場: 關", 4, CommonButtonsScroll, 40)
 
@@ -630,13 +609,7 @@ task.spawn(function()
                     if LocalPlayer.Character and tele then
                         LocalPlayer.Character:PivotTo(tele.CFrame + Vector3.new(0, 5, 0))
                         print("已自動回場")
-
-                        -- 再等一點時間，確保角色重生完畢
                         task.wait(0.1)
-
-                        -- 在這裡恢復第一項功能（如位置固定）
-                        -- 比如：isPositionLocked = true
-                        -- 如果有函數可以呼叫，像 restoreLock() 也可寫在這裡
                     end
                     isReturning = false
                 end
@@ -652,16 +625,661 @@ remoteSpyBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/catlyn316/Remote-captor/refs/heads/main/Huh"))()
 end)
 
+
+-- 真-常用？按鈕
+local realCommonBtn = createButton("真-常用？", 6, CommonButtonsScroll, 45)
+
+realCommonBtn.MouseButton1Click:Connect(function()
+    loadstring([[-- Roblox 全能控制器 (增強版 v2.5 + Slap Aura)
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local Workspace = game:GetService("Workspace")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Lighting = game:GetService("Lighting")
+
+if CoreGui:FindFirstChild("SpeedJumpController") then CoreGui.SpeedJumpController:Destroy() end
+if playerGui:FindFirstChild("SpeedJumpController") then playerGui.SpeedJumpController:Destroy() end
+
+local trueLightingBackup = {
+    Ambient = Lighting.Ambient, OutdoorAmbient = Lighting.OutdoorAmbient,
+    Brightness = Lighting.Brightness, ColorShift_Bottom = Lighting.ColorShift_Bottom,
+    ColorShift_Top = Lighting.ColorShift_Top, FogEnd = Lighting.FogEnd
+}
+local postEffectBackups = {}
+local atmosphereBackups = {}
+local originalSpeed = 16
+local originalJump = 50
+local originalGravity = 196.2
+local hasOriginalValues = false
+
+local toggles = {
+    speed=false, jump=false, gravity=false, fullbright=false,
+    cameraDist=false, nofog=false, brightness=false, noclipWall=false,
+    noclip=false, noFilter=false, slapAura=false
+}
+local values = {
+    speed=70, jump=75, gravity=50, fullbright=0.8,
+    cameraDist=15, brightness=2, wallTrans=0.8, floatSpeed=1, auraRange=17
+}
+local connections = {
+    speed=nil, jump=nil, gravity=nil, fullbright=nil,
+    nofog=nil, brightness=nil, noclipWall=nil, noclip=nil, noFilter=nil
+}
+local transparencyCache = {}
+local noclipMode = "all"
+local platform = nil
+local isUpButtonPressed = false
+local isDownButtonPressed = false
+
+-- Slap Aura 狀態
+local auraEnabled = false
+local auraLoop = nil
+local auraDetectedEvent = nil
+local auraDetectedArgs = nil
+local auraHookActive = false
+
+local function getOriginalValues()
+    if toggles.speed or toggles.jump or toggles.gravity then return end
+    local character = player.Character
+    if character then
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            originalSpeed = humanoid.WalkSpeed
+            originalJump = humanoid.UseJumpPower and humanoid.JumpPower or humanoid.JumpHeight
+        end
+    end
+    originalGravity = Workspace.Gravity
+    hasOriginalValues = true
+end
+
+local function backupPostEffects()
+    for _, v in pairs(Lighting:GetChildren()) do
+        if v:IsA("PostEffect") and not postEffectBackups[v] then
+            postEffectBackups[v] = {Enabled=v.Enabled}
+            if v:IsA("BloomEffect") then postEffectBackups[v].Intensity=v.Intensity; postEffectBackups[v].Size=v.Size; postEffectBackups[v].Threshold=v.Threshold
+            elseif v:IsA("BlurEffect") then postEffectBackups[v].Size=v.Size
+            elseif v:IsA("ColorCorrectionEffect") then postEffectBackups[v].Brightness=v.Brightness; postEffectBackups[v].Contrast=v.Contrast; postEffectBackups[v].Saturation=v.Saturation; postEffectBackups[v].TintColor=v.TintColor
+            elseif v:IsA("SunRaysEffect") then postEffectBackups[v].Intensity=v.Intensity; postEffectBackups[v].Spread=v.Spread end
+        end
+    end
+    if Workspace.CurrentCamera then
+        for _, v in pairs(Workspace.CurrentCamera:GetChildren()) do
+            if v:IsA("PostEffect") and not postEffectBackups[v] then
+                postEffectBackups[v] = {Enabled=v.Enabled}
+                if v:IsA("BloomEffect") then postEffectBackups[v].Intensity=v.Intensity; postEffectBackups[v].Size=v.Size; postEffectBackups[v].Threshold=v.Threshold
+                elseif v:IsA("BlurEffect") then postEffectBackups[v].Size=v.Size
+                elseif v:IsA("ColorCorrectionEffect") then postEffectBackups[v].Brightness=v.Brightness; postEffectBackups[v].Contrast=v.Contrast; postEffectBackups[v].Saturation=v.Saturation; postEffectBackups[v].TintColor=v.TintColor
+                elseif v:IsA("SunRaysEffect") then postEffectBackups[v].Intensity=v.Intensity; postEffectBackups[v].Spread=v.Spread end
+            end
+        end
+    end
+end
+
+local function backupAtmospheres()
+    for _, v in pairs(Lighting:GetDescendants()) do
+        if v:IsA("Atmosphere") and not atmosphereBackups[v] then
+            atmosphereBackups[v] = {Density=v.Density,Offset=v.Offset,Color=v.Color,Decay=v.Decay,Glare=v.Glare,Haze=v.Haze}
+        end
+    end
+end
+
+local function updateLighting()
+    if toggles.fullbright then
+        if connections.brightness then connections.brightness:Disconnect() end
+        if connections.fullbright then connections.fullbright:Disconnect() end
+        connections.fullbright = RunService.RenderStepped:Connect(function()
+            local a = math.min(values.fullbright,1)
+            Lighting.Ambient=Color3.new(a,a,a); Lighting.Brightness=values.fullbright
+            Lighting.ColorShift_Bottom=Color3.new(a,a,a); Lighting.ColorShift_Top=Color3.new(a,a,a)
+            Lighting.OutdoorAmbient=Color3.new(a,a,a)
+        end)
+    elseif toggles.brightness then
+        if connections.fullbright then connections.fullbright:Disconnect() end
+        if connections.brightness then connections.brightness:Disconnect() end
+        Lighting.Ambient=trueLightingBackup.Ambient; Lighting.OutdoorAmbient=trueLightingBackup.OutdoorAmbient
+        Lighting.ColorShift_Bottom=trueLightingBackup.ColorShift_Bottom; Lighting.ColorShift_Top=trueLightingBackup.ColorShift_Top
+        connections.brightness = RunService.RenderStepped:Connect(function() Lighting.Brightness=values.brightness end)
+    else
+        if connections.fullbright then connections.fullbright:Disconnect() end
+        if connections.brightness then connections.brightness:Disconnect() end
+        Lighting.Ambient=trueLightingBackup.Ambient; Lighting.Brightness=trueLightingBackup.Brightness
+        Lighting.OutdoorAmbient=trueLightingBackup.OutdoorAmbient
+        Lighting.ColorShift_Bottom=trueLightingBackup.ColorShift_Bottom; Lighting.ColorShift_Top=trueLightingBackup.ColorShift_Top
+    end
+end
+
+local function applySpeed(char)
+    if not char then char=player.Character end; if not char then return end
+    local hum=char:WaitForChild("Humanoid",10); if not hum then return end
+    if connections.speed then connections.speed:Disconnect() end
+    if toggles.speed then
+        hum.WalkSpeed=values.speed
+        connections.speed=hum:GetPropertyChangedSignal("WalkSpeed"):Connect(function() if toggles.speed then hum.WalkSpeed=values.speed end end)
+    else hum.WalkSpeed=originalSpeed end
+end
+
+local function applyJump(char)
+    if not char then char=player.Character end; if not char then return end
+    local hum=char:WaitForChild("Humanoid",10); if not hum then return end
+    if connections.jump then connections.jump:Disconnect() end
+    if toggles.jump then
+        if hum.UseJumpPower then
+            hum.JumpPower=values.jump
+            connections.jump=hum:GetPropertyChangedSignal("JumpPower"):Connect(function() if toggles.jump then hum.JumpPower=values.jump end end)
+        else
+            hum.JumpHeight=values.jump
+            connections.jump=hum:GetPropertyChangedSignal("JumpHeight"):Connect(function() if toggles.jump then hum.JumpHeight=values.jump end end)
+        end
+    else
+        if hum.UseJumpPower then hum.JumpPower=originalJump else hum.JumpHeight=originalJump end
+    end
+end
+
+local function applyNoclip(char)
+    if connections.noclip then connections.noclip:Disconnect() end
+    if toggles.noclip then
+        connections.noclip=RunService.Stepped:Connect(function()
+            local c=player.Character; if not c then return end
+            for _,part in pairs(c:GetDescendants()) do if part:IsA("BasePart") then part.CanCollide=false end end
+            if noclipMode=="players" then
+                local hrp=c:FindFirstChild("HumanoidRootPart")
+                if hrp then hrp.AssemblyLinearVelocity=Vector3.new(0,hrp.AssemblyLinearVelocity.Y,0) end
+            end
+        end)
+    else
+        local c=player.Character
+        if c then for _,part in pairs(c:GetDescendants()) do if part:IsA("BasePart") then part.CanCollide=true end end end
+    end
+end
+
+-- Slap Aura Hook（只設一次）
+local function startAuraHook()
+    if auraHookActive then return end
+    auraHookActive = true
+    local origNamecall
+    origNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+        local method = getnamecallmethod()
+        if auraEnabled and not auraDetectedEvent then
+            if method == "FireServer" and typeof(self)=="Instance" and self:IsA("RemoteEvent") then
+                local args = {...}
+                local found = false
+                for _, v in ipairs(args) do
+                    if typeof(v)=="Instance" then
+                        if v:IsA("Player") and v~=player then found=true; break end
+                        if v:IsA("Model") and v:FindFirstChildOfClass("Humanoid") and v~=player.Character then found=true; break end
+                        if v:IsA("BasePart") then
+                            local p=v.Parent
+                            if p and p:IsA("Model") and p:FindFirstChildOfClass("Humanoid") and p~=player.Character then found=true; break end
+                        end
+                    end
+                end
+                if found then
+                    auraDetectedEvent = self
+                    auraDetectedArgs = args
+                    warn("[Slap Aura] 偵測到: "..self.Name.." 參數:"..#args)
+                end
+            end
+        end
+        return origNamecall(self, ...)
+    end)
+end
+pcall(startAuraHook)
+
+local function getNearestInRange(range)
+    local char=player.Character; if not char or not char:FindFirstChild("HumanoidRootPart") then return nil end
+    local myPos=char.HumanoidRootPart.Position
+    local nearest,nearestDist=nil,math.huge
+    for _,p in ipairs(Players:GetPlayers()) do
+        if p~=player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+            local dist=(p.Character.HumanoidRootPart.Position-myPos).Magnitude
+            if dist<=range and dist<nearestDist then nearest=p; nearestDist=dist end
+        end
+    end
+    return nearest
+end
+
+player.CharacterAdded:Connect(function(newChar)
+    task.wait(0.5)
+    if toggles.speed then applySpeed(newChar) end
+    if toggles.jump then applyJump(newChar) end
+    if toggles.noclip then applyNoclip(newChar) end
+    if toggles.platform then if platform then platform:Destroy() end end
+end)
+
+-- ====================
+-- UI 建構
+-- ====================
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "SpeedJumpController"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+screenGui.DisplayOrder = 10001
+local function parentUI(g)
+    local ok=pcall(function() if gethui then g.Parent=gethui() elseif CoreGui then g.Parent=CoreGui else g.Parent=playerGui end end)
+    if not ok then g.Parent=playerGui end
+end
+parentUI(screenGui)
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0,260,0,262)
+mainFrame.Position = UDim2.new(0.5,-130,0.5,-131)
+mainFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+Instance.new("UICorner",mainFrame).CornerRadius = UDim.new(0,10)
+
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1,0,0,32)
+titleBar.BackgroundColor3 = Color3.fromRGB(102,126,234)
+titleBar.Parent = mainFrame
+Instance.new("UICorner",titleBar).CornerRadius = UDim.new(0,10)
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1,-60,1,0)
+title.BackgroundTransparency = 1
+title.Text = "🎮 貓玲的全能控制器 v2.5"
+title.TextSize = 14
+title.Font = Enum.Font.GothamBold
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.Parent = titleBar
+
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Size=UDim2.new(0,24,0,24); minimizeButton.Position=UDim2.new(1,-54,0,4)
+minimizeButton.BackgroundColor3=Color3.fromRGB(158,158,158); minimizeButton.Text="─"
+minimizeButton.TextColor3=Color3.fromRGB(255,255,255); minimizeButton.Parent=titleBar
+Instance.new("UICorner",minimizeButton).CornerRadius=UDim.new(0,5)
+
+local closeButton = Instance.new("TextButton")
+closeButton.Size=UDim2.new(0,24,0,24); closeButton.Position=UDim2.new(1,-28,0,4)
+closeButton.BackgroundColor3=Color3.fromRGB(244,67,54); closeButton.Text="X"
+closeButton.TextColor3=Color3.fromRGB(255,255,255); closeButton.Parent=titleBar
+Instance.new("UICorner",closeButton).CornerRadius=UDim.new(0,5)
+
+local tabBar = Instance.new("Frame")
+tabBar.Size=UDim2.new(0.9,0,0,28); tabBar.Position=UDim2.new(0.05,0,0,38)
+tabBar.BackgroundColor3=Color3.fromRGB(240,240,240); tabBar.Parent=mainFrame
+Instance.new("UICorner",tabBar).CornerRadius=UDim.new(0,6)
+
+local function createTab(text,index)
+    local tab=Instance.new("TextButton")
+    tab.Size=UDim2.new(0.25,-4,1,-4); tab.Position=UDim2.new((index-1)*0.25,2,0,2)
+    tab.BackgroundColor3=Color3.fromRGB(200,200,200); tab.Text=text; tab.TextSize=11
+    tab.Font=Enum.Font.GothamBold; tab.TextColor3=Color3.fromRGB(100,100,100); tab.Parent=tabBar
+    Instance.new("UICorner",tab).CornerRadius=UDim.new(0,4)
+    return tab
+end
+local tab1=createTab("基礎移動",1)
+local tab2=createTab("視野燈光",2)
+local tab3=createTab("穿牆飄浮",3)
+local tab4=createTab("Slap Aura",4)
+
+local contentContainer = Instance.new("Frame")
+contentContainer.Size=UDim2.new(0.9,0,0,150); contentContainer.Position=UDim2.new(0.05,0,0,72)
+contentContainer.BackgroundTransparency=1; contentContainer.Parent=mainFrame; contentContainer.ClipsDescendants=true
+
+local function createScrollingPage(parent)
+    local page=Instance.new("ScrollingFrame")
+    page.Size=UDim2.new(1,0,1,0); page.BackgroundTransparency=1; page.BorderSizePixel=0
+    page.ScrollBarThickness=4; page.AutomaticCanvasSize=Enum.AutomaticSize.Y; page.Visible=false; page.Parent=parent
+    local layout=Instance.new("UIListLayout")
+    layout.Padding=UDim.new(0,6); layout.SortOrder=Enum.SortOrder.LayoutOrder
+    layout.HorizontalAlignment=Enum.HorizontalAlignment.Center; layout.Parent=page
+    local padding=Instance.new("UIPadding"); padding.PaddingRight=UDim.new(0,6); padding.Parent=page
+    return page
+end
+local page1=createScrollingPage(contentContainer)
+local page2=createScrollingPage(contentContainer)
+local page3=createScrollingPage(contentContainer)
+local page4=createScrollingPage(contentContainer)
+page1.Visible=true
+
+local function switchTab(n)
+    page1.Visible=(n==1); page2.Visible=(n==2); page3.Visible=(n==3); page4.Visible=(n==4)
+    local tabs={tab1,tab2,tab3,tab4}
+    for i,t in ipairs(tabs) do
+        t.BackgroundColor3=(i==n) and Color3.fromRGB(102,126,234) or Color3.fromRGB(200,200,200)
+        t.TextColor3=(i==n) and Color3.new(1,1,1) or Color3.fromRGB(100,100,100)
+    end
+end
+tab1.MouseButton1Click:Connect(function() switchTab(1) end)
+tab2.MouseButton1Click:Connect(function() switchTab(2) end)
+tab3.MouseButton1Click:Connect(function() switchTab(3) end)
+tab4.MouseButton1Click:Connect(function() switchTab(4) end)
+
+local function createControlRow(parent,labelText,placeholder,defaultVal,isInput,order)
+    local frame=Instance.new("Frame"); frame.Size=UDim2.new(1,0,0,32); frame.BackgroundColor3=Color3.fromRGB(248,249,250); frame.LayoutOrder=order or 0; frame.Parent=parent; Instance.new("UICorner",frame).CornerRadius=UDim.new(0,6)
+    local label=Instance.new("TextLabel"); label.Size=UDim2.new(0,75,1,0); label.Position=UDim2.new(0,6,0,0); label.BackgroundTransparency=1; label.Text=labelText; label.TextSize=12; label.Font=Enum.Font.GothamBold; label.TextColor3=Color3.fromRGB(85,85,85); label.TextXAlignment=Enum.TextXAlignment.Left; label.Parent=frame
+    local input
+    if isInput then
+        input=Instance.new("TextBox"); input.Size=UDim2.new(0,65,0,22); input.Position=UDim2.new(0,80,0,5); input.BackgroundColor3=Color3.fromRGB(255,255,255); input.BorderSizePixel=1; input.BorderColor3=Color3.fromRGB(221,221,221); input.Text=defaultVal; input.PlaceholderText=placeholder; input.TextSize=13; input.Font=Enum.Font.Gotham; input.TextColor3=Color3.fromRGB(50,50,50); input.Parent=frame; Instance.new("UICorner",input).CornerRadius=UDim.new(0,5)
+    else
+        input=Instance.new("TextLabel"); input.Size=UDim2.new(0,65,0,22); input.Position=UDim2.new(0,80,0,5); input.BackgroundTransparency=1; input.Text="關閉"; input.TextSize=13; input.Font=Enum.Font.Gotham; input.TextColor3=Color3.fromRGB(150,150,150); input.Parent=frame
+    end
+    local btn=Instance.new("TextButton"); btn.Size=UDim2.new(0,50,0,22); btn.Position=UDim2.new(1,-55,0,5); btn.BackgroundColor3=Color3.fromRGB(76,175,80); btn.Text="啟動"; btn.TextSize=12; btn.Font=Enum.Font.GothamBold; btn.TextColor3=Color3.fromRGB(255,255,255); btn.Parent=frame; Instance.new("UICorner",btn).CornerRadius=UDim.new(0,5)
+    return frame,input,btn
+end
+
+-- 頁面1：基礎移動（無限跳已移除）
+local speedFrame,speedInput,speedButton=createControlRow(page1,"速度:","70","70",true,1)
+local jumpFrame,jumpInput,jumpButton=createControlRow(page1,"跳躍:","75","75",true,2)
+local gravFrame,gravInput,gravButton=createControlRow(page1,"重力:","50","50",true,3)
+
+-- 頁面2：視野燈光
+local fullbrightFrame,fullbrightInput,fullbrightButton=createControlRow(page2,"全亮:","0.8","0.8",true,1)
+local cameraDistFrame,cameraDistInput,cameraDistButton=createControlRow(page2,"鏡頭距離:","80","80",true,2)
+local nofogFrame,nofogStatus,nofogButton=createControlRow(page2,"除霧:","","",false,3)
+local noFilterFrame,noFilterStatus,noFilterButton=createControlRow(page2,"無濾鏡:","","",false,4)
+local noclipWallFrame,noclipWallInput,noclipWallButton=createControlRow(page2,"穿牆鏡頭:","0.8","0.8",true,5)
+local brightnessFrame,brightnessInput,brightnessButton=createControlRow(page2,"燈光:","2","2",true,6)
+
+-- 頁面3：穿牆飄浮
+local noclipMainFrame=Instance.new("Frame"); noclipMainFrame.Size=UDim2.new(1,0,0,32); noclipMainFrame.BackgroundColor3=Color3.fromRGB(248,249,250); noclipMainFrame.LayoutOrder=1; noclipMainFrame.Parent=page3; Instance.new("UICorner",noclipMainFrame).CornerRadius=UDim.new(0,6)
+local noclipLabel=Instance.new("TextLabel"); noclipLabel.Text="Noclip:"; noclipLabel.Size=UDim2.new(0,55,1,0); noclipLabel.Position=UDim2.new(0,6,0,0); noclipLabel.BackgroundTransparency=1; noclipLabel.Font=Enum.Font.GothamBold; noclipLabel.TextSize=13; noclipLabel.TextColor3=Color3.fromRGB(85,85,85); noclipLabel.TextXAlignment=Enum.TextXAlignment.Left; noclipLabel.Parent=noclipMainFrame
+local noclipModeButton=Instance.new("TextButton"); noclipModeButton.Text="全部"; noclipModeButton.Size=UDim2.new(0,65,0,22); noclipModeButton.Position=UDim2.new(0,60,0,5); noclipModeButton.BackgroundColor3=Color3.fromRGB(255,255,255); noclipModeButton.TextColor3=Color3.fromRGB(50,50,50); noclipModeButton.Font=Enum.Font.Gotham; noclipModeButton.TextSize=11; noclipModeButton.Parent=noclipMainFrame; Instance.new("UICorner",noclipModeButton).CornerRadius=UDim.new(0,5)
+local noclipButton=Instance.new("TextButton"); noclipButton.Text="啟動"; noclipButton.Size=UDim2.new(0,56,0,22); noclipButton.Position=UDim2.new(1,-60,0,5); noclipButton.BackgroundColor3=Color3.fromRGB(76,175,80); noclipButton.TextColor3=Color3.fromRGB(255,255,255); noclipButton.Font=Enum.Font.GothamBold; noclipButton.TextSize=13; noclipButton.Parent=noclipMainFrame; Instance.new("UICorner",noclipButton).CornerRadius=UDim.new(0,5)
+local floatToggleFrame,floatStatus,floatButton=createControlRow(page3,"飄浮:","","",false,2)
+local floatControlFrame=Instance.new("Frame"); floatControlFrame.Size=UDim2.new(1,0,0,70); floatControlFrame.BackgroundColor3=Color3.fromRGB(248,249,250); floatControlFrame.Visible=false; floatControlFrame.LayoutOrder=3; floatControlFrame.Parent=page3; Instance.new("UICorner",floatControlFrame).CornerRadius=UDim.new(0,6)
+local floatUpButton=Instance.new("TextButton"); floatUpButton.Text="↑ 上升"; floatUpButton.Size=UDim2.new(0.48,0,0,28); floatUpButton.Position=UDim2.new(0.02,0,0,4); floatUpButton.BackgroundColor3=Color3.fromRGB(70,130,200); floatUpButton.TextColor3=Color3.fromRGB(255,255,255); floatUpButton.Font=Enum.Font.GothamBold; floatUpButton.TextSize=13; floatUpButton.Parent=floatControlFrame; Instance.new("UICorner",floatUpButton).CornerRadius=UDim.new(0,5)
+local floatDownButton=Instance.new("TextButton"); floatDownButton.Text="↓ 下降"; floatDownButton.Size=UDim2.new(0.48,0,0,28); floatDownButton.Position=UDim2.new(0.5,0,0,4); floatDownButton.BackgroundColor3=Color3.fromRGB(200,70,70); floatDownButton.TextColor3=Color3.fromRGB(255,255,255); floatDownButton.Font=Enum.Font.GothamBold; floatDownButton.TextSize=13; floatDownButton.Parent=floatControlFrame; Instance.new("UICorner",floatDownButton).CornerRadius=UDim.new(0,5)
+local floatSpeedInput=Instance.new("TextBox"); floatSpeedInput.Text="1"; floatSpeedInput.Size=UDim2.new(0.6,0,0,28); floatSpeedInput.Position=UDim2.new(0.2,0,0,38); floatSpeedInput.BackgroundColor3=Color3.fromRGB(255,255,255); floatSpeedInput.TextColor3=Color3.fromRGB(50,50,50); floatSpeedInput.Font=Enum.Font.Gotham; floatSpeedInput.TextSize=13; floatSpeedInput.Parent=floatControlFrame; Instance.new("UICorner",floatSpeedInput).CornerRadius=UDim.new(0,5)
+
+-- 頁面4：Slap Aura
+local auraRangeFrame=Instance.new("Frame"); auraRangeFrame.Size=UDim2.new(1,0,0,32); auraRangeFrame.BackgroundColor3=Color3.fromRGB(248,249,250); auraRangeFrame.LayoutOrder=1; auraRangeFrame.Parent=page4; Instance.new("UICorner",auraRangeFrame).CornerRadius=UDim.new(0,6)
+local auraRangeLabel=Instance.new("TextLabel"); auraRangeLabel.Text="範圍:"; auraRangeLabel.Size=UDim2.new(0,55,1,0); auraRangeLabel.Position=UDim2.new(0,6,0,0); auraRangeLabel.BackgroundTransparency=1; auraRangeLabel.Font=Enum.Font.GothamBold; auraRangeLabel.TextSize=13; auraRangeLabel.TextColor3=Color3.fromRGB(85,85,85); auraRangeLabel.TextXAlignment=Enum.TextXAlignment.Left; auraRangeLabel.Parent=auraRangeFrame
+local auraRangeInput=Instance.new("TextBox"); auraRangeInput.Text="17"; auraRangeInput.PlaceholderText="預設17"; auraRangeInput.Size=UDim2.new(0,100,0,22); auraRangeInput.Position=UDim2.new(0,60,0,5); auraRangeInput.BackgroundColor3=Color3.fromRGB(255,255,255); auraRangeInput.TextColor3=Color3.fromRGB(50,50,50); auraRangeInput.Font=Enum.Font.Gotham; auraRangeInput.TextSize=13; auraRangeInput.BorderSizePixel=1; auraRangeInput.BorderColor3=Color3.fromRGB(221,221,221); auraRangeInput.Parent=auraRangeFrame; Instance.new("UICorner",auraRangeInput).CornerRadius=UDim.new(0,5)
+
+local auraStatusFrame=Instance.new("Frame"); auraStatusFrame.Size=UDim2.new(1,0,0,32); auraStatusFrame.BackgroundColor3=Color3.fromRGB(248,249,250); auraStatusFrame.LayoutOrder=2; auraStatusFrame.Parent=page4; Instance.new("UICorner",auraStatusFrame).CornerRadius=UDim.new(0,6)
+local auraStatusLabel=Instance.new("TextLabel"); auraStatusLabel.Text="Slap Aura:"; auraStatusLabel.Size=UDim2.new(0,85,1,0); auraStatusLabel.Position=UDim2.new(0,6,0,0); auraStatusLabel.BackgroundTransparency=1; auraStatusLabel.Font=Enum.Font.GothamBold; auraStatusLabel.TextSize=12; auraStatusLabel.TextColor3=Color3.fromRGB(85,85,85); auraStatusLabel.TextXAlignment=Enum.TextXAlignment.Left; auraStatusLabel.Parent=auraStatusFrame
+local auraStateText=Instance.new("TextLabel"); auraStateText.Text="關閉"; auraStateText.Size=UDim2.new(0,55,0,22); auraStateText.Position=UDim2.new(0,90,0,5); auraStateText.BackgroundTransparency=1; auraStateText.Font=Enum.Font.Gotham; auraStateText.TextSize=13; auraStateText.TextColor3=Color3.fromRGB(150,150,150); auraStateText.Parent=auraStatusFrame
+local auraToggleBtn=Instance.new("TextButton"); auraToggleBtn.Text="啟動"; auraToggleBtn.Size=UDim2.new(0,50,0,22); auraToggleBtn.Position=UDim2.new(1,-55,0,5); auraToggleBtn.BackgroundColor3=Color3.fromRGB(76,175,80); auraToggleBtn.TextColor3=Color3.fromRGB(255,255,255); auraToggleBtn.Font=Enum.Font.GothamBold; auraToggleBtn.TextSize=12; auraToggleBtn.Parent=auraStatusFrame; Instance.new("UICorner",auraToggleBtn).CornerRadius=UDim.new(0,5)
+
+local auraHintFrame=Instance.new("Frame"); auraHintFrame.Size=UDim2.new(1,0,0,44); auraHintFrame.BackgroundColor3=Color3.fromRGB(255,243,205); auraHintFrame.LayoutOrder=3; auraHintFrame.Parent=page4; Instance.new("UICorner",auraHintFrame).CornerRadius=UDim.new(0,6)
+local auraHintLabel=Instance.new("TextLabel"); auraHintLabel.Size=UDim2.new(1,-12,1,0); auraHintLabel.Position=UDim2.new(0,6,0,0); auraHintLabel.BackgroundTransparency=1; auraHintLabel.Text="💡 開啟後先手動打一個人\n讓系統偵測到事件再自動循環"; auraHintLabel.TextSize=11; auraHintLabel.Font=Enum.Font.Gotham; auraHintLabel.TextColor3=Color3.fromRGB(120,80,0); auraHintLabel.TextWrapped=true; auraHintLabel.TextXAlignment=Enum.TextXAlignment.Left; auraHintLabel.Parent=auraHintFrame
+
+local statusLabel=Instance.new("TextLabel")
+statusLabel.Size=UDim2.new(0.9,0,0,26); statusLabel.Position=UDim2.new(0.05,0,1,-32)
+statusLabel.BackgroundColor3=Color3.fromRGB(255,235,238); statusLabel.Text="系統未啟動"
+statusLabel.TextSize=11; statusLabel.Font=Enum.Font.GothamBold; statusLabel.TextColor3=Color3.fromRGB(198,40,40); statusLabel.Parent=mainFrame
+Instance.new("UICorner",statusLabel).CornerRadius=UDim.new(0,5)
+
+-- ====================
+-- 功能實作
+-- ====================
+local function updateStatus()
+    local active={}
+    if toggles.speed then table.insert(active,"速度") end
+    if toggles.fullbright then table.insert(active,"全亮") end
+    if toggles.noclip then table.insert(active,"穿牆") end
+    if toggles.noFilter then table.insert(active,"無濾鏡") end
+    if auraEnabled then table.insert(active,"Aura") end
+    if #active>0 then
+        statusLabel.Text="✅ "..table.concat(active," | ")
+        statusLabel.BackgroundColor3=Color3.fromRGB(232,245,233); statusLabel.TextColor3=Color3.fromRGB(46,125,50)
+    else
+        statusLabel.Text="系統就緒"; statusLabel.BackgroundColor3=Color3.fromRGB(255,235,238); statusLabel.TextColor3=Color3.fromRGB(198,40,40)
+    end
+end
+
+local function toggleUIState(btn,frame,input,isActive)
+    if isActive then btn.Text="解除"; btn.BackgroundColor3=Color3.fromRGB(244,67,54); frame.BackgroundColor3=Color3.fromRGB(227,242,253); if input and input:IsA("TextBox") then input.TextEditable=false end
+    else btn.Text="啟動"; btn.BackgroundColor3=Color3.fromRGB(76,175,80); frame.BackgroundColor3=Color3.fromRGB(248,249,250); if input and input:IsA("TextBox") then input.TextEditable=true end end
+    updateStatus()
+end
+
+speedButton.MouseButton1Click:Connect(function()
+    toggles.speed=not toggles.speed
+    if toggles.speed then if not hasOriginalValues then getOriginalValues() end; values.speed=tonumber(speedInput.Text) or 70; applySpeed()
+    else applySpeed() end
+    toggleUIState(speedButton,speedFrame,speedInput,toggles.speed)
+end)
+
+jumpButton.MouseButton1Click:Connect(function()
+    toggles.jump=not toggles.jump
+    if toggles.jump then if not hasOriginalValues then getOriginalValues() end; values.jump=tonumber(jumpInput.Text) or 75; applyJump()
+    else applyJump() end
+    toggleUIState(jumpButton,jumpFrame,jumpInput,toggles.jump)
+end)
+
+gravButton.MouseButton1Click:Connect(function()
+    toggles.gravity=not toggles.gravity
+    if toggles.gravity then
+        if not hasOriginalValues then getOriginalValues() end
+        values.gravity=tonumber(gravInput.Text) or 50; Workspace.Gravity=values.gravity
+        if connections.gravity then connections.gravity:Disconnect() end
+        connections.gravity=Workspace:GetPropertyChangedSignal("Gravity"):Connect(function() if toggles.gravity then Workspace.Gravity=values.gravity end end)
+    else Workspace.Gravity=originalGravity; if connections.gravity then connections.gravity:Disconnect() end end
+    toggleUIState(gravButton,gravFrame,gravInput,toggles.gravity)
+end)
+
+fullbrightButton.MouseButton1Click:Connect(function()
+    toggles.fullbright=not toggles.fullbright
+    if toggles.fullbright then local v=tonumber(fullbrightInput.Text) or 0.8; values.fullbright=math.clamp(v,0,99); if v~=values.fullbright then fullbrightInput.Text=tostring(values.fullbright) end end
+    updateLighting(); toggleUIState(fullbrightButton,fullbrightFrame,fullbrightInput,toggles.fullbright)
+end)
+
+brightnessButton.MouseButton1Click:Connect(function()
+    toggles.brightness=not toggles.brightness
+    if toggles.brightness then values.brightness=tonumber(brightnessInput.Text) or 2 end
+    updateLighting(); toggleUIState(brightnessButton,brightnessFrame,brightnessInput,toggles.brightness)
+end)
+
+noFilterButton.MouseButton1Click:Connect(function()
+    toggles.noFilter=not toggles.noFilter
+    if toggles.noFilter then
+        noFilterStatus.Text="開啟"; noFilterStatus.TextColor3=Color3.fromRGB(46,125,50)
+        backupPostEffects()
+        if connections.noFilter then connections.noFilter:Disconnect() end
+        connections.noFilter=RunService.RenderStepped:Connect(function()
+            for _,v in pairs(Lighting:GetChildren()) do
+                if v:IsA("BloomEffect") then v.Intensity=0;v.Size=0;v.Threshold=2
+                elseif v:IsA("BlurEffect") then v.Size=0
+                elseif v:IsA("ColorCorrectionEffect") then v.Brightness=0;v.Contrast=0;v.Saturation=0;v.TintColor=Color3.fromRGB(255,255,255)
+                elseif v:IsA("SunRaysEffect") then v.Intensity=0;v.Spread=0
+                elseif v:IsA("DepthOfFieldEffect") then v.FarIntensity=0;v.NearIntensity=0 end
+            end
+            if Workspace.CurrentCamera then
+                for _,v in pairs(Workspace.CurrentCamera:GetChildren()) do
+                    if v:IsA("BloomEffect") then v.Intensity=0;v.Size=0;v.Threshold=2
+                    elseif v:IsA("BlurEffect") then v.Size=0
+                    elseif v:IsA("ColorCorrectionEffect") then v.Brightness=0;v.Contrast=0;v.Saturation=0;v.TintColor=Color3.fromRGB(255,255,255)
+                    elseif v:IsA("SunRaysEffect") then v.Intensity=0;v.Spread=0
+                    elseif v:IsA("DepthOfFieldEffect") then v.FarIntensity=0;v.NearIntensity=0 end
+                end
+            end
+        end)
+    else
+        noFilterStatus.Text="關閉"; noFilterStatus.TextColor3=Color3.fromRGB(150,150,150)
+        if connections.noFilter then connections.noFilter:Disconnect() end
+        for effect,backup in pairs(postEffectBackups) do if effect and effect.Parent then for prop,value in pairs(backup) do pcall(function() effect[prop]=value end) end end end
+        postEffectBackups={}
+    end
+    toggleUIState(noFilterButton,noFilterFrame,noFilterStatus,toggles.noFilter)
+end)
+
+nofogButton.MouseButton1Click:Connect(function()
+    toggles.nofog=not toggles.nofog
+    if toggles.nofog then
+        nofogStatus.Text="開啟"; nofogStatus.TextColor3=Color3.fromRGB(46,125,50)
+        backupAtmospheres()
+        if connections.nofog then connections.nofog:Disconnect() end
+        connections.nofog=RunService.RenderStepped:Connect(function()
+            Lighting.FogEnd=100000
+            for _,v in pairs(Lighting:GetDescendants()) do if v:IsA("Atmosphere") then v.Density=0;v.Offset=0;v.Glare=0;v.Haze=0 end end
+        end)
+    else
+        nofogStatus.Text="關閉"; nofogStatus.TextColor3=Color3.fromRGB(150,150,150)
+        if connections.nofog then connections.nofog:Disconnect() end
+        Lighting.FogEnd=trueLightingBackup.FogEnd or 100000
+        for atm,backup in pairs(atmosphereBackups) do if atm and atm.Parent then for prop,value in pairs(backup) do pcall(function() atm[prop]=value end) end end end
+        atmosphereBackups={}
+    end
+    toggleUIState(nofogButton,nofogFrame,nofogStatus,toggles.nofog)
+end)
+
+cameraDistButton.MouseButton1Click:Connect(function()
+    toggles.cameraDist=not toggles.cameraDist
+    if toggles.cameraDist then
+        values.cameraDist=tonumber(cameraDistInput.Text) or 15
+        player.CameraMaxZoomDistance=values.cameraDist; player.CameraMinZoomDistance=values.cameraDist
+        if player.Character then local hum=player.Character:FindFirstChildOfClass("Humanoid"); if hum then hum.CameraOffset=Vector3.new(0,0,0) end end
+        task.delay(0.1,function() if toggles.cameraDist then player.CameraMinZoomDistance=0.5 end end)
+    else player.CameraMaxZoomDistance=128; player.CameraMinZoomDistance=0.5 end
+    toggleUIState(cameraDistButton,cameraDistFrame,cameraDistInput,toggles.cameraDist)
+end)
+
+noclipWallButton.MouseButton1Click:Connect(function()
+    toggles.noclipWall=not toggles.noclipWall
+    if toggles.noclipWall then
+        values.wallTrans=tonumber(noclipWallInput.Text) or 0.8
+        if connections.noclipWall then connections.noclipWall:Disconnect() end
+        connections.noclipWall=RunService.RenderStepped:Connect(function()
+            local cam=Workspace.CurrentCamera; local char=player.Character; if not char then return end
+            local head=char:FindFirstChild("Head"); if not head then return end
+            local camPos=cam.CFrame.Position; local headPos=head.Position
+            for _,part in pairs(Workspace:GetDescendants()) do
+                if part:IsA("BasePart") and not part:IsDescendantOf(char) then
+                    local hit=Workspace:Raycast(headPos,(camPos-headPos),RaycastParams.new())
+                    if hit and hit.Instance==part then
+                        if not transparencyCache[part] then transparencyCache[part]=part.Transparency end
+                        part.Transparency=values.wallTrans
+                    elseif transparencyCache[part] then part.Transparency=transparencyCache[part]; transparencyCache[part]=nil end
+                end
+            end
+        end)
+        player.DevCameraOcclusionMode=Enum.DevCameraOcclusionMode.Invisicam
+    else
+        if connections.noclipWall then connections.noclipWall:Disconnect() end
+        for part,t in pairs(transparencyCache) do part.Transparency=t end; transparencyCache={}
+        player.DevCameraOcclusionMode=Enum.DevCameraOcclusionMode.Zoom
+    end
+    toggleUIState(noclipWallButton,noclipWallFrame,noclipWallInput,toggles.noclipWall)
+end)
+
+noclipModeButton.MouseButton1Click:Connect(function()
+    if noclipMode=="all" then noclipMode="players"; noclipModeButton.Text="僅玩家"
+    else noclipMode="all"; noclipModeButton.Text="全部" end
+end)
+noclipButton.MouseButton1Click:Connect(function()
+    toggles.noclip=not toggles.noclip; applyNoclip()
+    if toggles.noclip then noclipButton.Text="解除"; noclipButton.BackgroundColor3=Color3.fromRGB(244,67,54); noclipMainFrame.BackgroundColor3=Color3.fromRGB(227,242,253)
+    else noclipButton.Text="啟動"; noclipButton.BackgroundColor3=Color3.fromRGB(76,175,80); noclipMainFrame.BackgroundColor3=Color3.fromRGB(248,249,250) end
+    updateStatus()
+end)
+
+local function createPlatform()
+    if platform then platform:Destroy() end
+    platform=Instance.new("Part"); platform.Name="FloatPlatform"; platform.Size=Vector3.new(10,0.5,10)
+    platform.Anchored=true; platform.CanCollide=true; platform.Transparency=1
+    local char=player.Character; if char then local hrp=char:FindFirstChild("HumanoidRootPart"); if hrp then platform.Position=Vector3.new(hrp.Position.X,hrp.Position.Y-3.5,hrp.Position.Z) end end
+    platform.Parent=Workspace
+end
+local function movePlatform(amount)
+    if platform and toggles.platform then
+        local char=player.Character; if char then local hrp=char:FindFirstChild("HumanoidRootPart"); if hrp then platform.Position=platform.Position+Vector3.new(0,amount,0); hrp.CFrame=CFrame.new(hrp.Position.X,platform.Position.Y+3.5,hrp.Position.Z) end end
+    end
+end
+floatButton.MouseButton1Click:Connect(function()
+    toggles.platform=not toggles.platform
+    if toggles.platform then floatButton.Text="解除"; floatButton.BackgroundColor3=Color3.fromRGB(244,67,54); floatStatus.Text="開啟"; floatStatus.TextColor3=Color3.fromRGB(46,125,50); floatToggleFrame.BackgroundColor3=Color3.fromRGB(227,242,253); floatControlFrame.Visible=true; createPlatform()
+    else floatButton.Text="啟動"; floatButton.BackgroundColor3=Color3.fromRGB(76,175,80); floatStatus.Text="關閉"; floatStatus.TextColor3=Color3.fromRGB(150,150,150); floatToggleFrame.BackgroundColor3=Color3.fromRGB(248,249,250); floatControlFrame.Visible=false; if platform then platform:Destroy() end end
+    updateStatus()
+end)
+floatUpButton.MouseButton1Down:Connect(function() isUpButtonPressed=true end)
+floatUpButton.MouseButton1Up:Connect(function() isUpButtonPressed=false end)
+floatDownButton.MouseButton1Down:Connect(function() isDownButtonPressed=true end)
+floatDownButton.MouseButton1Up:Connect(function() isDownButtonPressed=false end)
+floatSpeedInput.FocusLost:Connect(function() values.floatSpeed=tonumber(floatSpeedInput.Text) or 1; floatSpeedInput.Text=tostring(values.floatSpeed) end)
+
+RunService.RenderStepped:Connect(function()
+    if toggles.platform and platform then
+        local char=player.Character; if char then local hrp=char:FindFirstChild("HumanoidRootPart"); if hrp then platform.Position=Vector3.new(hrp.Position.X,platform.Position.Y,hrp.Position.Z); if isUpButtonPressed then movePlatform(values.floatSpeed) end; if isDownButtonPressed then movePlatform(-values.floatSpeed) end end end
+    end
+end)
+
+-- Slap Aura 按鈕邏輯
+auraToggleBtn.MouseButton1Click:Connect(function()
+    auraEnabled = not auraEnabled
+    if auraEnabled then
+        auraToggleBtn.Text="解除"; auraToggleBtn.BackgroundColor3=Color3.fromRGB(244,67,54)
+        auraStateText.Text="開啟"; auraStateText.TextColor3=Color3.fromRGB(46,125,50)
+        auraStatusFrame.BackgroundColor3=Color3.fromRGB(227,242,253)
+        values.auraRange = tonumber(auraRangeInput.Text) or 17
+        auraDetectedEvent=nil; auraDetectedArgs=nil
+        auraLoop = task.spawn(function()
+            while auraEnabled do
+                task.wait(1)
+                if not auraEnabled then break end
+                local target=getNearestInRange(values.auraRange)
+                if target and auraDetectedEvent then
+                    local newArgs={}
+                    for _,v in ipairs(auraDetectedArgs) do
+                        local replaced=false
+                        if typeof(v)=="Instance" then
+                            if v:IsA("Player") and v~=player then table.insert(newArgs,target); replaced=true
+                            elseif v:IsA("Model") and v:FindFirstChildOfClass("Humanoid") and v~=player.Character then table.insert(newArgs,target.Character or v); replaced=true
+                            elseif v:IsA("BasePart") then local p=v.Parent; if p and p:IsA("Model") and p:FindFirstChildOfClass("Humanoid") and p~=player.Character then local tp=target.Character and target.Character:FindFirstChild(v.Name) or v; table.insert(newArgs,tp); replaced=true end end
+                        end
+                        if not replaced then table.insert(newArgs,v) end
+                    end
+                    pcall(function() auraDetectedEvent:FireServer(table.unpack(newArgs)) end)
+                end
+            end
+        end)
+    else
+        auraToggleBtn.Text="啟動"; auraToggleBtn.BackgroundColor3=Color3.fromRGB(76,175,80)
+        auraStateText.Text="關閉"; auraStateText.TextColor3=Color3.fromRGB(150,150,150)
+        auraStatusFrame.BackgroundColor3=Color3.fromRGB(248,249,250)
+        if auraLoop then task.cancel(auraLoop); auraLoop=nil end
+    end
+    updateStatus()
+end)
+
+-- 拖曳
+local function enableDrag(frame,dragHandle)
+    local dragging=false; local dragInput,dragStart,startPos
+    local function update(input) local delta=input.Position-dragStart; frame.Position=UDim2.new(startPos.X.Scale,startPos.X.Offset+delta.X,startPos.Y.Scale,startPos.Y.Offset+delta.Y) end
+    dragHandle.InputBegan:Connect(function(input)
+        if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then
+            dragging=true; dragStart=input.Position; startPos=frame.Position
+            input.Changed:Connect(function() if input.UserInputState==Enum.UserInputState.End then dragging=false end end)
+        end
+    end)
+    dragHandle.InputChanged:Connect(function(input) if input.UserInputType==Enum.UserInputType.MouseMovement or input.UserInputType==Enum.UserInputType.Touch then dragInput=input end end)
+    UserInputService.InputChanged:Connect(function(input) if input==dragInput and dragging then update(input) end end)
+end
+enableDrag(mainFrame,titleBar)
+
+local miniFrame=Instance.new("Frame"); miniFrame.Size=UDim2.new(0,130,0,32); miniFrame.Position=UDim2.new(0.5,-65,0,30); miniFrame.BackgroundColor3=Color3.fromRGB(102,126,234); miniFrame.Visible=false; miniFrame.Parent=screenGui; Instance.new("UICorner",miniFrame).CornerRadius=UDim.new(0,6)
+local miniTitle=Instance.new("TextLabel"); miniTitle.Text="🎮 控制器"; miniTitle.Size=UDim2.new(1,-36,1,0); miniTitle.BackgroundTransparency=1; miniTitle.Font=Enum.Font.GothamBold; miniTitle.TextSize=16; miniTitle.TextColor3=Color3.fromRGB(255,255,255); miniTitle.Parent=miniFrame
+local expandButton=Instance.new("TextButton"); expandButton.Text="+"; expandButton.Size=UDim2.new(0,24,0,24); expandButton.Position=UDim2.new(1,-28,0,4); expandButton.BackgroundColor3=Color3.fromRGB(76,175,80); expandButton.TextColor3=Color3.fromRGB(255,255,255); expandButton.Parent=miniFrame; Instance.new("UICorner",expandButton).CornerRadius=UDim.new(0,5)
+enableDrag(miniFrame,miniFrame)
+minimizeButton.MouseButton1Click:Connect(function() mainFrame.Visible=false; miniFrame.Visible=true end)
+expandButton.MouseButton1Click:Connect(function() miniFrame.Visible=false; mainFrame.Visible=true end)
+closeButton.MouseButton1Click:Connect(function()
+    if auraLoop then task.cancel(auraLoop) end
+    screenGui:Destroy()
+    for _,v in pairs(connections) do if v then v:Disconnect() end end
+    Lighting.Ambient=trueLightingBackup.Ambient; Lighting.Brightness=trueLightingBackup.Brightness; Lighting.OutdoorAmbient=trueLightingBackup.OutdoorAmbient; Lighting.ColorShift_Top=trueLightingBackup.ColorShift_Top; Lighting.ColorShift_Bottom=trueLightingBackup.ColorShift_Bottom; Lighting.FogEnd=trueLightingBackup.FogEnd
+    for effect,backup in pairs(postEffectBackups) do if effect and effect.Parent then for prop,value in pairs(backup) do pcall(function() effect[prop]=value end) end end end
+    for atm,backup in pairs(atmosphereBackups) do if atm and atm.Parent then for prop,value in pairs(backup) do pcall(function() atm[prop]=value end) end end end
+    if platform then platform:Destroy() end
+    local char=player.Character; if char then local hum=char:FindFirstChildOfClass("Humanoid"); if hum then hum.WalkSpeed=originalSpeed; if hum.UseJumpPower then hum.JumpPower=originalJump else hum.JumpHeight=originalJump end end; for _,part in pairs(char:GetDescendants()) do if part:IsA("BasePart") then part.CanCollide=true end end end
+end)
+task.spawn(function() if player.Character then task.wait(0.1); getOriginalValues() end end)
+]])()
+end)
+
 -- 改變所有玩家名按鈕
-local changeNamesBtn = createButton("改變所有玩家名", 6, CommonButtonsScroll, 45)
+local changeNamesBtn = createButton("改變所有玩家名", 7, CommonButtonsScroll, 45)
 
 changeNamesBtn.MouseButton1Click:Connect(function()
-    -- Get local player
     local localPlayer = game:GetService("Players").LocalPlayer
     
-    -- Function to change a player's nametag
     local function changePlayerName(character)
-        -- Skip the local player
         if localPlayer.Character and character == localPlayer.Character then
             return
         end
@@ -677,7 +1295,6 @@ changeNamesBtn.MouseButton1Click:Connect(function()
         end
     end
     
-    -- Function to change all current players' nametags
     local function changeAllPlayerNames()
         local players = game:GetService("Workspace"):GetChildren()
         for _, player in pairs(players) do
@@ -687,26 +1304,21 @@ changeNamesBtn.MouseButton1Click:Connect(function()
         end
     end
     
-    -- Execute the function immediately for current players
     changeAllPlayerNames()
     
-    -- Create connections to monitor for new characters and respawns
     local connections = {}
     
-    -- Monitor workspace for new characters (new players joining)
     connections.childAdded = game:GetService("Workspace").ChildAdded:Connect(function(child)
         if child:IsA("Model") and child:FindFirstChild("Humanoid") then
-            -- Wait for character to fully load
             spawn(function()
                 wait(0.1)
                 changePlayerName(child)
                 
-                -- Monitor this character for respawns by watching for nametag changes
                 local nametagConnection
                 nametagConnection = child.ChildAdded:Connect(function(part)
                     if part.Name == "Head" then
                         spawn(function()
-                            wait(0.5) -- Wait for nametag to load
+                            wait(0.5)
                             changePlayerName(child)
                         end)
                     end
@@ -715,18 +1327,15 @@ changeNamesBtn.MouseButton1Click:Connect(function()
         end
     end)
     
-    -- Monitor players service for character spawning (respawns and rejoins)
     connections.playerAdded = game:GetService("Players").PlayerAdded:Connect(function(player)
         if player ~= localPlayer then
-            -- Handle when player's character spawns (first time and respawns)
             player.CharacterAdded:Connect(function(character)
                 spawn(function()
-                    wait(0.5) -- Wait for character to fully load
+                    wait(0.5)
                     changePlayerName(character)
                 end)
             end)
             
-            -- If player already has a character when they join, change their name immediately
             if player.Character then
                 spawn(function()
                     wait(0.5)
@@ -736,18 +1345,15 @@ changeNamesBtn.MouseButton1Click:Connect(function()
         end
     end)
     
-    -- Handle existing players' respawns and ensure they get renamed
     for _, player in pairs(game:GetService("Players"):GetPlayers()) do
         if player ~= localPlayer then
-            -- Add character spawning listener for existing players
             player.CharacterAdded:Connect(function(character)
                 spawn(function()
-                    wait(0.5) -- Wait for character to fully load
+                    wait(0.5)
                     changePlayerName(character)
                 end)
             end)
             
-            -- If existing player already has a character, change their name immediately
             if player.Character then
                 spawn(function()
                     wait(0.5)
@@ -757,7 +1363,6 @@ changeNamesBtn.MouseButton1Click:Connect(function()
         end
     end
     
-    -- Store the connections in the button so they can be accessed later if needed
     changeNamesBtn.NameChangeConnections = connections
 end)
 
@@ -786,7 +1391,6 @@ end)
 local serverHopWithItemsBtn = createButton("跳到少人服（會拿樹果和光球）", 10, CommonButtonsScroll, 45)
 
 serverHopWithItemsBtn.MouseButton1Click:Connect(function()
-    -- 執行會拿樹果和光球的腳本
     serverhop = true
     loadstring(game:HttpGet('https://raw.githubusercontent.com/Pro666Pro/autofarm-serverhop/main/main.lua'))()
 end)
@@ -795,7 +1399,6 @@ end)
 local simpleServerHopBtn = createButton("單純跳到少人服", 11, CommonButtonsScroll, 45)
 
 simpleServerHopBtn.MouseButton1Click:Connect(function()
-    -- 執行單純跳服功能
     local HttpService = game:GetService("HttpService")
     local TeleportService = game:GetService("TeleportService")
     
@@ -841,27 +1444,26 @@ bringflyBtn.MouseButton1Click:Connect(function()
 end)
 
 -- 重新排序所有按鈕
-wait(0.1) -- 確保所有元素都創建完成
+wait(0.1)
 
--- 按照想要的順序重新排列
 local orderedElements = {
-    nameBox,                  -- 輸入框
-    nameBtn,                 -- 設定假名
-    platformBtn,             -- 防虛空
-    antiAFKBtn,              -- 防掛機
-    autoReturnBtn,           -- 死後回場
-    remoteSpyBtn,            -- Remote Spy Mobile
-    changeNamesBtn,          -- 改變所有玩家名
-    giangHubBtn,             -- Giang hub
-    kykyHubBtn,              -- kyky hub
-    masteryBtn,              -- mastery
-    serverHopWithItemsBtn,   -- 跳到少人服（會拿樹果和光球）
-    simpleServerHopBtn,      -- 單純跳到少人服
+    nameBox,
+    nameBtn,
+    platformBtn,
+    antiAFKBtn,
+    autoReturnBtn,
+    remoteSpyBtn,
+    realCommonBtn,
+    changeNamesBtn,
+    giangHubBtn,
+    kykyHubBtn,
+    masteryBtn,
+    serverHopWithItemsBtn,
+    simpleServerHopBtn,
     infyieldBtn,
     bringflyBtn
 }
 
--- 重新設定每個元素的 LayoutOrder
 for i, element in ipairs(orderedElements) do
     if element then
         element.LayoutOrder = i
@@ -942,65 +1544,186 @@ local MasteryButtons = {
 MasteryButtons[1].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Flash-mastery/refs/heads/main/Flash%20second%20task'))()
 end)
-
 MasteryButtons[2].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/catlyn316/Need-baller/refs/heads/main/Need%20baller%20to%20farm%20booster%20mastery"))()
 end)
-
 MasteryButtons[3].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Space-mastery/refs/heads/main/Space%20mastery%20no%20need%20baller%20but%20alt'))()
 end)
-
 MasteryButtons[4].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Shard-mastery/refs/heads/main/Shard%20mastery'))()
 end)
-
 MasteryButtons[5].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Bus-mastery-need-null-help/refs/heads/main/Bus%20mastery'))()
 end)
-
 MasteryButtons[6].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Phase-mastery/refs/heads/main/Phase%20mastery'))()
 end)
-
 MasteryButtons[7].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Tycoon-and-hive-mastery/refs/heads/main/Tycoon%2Bhive%20mastery'))()
 end)
-
 MasteryButtons[8].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/moai-mastery/refs/heads/main/moai%20mastery'))()
 end)
-
 MasteryButtons[9].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Defense-mastery/refs/heads/main/Defense'))()
 end)
-
 MasteryButtons[10].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Car-key-mastery/refs/heads/main/Car%20key%20mastery'))()
 end)
-
 MasteryButtons[11].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Voodoo-mastery/refs/heads/main/Voodoo%20mastery'))()
 end)
-
 MasteryButtons[12].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Cherry-mastery/refs/heads/main/Cherry%20mastery'))()
 end)
-
 MasteryButtons[13].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/BONK-mastery/refs/heads/main/bonk'))()
 end)
-
 MasteryButtons[14].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Chain-mastery/refs/heads/main/No%20more%20alt%20need'))()
 end)
 
--- 創建其他分區的按鈕（在精通手套腳本按鈕後面添加）：
+-- ══════════════════════════════════════════
+-- 其他分區按鈕
+-- ══════════════════════════════════════════
 local OtherButtons = {
     createButton("隱形直到重置", 1, OtherScroll, 40),
-    createButton("守護+全壘打bug(在大廳按主場地)", 2, OtherScroll, 40),
-    createButton("自動拍擊: 關", 3, OtherScroll, 40)
+    createButton("自動拍擊: 關", 2, OtherScroll, 40),
+    createButton("防無限跳: 開", 3, OtherScroll, 40)  -- 預設開啟
 }
+OtherButtons[1].LayoutOrder = 1
+OtherButtons[1].Position = UDim2.new(0, 0, 0, 0)
+OtherButtons[2].LayoutOrder = 2
+OtherButtons[2].Position = UDim2.new(0, 0, 0, 0)
+OtherButtons[3].LayoutOrder = 3
+OtherButtons[3].Position = UDim2.new(0, 0, 0, 0)
+
+
+
+-- ══════════════════════════════════════════
+-- 防無限跳功能（預設開啟，支援平板觸控）
+-- 偵測方式：監聽 StateChanged Jumping 狀態（電腦/平板/手機通用）
+-- 邏輯：
+--   角色進入 Jumping 狀態 → 0.05秒後鎖 JumpHeight=0
+--   落地或5秒後解鎖
+--   鎖定期間 Jumped 事件觸發2次 → Kick
+-- ══════════════════════════════════════════
+local antiInfiniteJump = true
+local UserInputService = game:GetService("UserInputService")
+
+local originalJumpPower = 7.2
+local isJumpLocked = false
+local forceJumpCount = 0
+local unlockTimer = nil
+local antiJumpConns = {}
+
+local function clearAntiJumpConns()
+    for _, conn in ipairs(antiJumpConns) do
+        pcall(function() conn:Disconnect() end)
+    end
+    antiJumpConns = {}
+    if unlockTimer then
+        task.cancel(unlockTimer)
+        unlockTimer = nil
+    end
+end
+
+local function unlockJump()
+    isJumpLocked = false
+    forceJumpCount = 0
+    if unlockTimer then
+        task.cancel(unlockTimer)
+        unlockTimer = nil
+    end
+    local c = LocalPlayer.Character
+    if c then
+        local h = c:FindFirstChildOfClass("Humanoid")
+        if h then
+            h.JumpHeight = originalJumpPower
+        end
+    end
+end
+
+local function lockJump(hum)
+    if isJumpLocked then return end
+    isJumpLocked = true
+    forceJumpCount = 0
+    -- 延遲一幀讓角色正常起跳，之後才鎖定
+    task.delay(0.05, function()
+        if not isJumpLocked then return end  -- 若已被解鎖就不動作
+        hum.JumpHeight = 0
+    end)
+    -- 5秒保底解鎖（防止一直按著跳躍/飄浮不落地）
+    if unlockTimer then task.cancel(unlockTimer) end
+    unlockTimer = task.delay(5, function()
+        unlockTimer = nil
+        unlockJump()
+    end)
+end
+
+local function setupAntiInfiniteJump(char)
+    clearAntiJumpConns()
+
+    local hum = char:WaitForChild("Humanoid", 5)
+    if not hum then return end
+
+    originalJumpPower = (hum.JumpHeight ~= 0) and hum.JumpHeight or 7.2
+    isJumpLocked = false
+    forceJumpCount = 0
+
+    -- 【核心偵測】StateChanged：進入 Jumping 狀態代表按了跳躍
+    -- 電腦鍵盤、平板觸控按鈕、手機都會觸發此狀態，通用！
+    local stateConn = hum.StateChanged:Connect(function(_, newState)
+        if not antiInfiniteJump then return end
+
+        if newState == Enum.HumanoidStateType.Jumping then
+            -- 角色起跳 → 鎖定
+            lockJump(hum)
+
+        elseif newState == Enum.HumanoidStateType.Landed
+            or newState == Enum.HumanoidStateType.Running
+            or newState == Enum.HumanoidStateType.RunningNoPhysics
+            or newState == Enum.HumanoidStateType.Swimming then
+            -- 落地 → 解鎖
+            if isJumpLocked then
+                unlockJump()
+            end
+        end
+    end)
+    table.insert(antiJumpConns, stateConn)
+
+    -- 【強行跳躍偵測】鎖定期間 Jumped 觸發 = 被外部強行跳
+    local jumpedConn = hum.Jumped:Connect(function()
+        if not antiInfiniteJump then return end
+        if isJumpLocked then
+            forceJumpCount = forceJumpCount + 1
+            warn("[防無限跳] 鎖定期間強行跳躍，次數：" .. forceJumpCount)
+            if forceJumpCount >= 2 then
+                warn("[防無限跳] 強行跳躍達2次，執行踢出！")
+                game.Players.LocalPlayer:Kick("你差點被封了")
+            end
+        end
+    end)
+    table.insert(antiJumpConns, jumpedConn)
+end
+
+-- 角色重生時重新設定
+LocalPlayer.CharacterAdded:Connect(function(newChar)
+    task.wait(0.5)
+    if antiInfiniteJump then
+        setupAntiInfiniteJump(newChar)
+    end
+end)
+
+-- 初始啟動
+task.spawn(function()
+    task.wait(1)
+    local char = LocalPlayer.Character
+    if char and antiInfiniteJump then
+        setupAntiInfiniteJump(char)
+    end
+end)
 
 -- 獲取最近玩家的函數
 local function getClosestPlayer()
@@ -1031,7 +1754,6 @@ end
 local autoSlap = false
 local autoSlapConnection = nil
 
--- 按鈕功能綁定
 -- 隱形直到重置
 OtherButtons[1].MouseButton1Click:Connect(function()
     pcall(function()
@@ -1043,55 +1765,16 @@ OtherButtons[1].MouseButton1Click:Connect(function()
     end)
 end)
 
--- 守護+全壘打bug
-OtherButtons[2].MouseButton1Click:Connect(function()
-    pcall(function()
-        fireclickdetector(workspace.Lobby["Guardian Angel"].ClickDetector)
-        wait(0.1)
-        
-        local closestPlayer = getClosestPlayer()
-        if closestPlayer then
-            local args = {
-                [1] = closestPlayer
-            }
-            game:GetService("ReplicatedStorage").GeneralAbility:FireServer(unpack(args))
-        end
-        wait(0.1)
-        
-        fireclickdetector(workspace.Lobby["Home Run"].ClickDetector)
-        wait(0.1)
-        
-        local args = {
-            [1] = {
-                ["start"] = true
-            }
-        }
-        game:GetService("ReplicatedStorage").HomeRun:FireServer(unpack(args))
-        
-        wait(6)
-        
-        local args = {
-            [1] = {
-                ["finished"] = true
-            }
-        }
-        game:GetService("ReplicatedStorage").HomeRun:FireServer(unpack(args))
-    end)
-end)
-
 -- 自動拍擊
-OtherButtons[3].MouseButton1Click:Connect(function()
+OtherButtons[2].MouseButton1Click:Connect(function()
     autoSlap = not autoSlap
-    OtherButtons[3].Text = autoSlap and "自動拍擊: 開" or "自動拍擊: 關"
+    OtherButtons[2].Text = autoSlap and "自動拍擊: 開" or "自動拍擊: 關"
     
     if autoSlap then
         autoSlapConnection = task.spawn(function()
             while autoSlap do
                 pcall(function()
-                    -- 方法1: 使用 UserInputService 模擬按鍵
-                    local UserInputService = game:GetService("UserInputService")
                     local success1 = pcall(function()
-                        -- 模擬按下鼠標左鍵
                         UserInputService.InputBegan:Fire({
                             UserInputType = Enum.UserInputType.MouseButton1,
                             UserInputState = Enum.UserInputState.Begin
@@ -1103,7 +1786,6 @@ OtherButtons[3].MouseButton1Click:Connect(function()
                         })
                     end)
                     
-                    -- 方法2: 如果方法1失敗，使用 VirtualInputManager
                     if not success1 then
                         local virtualInputManager = game:GetService("VirtualInputManager")
                         local camera = workspace.CurrentCamera
@@ -1115,7 +1797,6 @@ OtherButtons[3].MouseButton1Click:Connect(function()
                         virtualInputManager:SendMouseButtonEvent(centerX, centerY, 0, false, game, 1)
                     end
                     
-                    -- 方法3: 直接觸發工具的激活事件
                     local character = LocalPlayer.Character
                     if character then
                         local tool = character:FindFirstChildOfClass("Tool")
@@ -1135,6 +1816,56 @@ OtherButtons[3].MouseButton1Click:Connect(function()
     end
 end)
 
+-- 防無限跳 開關按鈕
+OtherButtons[3].MouseButton1Click:Connect(function()
+    antiInfiniteJump = not antiInfiniteJump
+    OtherButtons[3].Text = antiInfiniteJump and "防無限跳: 開" or "防無限跳: 關"
+
+    if antiInfiniteJump then
+        local char = LocalPlayer.Character
+        if char then setupAntiInfiniteJump(char) end
+    else
+        clearAntiJumpConns()
+        isJumpLocked = false
+        forceJumpCount = 0
+        local char = LocalPlayer.Character
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then hum.JumpHeight = originalJumpPower end
+        end
+    end
+end)
+
+
+-- ══════════════════════════════════════════
+-- Slap Aura 功能
+-- 掃描使用者工具的 RemoteEvent，找出帶有玩家目標參數的事件
+-- 開啟後每秒對範圍內最近玩家持續觸發該事件
+-- ══════════════════════════════════════════
+
+-- 找最近的玩家（在範圍內）
+local function getNearestPlayerInRange(range)
+    local char = LocalPlayer.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return nil end
+    local myPos = char.HumanoidRootPart.Position
+    local nearest, nearestDist = nil, math.huge
+    for _, p in ipairs(game.Players:GetPlayers()) do
+        if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+            local dist = (p.Character.HumanoidRootPart.Position - myPos).Magnitude
+            if dist <= range and dist < nearestDist then
+                nearest = p
+                nearestDist = dist
+            end
+        end
+    end
+    return nearest
+end
+
+-- 掃描工具的所有 RemoteEvent 呼叫，找出帶 Player 參數的事件
+
+
+
+
 
 -- 分區切換
 Section1.MouseButton1Click:Connect(function()
@@ -1144,7 +1875,6 @@ Section1.MouseButton1Click:Connect(function()
     MasteryScroll.Visible = false
     OtherScroll.Visible = false
     
-    -- 切換按鈕顏色以顯示當前分區
     Section1.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
     Section2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     Section3.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
@@ -1194,7 +1924,6 @@ Section4.MouseButton1Click:Connect(function()
     Section5.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 end)
 
--- 在分區切換部分添加Section5的處理（在 Section4.MouseButton1Click 後面添加）：
 Section5.MouseButton1Click:Connect(function()
     TPScroll.Visible = false
     CommonButtonsScroll.Visible = false
@@ -1213,20 +1942,26 @@ end)
 Section1.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 
 
--- 清理函數中添加自動拍擊的清理（在原有的 cleanUp 函數中添加）：
+-- 清理函數
 local function cleanUp()
     if generatedPlatform then
         generatedPlatform:Destroy()
         generatedPlatform = nil
     end
-    -- 添加以下內容：
     if autoSlapConnection then
         task.cancel(autoSlapConnection)
         autoSlapConnection = nil
     end
     autoSlap = false
+    clearAntiJumpConns()
+    isJumpLocked = false
+    forceJumpCount = 0
+    local char = LocalPlayer.Character
+    if char then
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then hum.JumpHeight = originalJumpPower end
+    end
 end
-
 
 -- 添加清理事件
 script.AncestryChanged:Connect(function(_, newParent)
@@ -1241,9 +1976,3 @@ if _G.maolingHubLoaded then
     return
 end
 _G.maolingHubLoaded = true
-
-
-
-
- 
-
