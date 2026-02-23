@@ -962,20 +962,14 @@ OtherButtons[3].Position = UDim2.new(0, 0, 0, 0)
 
 
 -- ══════════════════════════════════════════
+-- ══════════════════════════════════════════
 -- 防無限跳功能（預設開啟，支援平板觸控）
--- 偵測方式：監聽 StateChanged Jumping 狀態（電腦/平板/手機通用）
--- 邏輯：
---   角色進入 Jumping 狀態 → 0.05秒後鎖 JumpHeight=0
---   落地或5秒後解鎖
---   鎖定期間 Jumped 事件觸發2次 → Kick
+-- 邏輯：純偵測，不修改任何 Humanoid 屬性
+--   跳躍後進入 inAir 狀態
+--   inAir 期間再次偵測到 Jumping 狀態累計 2 次 → 踢出
+--   落地後重置計數
 -- ══════════════════════════════════════════
 local antiInfiniteJump = true
-local UserInputService = game:GetService("UserInputService")
-
-local originalJumpPower = 7.2
-local isJumpLocked = false
-local forceJumpCount = 0
-local unlockTimer = nil
 local antiJumpConns = {}
 
 local function clearAntiJumpConns()
@@ -983,62 +977,6 @@ local function clearAntiJumpConns()
         pcall(function() conn:Disconnect() end)
     end
     antiJumpConns = {}
-    if unlockTimer then
-        task.cancel(unlockTimer)
-        unlockTimer = nil
-    end
-end
-
-local function unlockJump()
-    isJumpLocked = false
-    forceJumpCount = 0
-    if unlockTimer then
-        task.cancel(unlockTimer)
-        unlockTimer = nil
-    end
-    if lockEnforceTask then
-        task.cancel(lockEnforceTask)
-        lockEnforceTask = nil
-    end
-    local c = LocalPlayer.Character
-    if c then
-        local h = c:FindFirstChildOfClass("Humanoid")
-        if h then
-            h.JumpHeight = originalJumpPower
-            h.AutoJumpEnabled = true
-        end
-    end
-end
-
-local lockEnforceTask = nil  -- 持續把 JumpHeight 設 0 的循環任務
-
-local function lockJump(hum)
-    if isJumpLocked then return end
-    isJumpLocked = true
-    forceJumpCount = 0
-    -- 延遲一幀讓角色正常起跳，之後才鎖定並持續強制為 0
-    task.delay(0.05, function()
-        if not isJumpLocked then return end
-        hum.JumpHeight = 0
-        -- 停用 AutoJumpEnabled（平板自動跳）並持續把 JumpHeight 設為 0
-        hum.AutoJumpEnabled = false
-        if lockEnforceTask then task.cancel(lockEnforceTask) end
-        lockEnforceTask = task.spawn(function()
-            while isJumpLocked do
-                if hum and hum.Parent then
-                    hum.JumpHeight = 0
-                    hum.AutoJumpEnabled = false
-                end
-                task.wait(0.05)
-            end
-        end)
-    end)
-    -- 5秒保底解鎖
-    if unlockTimer then task.cancel(unlockTimer) end
-    unlockTimer = task.delay(5, function()
-        unlockTimer = nil
-        unlockJump()
-    end)
 end
 
 local function setupAntiInfiniteJump(char)
@@ -1047,44 +985,42 @@ local function setupAntiInfiniteJump(char)
     local hum = char:WaitForChild("Humanoid", 5)
     if not hum then return end
 
-    originalJumpPower = (hum.JumpHeight ~= 0) and hum.JumpHeight or 7.2
-    isJumpLocked = false
-    forceJumpCount = 0
+    local inAir = false        -- 是否在空中（第一跳後）
+    local airJumpCount = 0     -- 空中期間額外偵測到的 Jumping 次數
 
-    -- 【核心偵測】StateChanged：進入 Jumping 狀態代表按了跳躍
-    -- 電腦鍵盤、平板觸控按鈕、手機都會觸發此狀態，通用！
     local stateConn = hum.StateChanged:Connect(function(_, newState)
         if not antiInfiniteJump then return end
 
         if newState == Enum.HumanoidStateType.Jumping then
-            -- 角色起跳 → 鎖定
-            lockJump(hum)
+            if inAir then
+                -- 已在空中又偵測到 Jumping → 計數
+                airJumpCount = airJumpCount + 1
+                warn("[防無限跳] 空中跳躍偵測，次數：" .. airJumpCount)
+                warn("[防無限跳] 空中跳躍，踢出！")
+                game.Players.LocalPlayer:Kick("你差點被封了")
+            else
+                -- 正常第一跳，進入 inAir
+                inAir = true
+                airJumpCount = 0
+            end
+
+        elseif newState == Enum.HumanoidStateType.Freefall then
+            -- 確保進入自由落體後 inAir = true
+            if not inAir then
+                inAir = true
+                airJumpCount = 0
+            end
 
         elseif newState == Enum.HumanoidStateType.Landed
             or newState == Enum.HumanoidStateType.Running
             or newState == Enum.HumanoidStateType.RunningNoPhysics
             or newState == Enum.HumanoidStateType.Swimming then
-            -- 落地 → 解鎖
-            if isJumpLocked then
-                unlockJump()
-            end
+            -- 落地後重置
+            inAir = false
+            airJumpCount = 0
         end
     end)
     table.insert(antiJumpConns, stateConn)
-
-    -- 【強行跳躍偵測】鎖定期間 Jumped 觸發 = 被外部強行跳
-    local jumpedConn = hum.Jumped:Connect(function()
-        if not antiInfiniteJump then return end
-        if isJumpLocked then
-            forceJumpCount = forceJumpCount + 1
-            warn("[防無限跳] 鎖定期間強行跳躍，次數：" .. forceJumpCount)
-            if forceJumpCount >= 2 then
-                warn("[防無限跳] 強行跳躍達2次，執行踢出！")
-                game.Players.LocalPlayer:Kick("你差點被封了")
-            end
-        end
-    end)
-    table.insert(antiJumpConns, jumpedConn)
 end
 
 -- 角色重生時重新設定
@@ -1205,13 +1141,6 @@ OtherButtons[3].MouseButton1Click:Connect(function()
         if char then setupAntiInfiniteJump(char) end
     else
         clearAntiJumpConns()
-        isJumpLocked = false
-        forceJumpCount = 0
-        local char = LocalPlayer.Character
-        if char then
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum then hum.JumpHeight = originalJumpPower end
-        end
     end
 end)
 
@@ -1333,13 +1262,6 @@ local function cleanUp()
     end
     autoSlap = false
     clearAntiJumpConns()
-    isJumpLocked = false
-    forceJumpCount = 0
-    local char = LocalPlayer.Character
-    if char then
-        local hum = char:FindFirstChildOfClass("Humanoid")
-        if hum then hum.JumpHeight = originalJumpPower end
-    end
 end
 
 -- 添加清理事件
