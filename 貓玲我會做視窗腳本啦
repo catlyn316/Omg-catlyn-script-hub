@@ -898,7 +898,8 @@ local MasteryButtons = {
     createButton("巫毒", 11, MasteryScroll, 40),
     createButton("櫻桃", 12, MasteryScroll, 40),
     createButton("BONK", 13, MasteryScroll, 40),
-    createButton("chain", 14, MasteryScroll, 40)
+    createButton("chain", 14, MasteryScroll, 40),
+    createButton("彈簧", 15, MasteryScroll, 40)
 }
 
 MasteryButtons[1].MouseButton1Click:Connect(function()
@@ -942,6 +943,9 @@ MasteryButtons[13].MouseButton1Click:Connect(function()
 end)
 MasteryButtons[14].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Chain-mastery/refs/heads/main/No%20more%20alt%20need'))()
+end)
+MasteryButtons[15].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Spring'))()
 end)
 
 -- ══════════════════════════════════════════
