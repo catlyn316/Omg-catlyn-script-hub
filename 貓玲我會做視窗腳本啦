@@ -279,13 +279,13 @@ local Section4 = createSectionButton("🎯 精通腳本", 4, SideBar)
 local Section5 = createSectionButton("🔧 其他", 5, SideBar)
 
 
--- 修正：簡單高亮文字的一般按鈕樣式
+-- 修正：自動調整的按鈕樣式（移除手動位置設定）
 local function createButton(text, order, parent, spacing)
     local btn = Instance.new("TextButton", parent)
     btn.Size = UDim2.new(0, 180, 0, 35)
-    btn.Position = UDim2.new(0.5, -90, 0, 10 + (order - 1) * spacing)
     btn.Text = text
     btn.BackgroundColor3 = Color3.fromRGB(80, 140, 220)
+    btn.LayoutOrder = order  -- 使用 LayoutOrder 來控制順序
     
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.TextSize = 16
@@ -325,6 +325,14 @@ TPScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 TPScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 TPScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
+-- 為 TPScroll 添加自動排列
+local tpLayout = Instance.new("UIListLayout", TPScroll)
+tpLayout.Padding = UDim.new(0, 8)
+tpLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local tpPadding = Instance.new("UIPadding", TPScroll)
+tpPadding.PaddingTop = UDim.new(0, 8)
+
 -- 通用按鈕分頁
 local CommonButtonsScroll = Instance.new("ScrollingFrame", Content)
 CommonButtonsScroll.Size = UDim2.new(1, 0, 1, 0)
@@ -336,6 +344,14 @@ CommonButtonsScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 CommonButtonsScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 CommonButtonsScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
+-- 為 CommonButtonsScroll 添加自動排列
+local UIListLayout = Instance.new("UIListLayout", CommonButtonsScroll)
+UIListLayout.Padding = UDim.new(0, 8)
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local commonPadding = Instance.new("UIPadding", CommonButtonsScroll)
+commonPadding.PaddingTop = UDim.new(0, 8)
+
 local BadgeGlove = Instance.new("ScrollingFrame", Content)
 BadgeGlove.Size = UDim2.new(1, 0, 1, 0)
 BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 540)
@@ -345,6 +361,14 @@ BadgeGlove.Visible = false
 BadgeGlove.AutomaticCanvasSize = Enum.AutomaticSize.Y
 BadgeGlove.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 BadgeGlove.ScrollingDirection = Enum.ScrollingDirection.Y
+
+-- 為 BadgeGlove 添加自動排列
+local badgeLayout = Instance.new("UIListLayout", BadgeGlove)
+badgeLayout.Padding = UDim.new(0, 8)
+badgeLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local badgePadding = Instance.new("UIPadding", BadgeGlove)
+badgePadding.PaddingTop = UDim.new(0, 8)
 
 -- 精通腳本分區
 local MasteryScroll = Instance.new("ScrollingFrame", Content)
@@ -357,6 +381,14 @@ MasteryScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 MasteryScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 MasteryScroll.ScrollingDirection = Enum.ScrollingDirection.Y
 
+-- 為 MasteryScroll 添加自動排列
+local masteryLayout = Instance.new("UIListLayout", MasteryScroll)
+masteryLayout.Padding = UDim.new(0, 8)
+masteryLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local masteryPadding = Instance.new("UIPadding", MasteryScroll)
+masteryPadding.PaddingTop = UDim.new(0, 8)
+
 local OtherScroll = Instance.new("ScrollingFrame", Content)
 OtherScroll.Size = UDim2.new(1, 0, 1, 0)
 OtherScroll.CanvasSize = UDim2.new(0, 0, 0, 500)
@@ -366,6 +398,14 @@ OtherScroll.Visible = false
 OtherScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 OtherScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 OtherScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+
+-- 為 OtherScroll 添加自動排列
+local otherLayout = Instance.new("UIListLayout", OtherScroll)
+otherLayout.Padding = UDim.new(0, 8)
+otherLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local otherPadding = Instance.new("UIPadding", OtherScroll)
+otherPadding.PaddingTop = UDim.new(0, 8)
 
 
 -- 添加滾動框樣式改善
@@ -388,12 +428,6 @@ styleScrollFrame(BadgeGlove)
 styleScrollFrame(MasteryScroll)
 styleScrollFrame(CommonButtonsScroll)
 styleScrollFrame(OtherScroll)
-local otherLayout = Instance.new("UIListLayout", OtherScroll)
-otherLayout.Padding = UDim.new(0, 8)
-otherLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-local otherPadding = Instance.new("UIPadding", OtherScroll)
-otherPadding.PaddingTop = UDim.new(0, 8)
-
 
 -- 傳送分區（13 個按鈕）
 local TPButtons = {
@@ -458,11 +492,6 @@ TPButtons[13].MouseButton1Click:Connect(function()
     LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-215, -5, -3)
 end)
 
--- 修正：CommonButtonsScroll 的 UIListLayout
-local UIListLayout = Instance.new("UIListLayout", CommonButtonsScroll)
-UIListLayout.Padding = UDim.new(0, 5)
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-
 -- 保存當前設定的假名
 local currentFakeName = "catlyn"
 
@@ -477,6 +506,7 @@ nameBox.Font = Enum.Font.GothamBold
 nameBox.TextSize = 16
 nameBox.BorderSizePixel = 0
 nameBox.PlaceholderColor3 = Color3.fromRGB(200, 200, 200)
+nameBox.LayoutOrder = 1
 
 Instance.new("UICorner", nameBox).CornerRadius = UDim.new(0, 8)
 
@@ -499,7 +529,7 @@ end)
 
 
 -- 假名設定按鈕
-local nameBtn = createButton("設定假名", 1, CommonButtonsScroll, 40)
+local nameBtn = createButton("設定假名", 2, CommonButtonsScroll, 40)
 
 local function setNametag(text)
     currentFakeName = text ~= "" and text or "catlyn"
@@ -535,7 +565,7 @@ end)
 local platformEnabled = false
 local generatedPlatform = nil
 
-local platformBtn = createButton("防虛空: 關", 2, CommonButtonsScroll, 40)
+local platformBtn = createButton("防虛空: 關", 3, CommonButtonsScroll, 40)
 
 platformBtn.MouseButton1Click:Connect(function()
     platformEnabled = not platformEnabled
@@ -562,7 +592,7 @@ end)
 local antiAFK = false
 local virtualUser = game:GetService("VirtualUser")
 
-local antiAFKBtn = createButton("防掛機: 關", 3, CommonButtonsScroll, 40)
+local antiAFKBtn = createButton("防掛機: 關", 4, CommonButtonsScroll, 40)
 
 antiAFKBtn.MouseButton1Click:Connect(function()
     antiAFK = not antiAFK
@@ -578,14 +608,10 @@ LocalPlayer.Idled:Connect(function()
 end)
 
 --自動進場
-local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
-local LocalPlayer = Players.LocalPlayer
-
 local autoReturn = false
 local isReturning = false
 
-local autoReturnBtn = createButton("死後回場: 關", 4, CommonButtonsScroll, 40)
+local autoReturnBtn = createButton("死後回場: 關", 5, CommonButtonsScroll, 40)
 
 autoReturnBtn.MouseButton1Click:Connect(function()
     autoReturn = not autoReturn
@@ -619,7 +645,7 @@ task.spawn(function()
 end)
 
 -- Remote Spy Mobile按鈕
-local remoteSpyBtn = createButton("Remote Spy Mobile", 5, CommonButtonsScroll, 40)
+local remoteSpyBtn = createButton("Remote Spy Mobile", 6, CommonButtonsScroll, 40)
 
 remoteSpyBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/catlyn316/Remote-captor/refs/heads/main/Huh"))()
@@ -627,14 +653,14 @@ end)
 
 
 -- 真-常用？按鈕
-local realCommonBtn = createButton("真-常用？", 6, CommonButtonsScroll, 45)
+local realCommonBtn = createButton("真-常用？", 7, CommonButtonsScroll, 45)
 
 realCommonBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/catlyn316/Slap-battle-oof/refs/heads/main/Hell%20no"))()
 end)
 
 -- 改變所有玩家名按鈕
-local changeNamesBtn = createButton("改變所有玩家名", 7, CommonButtonsScroll, 45)
+local changeNamesBtn = createButton("改變所有玩家名", 8, CommonButtonsScroll, 45)
 
 changeNamesBtn.MouseButton1Click:Connect(function()
     local localPlayer = game:GetService("Players").LocalPlayer
@@ -727,28 +753,28 @@ changeNamesBtn.MouseButton1Click:Connect(function()
 end)
 
 -- Giang Hub Button
-local giangHubBtn = createButton("Giang hub", 7, CommonButtonsScroll, 45)
+local giangHubBtn = createButton("Giang hub", 9, CommonButtonsScroll, 45)
 
 giangHubBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Slap_Battles/main/Slap_Battles.lua",true))()
 end)
 
 -- Kyky Hub Button
-local kykyHubBtn = createButton("kyky hub", 8, CommonButtonsScroll, 45)
+local kykyHubBtn = createButton("kyky hub", 10, CommonButtonsScroll, 45)
 
 kykyHubBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://rawscripts.net/raw/Slap-Battles-KykyryzoB-Hub-SB-9008"))()
 end)
 
 -- mastery Button
-local masteryBtn = createButton("mastery", 9, CommonButtonsScroll, 45)
+local masteryBtn = createButton("mastery", 11, CommonButtonsScroll, 45)
 
 masteryBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/MasteryHelper.NewestVersion'))()
 end)
 
 -- 跳到少人服（會拿樹果和光球）按鈕
-local serverHopWithItemsBtn = createButton("跳到少人服（會拿樹果和光球）", 10, CommonButtonsScroll, 45)
+local serverHopWithItemsBtn = createButton("跳到少人服（會拿樹果和光球）", 12, CommonButtonsScroll, 45)
 
 serverHopWithItemsBtn.MouseButton1Click:Connect(function()
     serverhop = true
@@ -756,7 +782,7 @@ serverHopWithItemsBtn.MouseButton1Click:Connect(function()
 end)
 
 -- 單純跳到少人服按鈕
-local simpleServerHopBtn = createButton("單純跳到少人服", 11, CommonButtonsScroll, 45)
+local simpleServerHopBtn = createButton("單純跳到少人服", 13, CommonButtonsScroll, 45)
 
 simpleServerHopBtn.MouseButton1Click:Connect(function()
     local HttpService = game:GetService("HttpService")
@@ -791,44 +817,17 @@ simpleServerHopBtn.MouseButton1Click:Connect(function()
     joinSmallestServer()
 end)
 
-local infyieldBtn = createButton("infyield", 12, CommonButtonsScroll, 45)
+local infyieldBtn = createButton("infyield", 14, CommonButtonsScroll, 45)
 
 infyieldBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source'))()
 end)
 
-local bringflyBtn = createButton("bringfly", 13, CommonButtonsScroll, 45)
+local bringflyBtn = createButton("bringfly", 15, CommonButtonsScroll, 45)
 
 bringflyBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Bring-fly/refs/heads/main/Bring%20fly'))()
 end)
-
--- 重新排序所有按鈕
-wait(0.1)
-
-local orderedElements = {
-    nameBox,
-    nameBtn,
-    platformBtn,
-    antiAFKBtn,
-    autoReturnBtn,
-    remoteSpyBtn,
-    realCommonBtn,
-    changeNamesBtn,
-    giangHubBtn,
-    kykyHubBtn,
-    masteryBtn,
-    serverHopWithItemsBtn,
-    simpleServerHopBtn,
-    infyieldBtn,
-    bringflyBtn
-}
-
-for i, element in ipairs(orderedElements) do
-    if element then
-        element.LayoutOrder = i
-    end
-end
 
 -- 徽章手套分區
 local EgglerButtons = {
@@ -956,22 +955,9 @@ local OtherButtons = {
     createButton("自動拍擊: 關", 2, OtherScroll, 40),
     createButton("防無限跳: 開", 3, OtherScroll, 40)  -- 預設開啟
 }
-OtherButtons[1].LayoutOrder = 1
-OtherButtons[1].Position = UDim2.new(0, 0, 0, 0)
-OtherButtons[2].LayoutOrder = 2
-OtherButtons[2].Position = UDim2.new(0, 0, 0, 0)
-OtherButtons[3].LayoutOrder = 3
-OtherButtons[3].Position = UDim2.new(0, 0, 0, 0)
 
-
-
--- ══════════════════════════════════════════
 -- ══════════════════════════════════════════
 -- 防無限跳功能（預設開啟，支援平板觸控）
--- 邏輯：純偵測，不修改任何 Humanoid 屬性
---   跳躍後進入 inAir 狀態
---   inAir 期間再次偵測到 Jumping 狀態累計 2 次 → 踢出
---   落地後重置計數
 -- ══════════════════════════════════════════
 local antiInfiniteJump = true
 local antiJumpConns = {}
@@ -1147,36 +1133,6 @@ OtherButtons[3].MouseButton1Click:Connect(function()
         clearAntiJumpConns()
     end
 end)
-
-
--- ══════════════════════════════════════════
--- Slap Aura 功能
--- 掃描使用者工具的 RemoteEvent，找出帶有玩家目標參數的事件
--- 開啟後每秒對範圍內最近玩家持續觸發該事件
--- ══════════════════════════════════════════
-
--- 找最近的玩家（在範圍內）
-local function getNearestPlayerInRange(range)
-    local char = LocalPlayer.Character
-    if not char or not char:FindFirstChild("HumanoidRootPart") then return nil end
-    local myPos = char.HumanoidRootPart.Position
-    local nearest, nearestDist = nil, math.huge
-    for _, p in ipairs(game.Players:GetPlayers()) do
-        if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-            local dist = (p.Character.HumanoidRootPart.Position - myPos).Magnitude
-            if dist <= range and dist < nearestDist then
-                nearest = p
-                nearestDist = dist
-            end
-        end
-    end
-    return nearest
-end
-
--- 掃描工具的所有 RemoteEvent 呼叫，找出帶 Player 參數的事件
-
-
-
 
 
 -- 分區切換
