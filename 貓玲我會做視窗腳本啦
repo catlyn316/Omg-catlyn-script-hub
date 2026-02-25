@@ -898,7 +898,7 @@ local MasteryButtons = {
     createButton("櫻桃", 12, MasteryScroll, 40),
     createButton("BONK", 13, MasteryScroll, 40),
     createButton("chain", 14, MasteryScroll, 40),
-    createButton("彈簧", 15, MasteryScroll, 40)
+    createButton("彈簧(測試)", 15, MasteryScroll, 40)
 }
 
 MasteryButtons[1].MouseButton1Click:Connect(function()
