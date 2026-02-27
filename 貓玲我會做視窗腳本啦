@@ -129,7 +129,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的slap battle腳本區 ✨ v0.47(回歸中)"
+Title.Text = "✨ 貓玲的slap battle腳本區 ✨ v0.48(回歸中)"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -898,7 +898,8 @@ local MasteryButtons = {
     createButton("櫻桃", 12, MasteryScroll, 40),
     createButton("BONK", 13, MasteryScroll, 40),
     createButton("chain", 14, MasteryScroll, 40),
-    createButton("彈簧(測試)", 15, MasteryScroll, 40)
+    createButton("彈簧", 15, MasteryScroll, 40),
+    createButton("月球", 16, MasteryScroll, 40)
 }
 
 MasteryButtons[1].MouseButton1Click:Connect(function()
@@ -945,6 +946,9 @@ MasteryButtons[14].MouseButton1Click:Connect(function()
 end)
 MasteryButtons[15].MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Spring'))()
+end)
+MasteryButtons[16].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Moon'))()
 end)
 
 -- ══════════════════════════════════════════
