@@ -644,69 +644,114 @@ realCommonBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/catlyn316/Slap-battle-oof/refs/heads/main/Hell%20no"))()
 end)
 
-local changeNamesBtn = createButton("改變所有玩家名", 8, CommonButtonsScroll, 45)
-changeNamesBtn.MouseButton1Click:Connect(function()
-    local localPlayer = game:GetService("Players").LocalPlayer
+-- 改變所有玩家名（開關）
+local changeNamesEnabled = false
+local changeNamesConns = {}
 
-    local function changePlayerName(character)
-        if localPlayer.Character and character == localPlayer.Character then return end
-        if character:FindFirstChild("Head") then
-            if character.Head:FindFirstChild("Nametag") then
-                if character.Head.Nametag:FindFirstChild("Labels") then
-                    if character.Head.Nametag.Labels:FindFirstChild("TopLabel") then
-                        character.Head.Nametag.Labels.TopLabel.Text = "catlyn's helper"
-                    end
+local changeNamesBtn = createButton("改變玩家名: 關", 8, CommonButtonsScroll, 45)
+
+local function applyNameToChar(character)
+    -- 跳過自己
+    if character == LocalPlayer.Character then return end
+    task.spawn(function()
+        -- 等待 Head 和 Nametag 載入
+        local head = character:WaitForChild("Head", 5)
+        if not head then return end
+        local nametag = head:WaitForChild("Nametag", 5)
+        if not nametag then return end
+        local labels = nametag:WaitForChild("Labels", 5)
+        if not labels then return end
+        local topLabel = labels:WaitForChild("TopLabel", 5)
+        if not topLabel then return end
+        topLabel.Text = "catlyn's helper"
+    end)
+end
+
+local function applyNamesToAll()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            applyNameToChar(player.Character)
+        end
+    end
+end
+
+local function startChangeNames()
+    -- 套用到目前所有玩家
+    applyNamesToAll()
+
+    -- 新玩家加入 → 監聽其角色
+    local c1 = Players.PlayerAdded:Connect(function(player)
+        if not changeNamesEnabled then return end
+        -- 監聽此玩家的每次角色重生
+        player.CharacterAdded:Connect(function(char)
+            if changeNamesEnabled then
+                task.wait(0.3)
+                applyNameToChar(char)
+            end
+        end)
+        -- 如果玩家已有角色
+        if player.Character then
+            task.wait(0.3)
+            applyNameToChar(player.Character)
+        end
+    end)
+
+    -- 已在線玩家每次重生也要改
+    local c2 = Players.PlayerRemoving:Connect(function() end) -- placeholder
+    local charConns = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            local cc = player.CharacterAdded:Connect(function(char)
+                if changeNamesEnabled then
+                    task.wait(0.3)
+                    applyNameToChar(char)
                 end
-            end
+            end)
+            table.insert(charConns, cc)
         end
     end
 
-    local function changeAllPlayerNames()
-        for _, player in pairs(game:GetService("Workspace"):GetChildren()) do
-            if player:IsA("Model") and player:FindFirstChild("Humanoid") then
-                changePlayerName(player)
-            end
-        end
+    changeNamesConns = { c1, c2 }
+    for _, cc in ipairs(charConns) do
+        table.insert(changeNamesConns, cc)
     end
 
-    changeAllPlayerNames()
-
-    local connections = {}
-    connections.childAdded = game:GetService("Workspace").ChildAdded:Connect(function(child)
-        if child:IsA("Model") and child:FindFirstChild("Humanoid") then
-            spawn(function()
-                wait(0.1)
-                changePlayerName(child)
-                child.ChildAdded:Connect(function(part)
-                    if part.Name == "Head" then
-                        spawn(function() wait(0.5); changePlayerName(child) end)
-                    end
-                end)
-            end)
-        end
-    end)
-    connections.playerAdded = game:GetService("Players").PlayerAdded:Connect(function(player)
-        if player ~= localPlayer then
-            player.CharacterAdded:Connect(function(character)
-                spawn(function() wait(0.5); changePlayerName(character) end)
-            end)
-            if player.Character then
-                spawn(function() wait(0.5); changePlayerName(player.Character) end)
+    -- 持續輪詢確保名字不被遊戲重置（每3秒掃一次）
+    local loopConn
+    loopConn = task.spawn(function()
+        while changeNamesEnabled do
+            task.wait(3)
+            if changeNamesEnabled then
+                applyNamesToAll()
             end
         end
     end)
-    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-        if player ~= localPlayer then
-            player.CharacterAdded:Connect(function(character)
-                spawn(function() wait(0.5); changePlayerName(character) end)
-            end)
-            if player.Character then
-                spawn(function() wait(0.5); changePlayerName(player.Character) end)
-            end
-        end
-    end
+    table.insert(changeNamesConns, { disconnect = function()
+        changeNamesEnabled = false -- 讓 while 自然結束
+    end })
+end
 
-    changeNamesBtn.NameChangeConnections = connections
+local function stopChangeNames()
+    for _, conn in ipairs(changeNamesConns) do
+        pcall(function()
+            if typeof(conn) == "RBXScriptConnection" then
+                conn:Disconnect()
+            elseif type(conn) == "table" and conn.disconnect then
+                conn:disconnect()
+            end
+        end)
+    end
+    changeNamesConns = {}
+end
+
+changeNamesBtn.MouseButton1Click:Connect(function()
+    changeNamesEnabled = not changeNamesEnabled
+    changeNamesBtn.Text = changeNamesEnabled and "改變玩家名: 開" or "改變玩家名: 關"
+    if changeNamesEnabled then
+        startChangeNames()
+    else
+        stopChangeNames()
+    end
 end)
 
 local giangHubBtn = createButton("Giang hub", 9, CommonButtonsScroll, 45)
@@ -783,7 +828,6 @@ addScriptButton(BadgeGlove, "bounty手套",    9,  'https://raw.githubuserconten
 addScriptButton(BadgeGlove, "debug手套",     10, 'https://raw.githubusercontent.com/catlyn316/Debug-glove/refs/heads/main/Debug%20nah%20still%20exploit')
 addScriptButton(BadgeGlove, "paint手套",     11, 'https://raw.githubusercontent.com/catlyn316/Paint-mode/refs/heads/main/Paint%20mode')
 addScriptButton(BadgeGlove, "plate手套",     12, 'https://raw.githubusercontent.com/catlyn316/Plate-glove/refs/heads/main/Plate')
-addScriptButton(BadgeGlove, "企鵝手套", 13, "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Penguin")
 -- 🔽 在這裡新增徽章手套按鈕：
 
 -- ══════════════════════════════════════════
