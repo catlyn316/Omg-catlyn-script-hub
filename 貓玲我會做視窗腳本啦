@@ -851,6 +851,7 @@ addScriptButton(MasteryScroll, "BONK",         13, 'https://raw.githubuserconten
 addScriptButton(MasteryScroll, "chain",        14, 'https://raw.githubusercontent.com/catlyn316/Chain-mastery/refs/heads/main/No%20more%20alt%20need')
 addScriptButton(MasteryScroll, "彈簧",         15, 'https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Spring')
 addScriptButton(MasteryScroll, "月球",         16, 'https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Moon')
+addScriptButton(MasteryScroll, "雜技演員", 17, "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Acrobat")
 -- 🔽 在這裡新增精通手套按鈕：
 
 -- ══════════════════════════════════════════
