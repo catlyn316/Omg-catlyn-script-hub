@@ -828,6 +828,7 @@ addScriptButton(BadgeGlove, "bounty手套",    9,  'https://raw.githubuserconten
 addScriptButton(BadgeGlove, "debug手套",     10, 'https://raw.githubusercontent.com/catlyn316/Debug-glove/refs/heads/main/Debug%20nah%20still%20exploit')
 addScriptButton(BadgeGlove, "paint手套",     11, 'https://raw.githubusercontent.com/catlyn316/Paint-mode/refs/heads/main/Paint%20mode')
 addScriptButton(BadgeGlove, "plate手套",     12, 'https://raw.githubusercontent.com/catlyn316/Plate-glove/refs/heads/main/Plate')
+addScriptButton(BadgeGlove, "企鵝手套", 13, "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Penguin")
 -- 🔽 在這裡新增徽章手套按鈕：
 
 -- ══════════════════════════════════════════
