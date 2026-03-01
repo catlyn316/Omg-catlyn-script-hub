@@ -126,7 +126,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的slap battle腳本區 ✨ v0.49"
+Title.Text = "✨ 貓玲的slap battle腳本區 ✨ v0.50"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -829,6 +829,7 @@ addScriptButton(BadgeGlove, "debug手套",     10, 'https://raw.githubuserconten
 addScriptButton(BadgeGlove, "paint手套",     11, 'https://raw.githubusercontent.com/catlyn316/Paint-mode/refs/heads/main/Paint%20mode')
 addScriptButton(BadgeGlove, "plate手套",     12, 'https://raw.githubusercontent.com/catlyn316/Plate-glove/refs/heads/main/Plate')
 addScriptButton(BadgeGlove, "企鵝手套", 13, "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Penguin")
+addScriptButton(BadgeGlove, "鍊金和其他有關聯的手套", 14, "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Alchemist%20and%20others")
 -- 🔽 在這裡新增徽章手套按鈕：
 
 -- ══════════════════════════════════════════
@@ -853,7 +854,9 @@ addScriptButton(MasteryScroll, "chain",        14, 'https://raw.githubuserconten
 addScriptButton(MasteryScroll, "彈簧",         15, 'https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Spring')
 addScriptButton(MasteryScroll, "月球",         16, 'https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Moon')
 addScriptButton(MasteryScroll, "雜技演員", 17, "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Acrobat")
+addScriptButton(MasteryScroll, "修理工", 18, "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Tinkerer")
 -- 🔽 在這裡新增精通手套按鈕：
+
 
 -- ══════════════════════════════════════════
 -- 其他分區按鈕
