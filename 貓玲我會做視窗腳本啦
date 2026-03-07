@@ -890,7 +890,6 @@ addScriptButton(MasteryScroll, "雜技演員",     17, "n", "https://raw.githubu
 addScriptButton(MasteryScroll, "修理工",       18, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Tinkerer")
 addScriptButton(MasteryScroll, "靈魂", 19, n, "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Soul")
 -- 🔽 在這裡新增精通手套按鈕：
-https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Soul
 
 
 -- ══════════════════════════════════════════
