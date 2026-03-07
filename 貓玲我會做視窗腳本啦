@@ -845,7 +845,7 @@ end)
 -- ══════════════════════════════════════════
 -- 🏅 徽章手套分區
 -- 新增按鈕只需加一行：
--- addScriptButton(父容器, "按鈕名", 順序, enablePlatform, "腳本網址")
+-- addScriptButton(BadgeGlove, "按鈕名", 順序, n, "腳本網址")
 -- enablePlatform: "y" = 按下時自動開啟防虛空（若尚未開啟）, "n" = 不影響（預設）
 -- ══════════════════════════════════════════
 addScriptButton(BadgeGlove, "eggler手套",              1,  "n", 'https://raw.githubusercontent.com/catlyn316/Eggler-badge-glove/refs/heads/main/Eggler%20badge%20glove')
@@ -867,7 +867,7 @@ addScriptButton(BadgeGlove, "鍊金和其他有關聯的手套",  14, "y", "http
 -- ══════════════════════════════════════════
 -- 🎯 精通手套分區
 -- 新增按鈕只需加一行：
--- addScriptButton(父容器, "按鈕名", 順序, enablePlatform, "腳本網址")
+-- addScriptButton(MasteryScroll, "按鈕名", 順序, n, "腳本網址")
 -- enablePlatform: "y" = 按下時自動開啟防虛空（若尚未開啟）, "n" = 不影響（預設）
 -- ══════════════════════════════════════════
 addScriptButton(MasteryScroll, "閃光(任務二)", 1,  "n", 'https://raw.githubusercontent.com/catlyn316/Flash-mastery/refs/heads/main/Flash%20second%20task')
@@ -888,7 +888,9 @@ addScriptButton(MasteryScroll, "彈簧",         15, "n", 'https://raw.githubuse
 addScriptButton(MasteryScroll, "月球",         16, "n", 'https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Moon')
 addScriptButton(MasteryScroll, "雜技演員",     17, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Acrobat")
 addScriptButton(MasteryScroll, "修理工",       18, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Tinkerer")
+addScriptButton(MasteryScroll, "靈魂", 19, n, "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Soul")
 -- 🔽 在這裡新增精通手套按鈕：
+https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Soul
 
 
 -- ══════════════════════════════════════════
