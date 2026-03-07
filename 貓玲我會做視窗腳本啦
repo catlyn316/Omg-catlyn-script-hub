@@ -126,7 +126,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1, -80, 0, 50)
 Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "✨ 貓玲的slap battle腳本區 ✨ v0.50"
+Title.Text = "✨ 貓玲的slap battle腳本區 ✨ v0.51"
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 22
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -889,6 +889,7 @@ addScriptButton(MasteryScroll, "月球",         16, "n", 'https://raw.githubuse
 addScriptButton(MasteryScroll, "雜技演員",     17, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Acrobat")
 addScriptButton(MasteryScroll, "修理工",       18, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Tinkerer")
 addScriptButton(MasteryScroll, "靈魂", 19, n, "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Soul")
+addScriptButton(MasteryScroll, "憤怒", 20, n, "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Rage")
 -- 🔽 在這裡新增精通手套按鈕：
 
 
