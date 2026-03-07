@@ -1,1309 +1,1085 @@
--- 貓玲的靈魂精通腳本 v0.9
-local CoreGui = game:GetService("CoreGui")
+-- 基本服務與玩家
 local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
 local Workspace = game:GetService("Workspace")
-local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
 
--- 清理舊GUI
-pcall(function() if CoreGui:FindFirstChild("LunarMasterUI") then CoreGui.LunarMasterUI:Destroy() end end)
-pcall(function() if playerGui:FindFirstChild("LunarMasterUI") then playerGui.LunarMasterUI:Destroy() end end)
-pcall(function()
-    if type(gethui) == "function" then
-        local hui = gethui()
-        if hui and hui:FindFirstChild("LunarMasterUI") then hui.LunarMasterUI:Destroy() end
+-- 儲存自定義名稱
+local savedName = "catlyn"
+
+-- 修改名稱標籤的函數
+local function changeNametag()
+    local playerName = LocalPlayer.Name
+    local character = workspace:FindFirstChild(playerName)
+    if character then
+        local head = character:FindFirstChild("Head")
+        if head then
+            local nametagFolder = head:FindFirstChild("Nametag")
+            if nametagFolder then
+                local labels = nametagFolder:FindFirstChild("Labels")
+                if labels then
+                    local topLabel = labels:FindFirstChild("TopLabel")
+                    if topLabel then
+                        topLabel.Text = savedName
+                    end
+                end
+            end
+        end
     end
+end
+
+-- 初次執行修改名稱
+changeNametag()
+
+-- 監聽角色重生事件，重生後重新應用名稱
+LocalPlayer.CharacterAdded:Connect(function(character)
+    character:WaitForChild("Head", 10)
+    wait(0.5)
+    changeNametag()
 end)
 
--- 變數
-local toggles = {
-    attacker     = false,
-    fixedPosition = false,
-    helpTarget   = false,
-    fixedPosHelp = true,
+-- 建立安全區平台
+local baseSize = Vector3.new(150, 5, 150)
+local basePosition = Vector3.new(5122, 119, 9513)
+
+local platform = Instance.new("Part")
+platform.Size = baseSize
+platform.Position = basePosition
+platform.Anchored = true
+platform.CanCollide = true
+platform.Transparency = 0.5
+platform.Color = Color3.fromRGB(100, 100, 100)
+platform.Material = Enum.Material.SmoothPlastic
+platform.Name = "LocalPlatform"
+platform.Parent = Workspace
+
+-- 顯示文字 Part
+local textPart = Instance.new("Part")
+textPart.Size = Vector3.new(50, 1, 50)
+textPart.Anchored = true
+textPart.CanCollide = false
+textPart.Transparency = 1
+textPart.Position = platform.Position - Vector3.new(0, 0.5, 0)
+textPart.Rotation = Vector3.new(180, 0, 0)
+textPart.Parent = Workspace
+
+local surfaceGui = Instance.new("SurfaceGui", textPart)
+surfaceGui.Face = Enum.NormalId.Top
+surfaceGui.AlwaysOnTop = true
+
+local label = Instance.new("TextLabel", surfaceGui)
+label.Text = "貓玲的安全區(>^ω^<)"
+label.Size = UDim2.new(1, 0, 1, 0)
+label.BackgroundTransparency = 1
+label.TextColor3 = Color3.fromRGB(255, 192, 203)
+label.TextScaled = true
+label.Font = Enum.Font.Fantasy
+
+-- 建立牆壁
+local function createWall(size, position)
+    local wall = Instance.new("Part")
+    wall.Size = size
+    wall.Position = position
+    wall.Anchored = true
+    wall.CanCollide = true
+    wall.Transparency = 0.5
+    wall.Color = Color3.fromRGB(100, 100, 100)
+    wall.Material = Enum.Material.SmoothPlastic
+    wall.Parent = Workspace
+end
+
+local wallHeight = 150
+createWall(Vector3.new(1, wallHeight, 150), basePosition + Vector3.new(baseSize.X/2, wallHeight/2, 0))
+createWall(Vector3.new(1, wallHeight, 150), basePosition - Vector3.new(baseSize.X/2, -wallHeight/2, 0))
+createWall(Vector3.new(150, wallHeight, 1), basePosition + Vector3.new(0, wallHeight/2, baseSize.Z/2))
+createWall(Vector3.new(150, wallHeight, 1), basePosition - Vector3.new(0, -wallHeight/2, baseSize.Z/2))
+createWall(baseSize, basePosition + Vector3.new(0, wallHeight, 0))
+
+-- GUI 主體
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+ScreenGui.Name = "MaolingHub"
+
+-- 主框架樣式
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 450, 0, 350)
+Frame.Position = UDim2.new(0.5, -225, 0.5, -175)
+Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+Frame.BorderSizePixel = 0
+Frame.Active = true
+Frame.Draggable = true
+
+local gradient = Instance.new("UIGradient", Frame)
+gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 35)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(35, 35, 50))
 }
-
-local values = {
-    questMode     = "第二任務",   -- "第一三任務" | "第二任務" | "第四任務"
-    helpDistance  = 5,
-    helpMode      = "被blast時重置",  -- "被blast時重置" | "被打後不重置"
-    targetPlayer  = nil,
-    fixedCFrame   = nil,
-}
-
-local connections = {
-    attacker     = nil,
-    fixedPosition = nil,
-    helpTarget   = nil,
-}
-
--- 固定位置相關
-local isPosLockEnabled = false
-local posLockLoop      = nil
-local savedPosition    = nil
-
--- 主題色：深紫/靛藍
-local THEME = {
-    primary     = Color3.fromRGB(123, 104, 238),
-    primaryDark = Color3.fromRGB(83,  64, 198),
-    accent      = Color3.fromRGB(179, 157, 255),
-    bg          = Color3.fromRGB(16,  14,  30),
-    bgPanel     = Color3.fromRGB(22,  18,  42),
-    bgRow       = Color3.fromRGB(30,  24,  56),
-    bgInput     = Color3.fromRGB(42,  34,  72),
-    titleBg     = Color3.fromRGB(26,  20,  48),
-    tabBg       = Color3.fromRGB(34,  28,  60),
-    tabActive   = Color3.fromRGB(55,  46,  95),
-    textMain    = Color3.fromRGB(230, 220, 255),
-    textSub     = Color3.fromRGB(180, 165, 240),
-    textMuted   = Color3.fromRGB(120, 108, 175),
-    red         = Color3.fromRGB(244,  67,  54),
-    statusBg    = Color3.fromRGB(18,   14,  38),
-}
-
--- ============================================================
--- 輔助函數
--- ============================================================
-local function findPlayerByPartialName(input)
-    if not input or input == "" then return nil, "請輸入玩家名稱" end
-    input = input:lower()
-    local matches = {}
-    for _, p in ipairs(Players:GetPlayers()) do
-        if p ~= player then
-            if p.Name:lower():sub(1, #input) == input or p.DisplayName:lower():sub(1, #input) == input then
-                table.insert(matches, p)
-            end
-        end
-    end
-    if #matches == 0 then return nil, "找不到玩家"
-    elseif #matches == 1 then return matches[1], nil
-    else
-        local names = {}
-        for _, p in ipairs(matches) do table.insert(names, p.Name) end
-        return nil, "找到多個玩家: " .. table.concat(names, ", ") .. "\n請輸入更多字元"
-    end
-end
-
--- 取得最近的其他玩家角色（含 Torso）
-local function getNearestTargetTorso()
-    local char = player.Character
-    if not char or not char:FindFirstChild("HumanoidRootPart") then return nil end
-    local myPos = char.HumanoidRootPart.Position
-    local nearest, minDist = nil, math.huge
-    for _, p in ipairs(Players:GetPlayers()) do
-        if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Torso") then
-            local d = (p.Character.HumanoidRootPart.Position - myPos).Magnitude
-            if d < minDist then
-                minDist = d
-                nearest = p
-            end
-        end
-    end
-    return nearest and nearest.Character and nearest.Character:FindFirstChild("Torso") or nil
-end
-
--- 判斷某玩家角色是否處於 ragdoll（找 Workspace[name].Ragdolled）
-local function isPlayerRagdoll(targetPlayer)
-    local result = false
-    pcall(function()
-        local folder = Workspace:FindFirstChild(targetPlayer.Name)
-        if folder then
-            local r = folder:FindFirstChild("Ragdolled")
-            if r then result = r.Value == true end
-        end
-    end)
-    return result
-end
-
--- 判斷自己是否 ragdoll
-local function isSelfRagdoll()
-    return isPlayerRagdoll(player)
-end
-
--- 讀取自己角色 Attributes
-local function getSelfAttr(name)
-    local char = player.Character
-    if not char then return nil end
-    return pcall(function() return char:GetAttribute(name) end) and char:GetAttribute(name) or nil
-end
-
--- ============================================================
--- UI 建構
--- ============================================================
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "LunarMasterUI"
-screenGui.ResetOnSpawn = false
-screenGui.IgnoreGuiInset = true
-screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
-screenGui.DisplayOrder = 10001
-
-local function parentUI(g)
-    -- 依序嘗試：gethui → CoreGui → playerGui
-    local ok = false
-    if not ok then
-        ok = pcall(function()
-            if type(gethui) == "function" then
-                g.Parent = gethui()
-            else
-                error("no gethui")
-            end
-        end)
-    end
-    if not ok then
-        ok = pcall(function()
-            g.Parent = CoreGui
-        end)
-    end
-    if not ok then
-        g.Parent = playerGui
-    end
-end
-parentUI(screenGui)
-
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 280, 0, 300)
-mainFrame.Position = UDim2.new(0.5, -140, 0.5, -150)
-mainFrame.BackgroundColor3 = THEME.bg
-mainFrame.BorderSizePixel = 0
-mainFrame.Parent = screenGui
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
-
-local stroke = Instance.new("UIStroke")
-stroke.Color = THEME.primaryDark
-stroke.Thickness = 1.5
-stroke.Parent = mainFrame
-
-local titleBar = Instance.new("Frame")
-titleBar.Size = UDim2.new(1, 0, 0, 32)
-titleBar.BackgroundColor3 = THEME.titleBg
-titleBar.Parent = mainFrame
-Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 10)
-
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, -60, 1, 0)
-title.BackgroundTransparency = 1
-title.Text = "貓玲的靈魂精通腳本"
-title.TextSize = 14
-title.Font = Enum.Font.GothamBold
-title.TextColor3 = THEME.accent
-title.Parent = titleBar
-
-local minimizeButton = Instance.new("TextButton")
-minimizeButton.Size = UDim2.new(0, 24, 0, 24)
-minimizeButton.Position = UDim2.new(1, -54, 0, 4)
-minimizeButton.BackgroundColor3 = THEME.tabActive
-minimizeButton.Text = "─"
-minimizeButton.TextColor3 = THEME.textMain
-minimizeButton.Parent = titleBar
-Instance.new("UICorner", minimizeButton).CornerRadius = UDim.new(0, 5)
-
-local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0, 24, 0, 24)
-closeButton.Position = UDim2.new(1, -28, 0, 4)
-closeButton.BackgroundColor3 = THEME.red
-closeButton.Text = "X"
-closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-closeButton.Parent = titleBar
-Instance.new("UICorner", closeButton).CornerRadius = UDim.new(0, 5)
-
--- 分頁列
-local tabBar = Instance.new("Frame")
-tabBar.Size = UDim2.new(0.9, 0, 0, 28)
-tabBar.Position = UDim2.new(0.05, 0, 0, 38)
-tabBar.BackgroundColor3 = THEME.tabBg
-tabBar.Parent = mainFrame
-Instance.new("UICorner", tabBar).CornerRadius = UDim.new(0, 6)
-
-local function createTab(text, index)
-    local tab = Instance.new("TextButton")
-    tab.Size = UDim2.new(0.5, -4, 1, -4)
-    tab.Position = UDim2.new((index-1)*0.5, 2, 0, 2)
-    tab.BackgroundColor3 = THEME.tabBg
-    tab.Text = text
-    tab.TextSize = 12
-    tab.Font = Enum.Font.GothamBold
-    tab.TextColor3 = THEME.textMuted
-    tab.Parent = tabBar
-    Instance.new("UICorner", tab).CornerRadius = UDim.new(0, 4)
-    return tab
-end
-
-local tab1 = createTab("攻擊者", 1)
-local tab2 = createTab("幫助者", 2)
-
-local contentContainer = Instance.new("Frame")
-contentContainer.Size = UDim2.new(0.9, 0, 0, 200)
-contentContainer.Position = UDim2.new(0.05, 0, 0, 72)
-contentContainer.BackgroundTransparency = 1
-contentContainer.Parent = mainFrame
-contentContainer.ClipsDescendants = true
-
-local function createScrollingPage(parent)
-    local page = Instance.new("ScrollingFrame")
-    page.Size = UDim2.new(1, 0, 1, 0)
-    page.BackgroundTransparency = 1
-    page.BorderSizePixel = 0
-    page.ScrollBarThickness = 4
-    page.ScrollBarImageColor3 = THEME.primary
-    page.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    page.Visible = false
-    page.Parent = parent
-    local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0, 6)
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    layout.Parent = page
-    local padding = Instance.new("UIPadding")
-    padding.PaddingRight = UDim.new(0, 6)
-    padding.Parent = page
-    return page
-end
-
-local page1 = createScrollingPage(contentContainer)
-local page2 = createScrollingPage(contentContainer)
-page1.Visible = true
-
-local function switchTab(n)
-    page1.Visible = (n == 1)
-    page2.Visible = (n == 2)
-    local tabs = {tab1, tab2}
-    for i, t in ipairs(tabs) do
-        t.BackgroundColor3 = (i == n) and THEME.tabActive or THEME.tabBg
-        t.TextColor3 = (i == n) and THEME.textMain or THEME.textMuted
-    end
-end
-
-tab1.MouseButton1Click:Connect(function() switchTab(1) end)
-tab2.MouseButton1Click:Connect(function() switchTab(2) end)
-switchTab(1)
-
--- 通用行
-local function createRow(parent, labelText, statusText, btnText, order)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 32)
-    frame.BackgroundColor3 = THEME.bgRow
-    frame.LayoutOrder = order or 0
-    frame.Parent = parent
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 6)
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0, 90, 1, 0)
-    label.Position = UDim2.new(0, 6, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = labelText
-    label.TextSize = 12
-    label.Font = Enum.Font.GothamBold
-    label.TextColor3 = THEME.textSub
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
-
-    local status = Instance.new("TextLabel")
-    status.Size = UDim2.new(0, 65, 0, 22)
-    status.Position = UDim2.new(0, 96, 0, 5)
-    status.BackgroundTransparency = 1
-    status.Text = statusText or "關閉"
-    status.TextSize = 11
-    status.Font = Enum.Font.Gotham
-    status.TextColor3 = THEME.textMuted
-    status.TextXAlignment = Enum.TextXAlignment.Left
-    status.Parent = frame
-
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 50, 0, 22)
-    btn.Position = UDim2.new(1, -55, 0, 5)
-    btn.BackgroundColor3 = THEME.primary
-    btn.Text = btnText or "啟動"
-    btn.TextSize = 12
-    btn.Font = Enum.Font.GothamBold
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Parent = frame
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 5)
-
-    return frame, status, btn
-end
-
--- 寬按鈕行（用於模式切換）
-local function createWideButtonRow(parent, labelText, btnText, btnColor, order)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 32)
-    frame.BackgroundColor3 = THEME.bgRow
-    frame.LayoutOrder = order or 0
-    frame.Parent = parent
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 6)
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0, 75, 1, 0)
-    label.Position = UDim2.new(0, 6, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = labelText
-    label.TextSize = 12
-    label.Font = Enum.Font.GothamBold
-    label.TextColor3 = THEME.textSub
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
-
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 160, 0, 22)
-    btn.Position = UDim2.new(0, 82, 0, 5)
-    btn.BackgroundColor3 = btnColor or THEME.primary
-    btn.Text = btnText
-    btn.TextSize = 10
-    btn.Font = Enum.Font.Gotham
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Parent = frame
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 5)
-
-    return frame, btn
-end
-
--- 帶輸入框行
-local function createInputRow(parent, labelText, defaultVal, unitText, order)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 32)
-    frame.BackgroundColor3 = THEME.bgRow
-    frame.LayoutOrder = order or 0
-    frame.Parent = parent
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 6)
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0, 85, 1, 0)
-    label.Position = UDim2.new(0, 6, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = labelText
-    label.TextSize = 12
-    label.Font = Enum.Font.GothamBold
-    label.TextColor3 = THEME.textSub
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
-
-    local input = Instance.new("TextBox")
-    input.Size = UDim2.new(0, 100, 0, 22)
-    input.Position = UDim2.new(0, 90, 0, 5)
-    input.BackgroundColor3 = THEME.bgInput
-    input.BorderSizePixel = 1
-    input.BorderColor3 = THEME.primaryDark
-    input.Text = defaultVal
-    input.TextSize = 12
-    input.Font = Enum.Font.Gotham
-    input.TextColor3 = THEME.textMain
-    input.Parent = frame
-    Instance.new("UICorner", input).CornerRadius = UDim.new(0, 5)
-
-    local unit = Instance.new("TextLabel")
-    unit.Size = UDim2.new(0, 40, 0, 22)
-    unit.Position = UDim2.new(0, 195, 0, 5)
-    unit.BackgroundTransparency = 1
-    unit.Text = unitText
-    unit.TextSize = 12
-    unit.Font = Enum.Font.Gotham
-    unit.TextColor3 = THEME.textMuted
-    unit.TextXAlignment = Enum.TextXAlignment.Left
-    unit.Parent = frame
-
-    return frame, input
-end
-
--- ============================================================
--- 頁面1：攻擊者（只有2個控制項）
--- ============================================================
-
--- 任務選擇
-local questModeFrame, questModeBtn = createWideButtonRow(
-    page1, "任務模式:", "第二任務",
-    Color3.fromRGB(60, 120, 200), 1
-)
-
--- 攻擊者主開關
-local attackerFrame, attackerStatus, attackerButton = createRow(page1, "開始攻擊:", "關閉", "啟動", 2)
-
--- 固定位置
-local fixedPosFrame, fixedPosStatus, fixedPosButton = createRow(page1, "固定位置:", "關閉", "啟動", 3)
-
--- ============================================================
--- 頁面2：幫助者
--- ============================================================
-
-local helpTargetFrame = Instance.new("Frame")
-helpTargetFrame.Size = UDim2.new(1, 0, 0, 68)
-helpTargetFrame.BackgroundColor3 = THEME.bgRow
-helpTargetFrame.LayoutOrder = 1
-helpTargetFrame.Parent = page2
-Instance.new("UICorner", helpTargetFrame).CornerRadius = UDim.new(0, 6)
-
-local helpTargetLabel = Instance.new("TextLabel")
-helpTargetLabel.Text = "幫助目標:"
-helpTargetLabel.Size = UDim2.new(0, 85, 0, 28)
-helpTargetLabel.Position = UDim2.new(0, 6, 0, 4)
-helpTargetLabel.BackgroundTransparency = 1
-helpTargetLabel.Font = Enum.Font.GothamBold
-helpTargetLabel.TextSize = 12
-helpTargetLabel.TextColor3 = THEME.textSub
-helpTargetLabel.TextXAlignment = Enum.TextXAlignment.Left
-helpTargetLabel.Parent = helpTargetFrame
-
-local helpTargetInput = Instance.new("TextBox")
-helpTargetInput.Size = UDim2.new(0, 70, 0, 22)
-helpTargetInput.Position = UDim2.new(0, 90, 0, 7)
-helpTargetInput.BackgroundColor3 = THEME.bgInput
-helpTargetInput.BorderSizePixel = 1
-helpTargetInput.BorderColor3 = THEME.primaryDark
-helpTargetInput.Text = ""
-helpTargetInput.PlaceholderText = "玩家名"
-helpTargetInput.TextSize = 12
-helpTargetInput.Font = Enum.Font.Gotham
-helpTargetInput.TextColor3 = THEME.textMain
-helpTargetInput.Parent = helpTargetFrame
-Instance.new("UICorner", helpTargetInput).CornerRadius = UDim.new(0, 5)
-
-local helpTargetButton = Instance.new("TextButton")
-helpTargetButton.Size = UDim2.new(0, 50, 0, 22)
-helpTargetButton.Position = UDim2.new(1, -55, 0, 7)
-helpTargetButton.BackgroundColor3 = THEME.primary
-helpTargetButton.Text = "啟動"
-helpTargetButton.TextSize = 12
-helpTargetButton.Font = Enum.Font.GothamBold
-helpTargetButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-helpTargetButton.Parent = helpTargetFrame
-Instance.new("UICorner", helpTargetButton).CornerRadius = UDim.new(0, 5)
-
-local helpTargetInfo = Instance.new("TextLabel")
-helpTargetInfo.Size = UDim2.new(1, -12, 0, 30)
-helpTargetInfo.Position = UDim2.new(0, 6, 0, 34)
-helpTargetInfo.BackgroundTransparency = 1
-helpTargetInfo.Text = "目標: 無"
-helpTargetInfo.TextSize = 11
-helpTargetInfo.Font = Enum.Font.Gotham
-helpTargetInfo.TextColor3 = THEME.textMuted
-helpTargetInfo.TextXAlignment = Enum.TextXAlignment.Left
-helpTargetInfo.TextWrapped = true
-helpTargetInfo.Parent = helpTargetFrame
-
--- 設定距離
-local helpDistanceFrame, helpDistanceInput = createInputRow(page2, "設定距離:", "5", "格", 2)
-
--- 幫助模式
-local helpModeFrame, helpModeButton = createWideButtonRow(
-    page2, "幫助模式:", "被blast時重置",
-    Color3.fromRGB(70, 130, 200), 3
-)
-
--- 傳送後固定
-local fixedPosHelpFrame, fixedPosHelpStatus, fixedPosHelpButton = createRow(page2, "傳送後固定:", "啟用", "解除", 4)
-
--- ============================================================
--- 狀態標籤
--- ============================================================
-local statusLabel = Instance.new("TextLabel")
-statusLabel.Size = UDim2.new(0.9, 0, 0, 26)
-statusLabel.Position = UDim2.new(0.05, 0, 1, -32)
-statusLabel.BackgroundColor3 = THEME.statusBg
-statusLabel.Text = "系統就緒"
-statusLabel.TextSize = 11
-statusLabel.Font = Enum.Font.GothamBold
-statusLabel.TextColor3 = THEME.primary
-statusLabel.Parent = mainFrame
-Instance.new("UICorner", statusLabel).CornerRadius = UDim.new(0, 5)
-
--- ============================================================
--- 狀態更新
--- ============================================================
-local function updateStatus()
-    local active = {}
-    if toggles.attacker then table.insert(active, "攻擊中") end
-    if toggles.helpTarget then table.insert(active, "幫助中") end
-    if isPosLockEnabled then table.insert(active, "位置鎖定") end
-
-    if #active > 0 then
-        statusLabel.Text = "✅ " .. table.concat(active, " | ")
-        statusLabel.TextColor3 = THEME.accent
-    else
-        statusLabel.Text = "系統就緒"
-        statusLabel.TextColor3 = THEME.primary
-    end
-end
-
-local function toggleUIState(btn, frame, status, isActive, activeText, inactiveText)
-    if isActive then
-        btn.Text = "解除"
-        btn.BackgroundColor3 = THEME.red
-        frame.BackgroundColor3 = Color3.fromRGB(20, 16, 40)
-        if status then
-            status.Text = activeText or "運行中"
-            status.TextColor3 = THEME.accent
-        end
-    else
-        btn.Text = "啟動"
-        btn.BackgroundColor3 = THEME.primary
-        frame.BackgroundColor3 = THEME.bgRow
-        if status then
-            status.Text = inactiveText or "關閉"
-            status.TextColor3 = THEME.textMuted
-        end
-    end
-    updateStatus()
-end
-
--- ============================================================
--- 固定位置（攻擊者頁）
--- ============================================================
-fixedPosButton.MouseButton1Click:Connect(function()
-    isPosLockEnabled = not isPosLockEnabled
-
-    if isPosLockEnabled then
-        local character = player.Character
-        if character and character:FindFirstChild("HumanoidRootPart") then
-            savedPosition = character.HumanoidRootPart.CFrame
-
-            posLockLoop = task.spawn(function()
-                while isPosLockEnabled and character and character:FindFirstChild("HumanoidRootPart") and savedPosition do
-                    character.HumanoidRootPart.CFrame = savedPosition
-                    task.wait()
-                end
-            end)
-
-            fixedPosStatus.Text = "固定中"
-            fixedPosStatus.TextColor3 = THEME.accent
-            fixedPosButton.Text = "解除"
-            fixedPosButton.BackgroundColor3 = THEME.red
-            fixedPosFrame.BackgroundColor3 = Color3.fromRGB(20, 16, 40)
-        else
-            isPosLockEnabled = false
-        end
-    else
-        if posLockLoop then
-            task.cancel(posLockLoop)
-            posLockLoop = nil
-        end
-        savedPosition = nil
-
-        fixedPosStatus.Text = "關閉"
-        fixedPosStatus.TextColor3 = THEME.textMuted
-        fixedPosButton.Text = "啟動"
-        fixedPosButton.BackgroundColor3 = THEME.primary
-        fixedPosFrame.BackgroundColor3 = THEME.bgRow
-    end
-    updateStatus()
-end)
-
--- ============================================================
--- 任務模式切換
--- ============================================================
-questModeBtn.MouseButton1Click:Connect(function()
-    if values.questMode == "第一三任務" then
-        values.questMode = "第二任務"
-        questModeBtn.Text = "第二任務"
-        questModeBtn.BackgroundColor3 = Color3.fromRGB(60, 120, 200)
-    elseif values.questMode == "第二任務" then
-        values.questMode = "第四任務"
-        questModeBtn.Text = "第四任務"
-        questModeBtn.BackgroundColor3 = Color3.fromRGB(180, 80, 50)
-    else
-        values.questMode = "第一三任務"
-        questModeBtn.Text = "第一三任務"
-        questModeBtn.BackgroundColor3 = Color3.fromRGB(100, 60, 180)
-    end
-    -- 如果攻擊中，停止
-    if toggles.attacker then
-        toggles.attacker = false
-        if connections.attacker then
-            task.cancel(connections.attacker)
-            connections.attacker = nil
-        end
-        toggleUIState(attackerButton, attackerFrame, attackerStatus, false)
-    end
-end)
-
--- ============================================================
--- 攻擊者主邏輯
--- ============================================================
-
--- 第一、三任務：souls < 100 → GeneralHit；souls >= 100 → 等幫助者條件（最短5秒）→ Ability(true)
-local function runQuest13()
-    while toggles.attacker do
-        local char = player.Character
-        if not char then task.wait(0.2) continue end
-
-        local souls = char:GetAttribute("souls") or 0
-
-        if souls < 100 then
-            local torso = getNearestTargetTorso()
-            if torso then
-                pcall(function()
-                    ReplicatedStorage.GeneralHit:FireServer(torso)
-                end)
-            end
-            task.wait(0.8)
-        else
-            -- souls >= 100，最短等 5 秒，且幫助者非 ragdoll 且在範圍內才發動
-            local abilityDist = 15
-            local function helperReady()
-                local myChar = player.Character
-                local myHrp = myChar and myChar:FindFirstChild("HumanoidRootPart")
-                if not myHrp then return false end
-                local nearestP, minDist = nil, math.huge
-                for _, p in ipairs(Players:GetPlayers()) do
-                    if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                        local d = (p.Character.HumanoidRootPart.Position - myHrp.Position).Magnitude
-                        if d < minDist then minDist = d; nearestP = p end
-                    end
-                end
-                if not nearestP then return false end
-                if isPlayerRagdoll(nearestP) then return false end
-                return minDist <= abilityDist
-            end
-
-            -- 最多等 5 秒，幫助者到了可提前發動
-            local waitTimeout = tick() + 5
-            while toggles.attacker and tick() < waitTimeout do
-                if helperReady() then break end
-                task.wait(0.1)
-            end
-            if not toggles.attacker then break end
-
-            pcall(function()
-                ReplicatedStorage.GeneralAbility:FireServer(true)
-            end)
-            task.wait(0.1)
-            -- 等 souls 重置
-            local timeout = tick() + 5
-            while toggles.attacker and tick() < timeout do
-                local c = player.Character
-                if c and (c:GetAttribute("souls") or 0) < 100 then break end
-                task.wait(0.1)
-            end
-        end
-    end
-end
-
--- 第二任務：souls < 100 → GeneralHit；souls >= 100 → charge；charge = 100 → Ability(true)
-local function runQuest2()
-    while toggles.attacker do
-        local char = player.Character
-        if not char then task.wait(0.2) continue end
-
-        local souls = char:GetAttribute("souls") or 0
-
-        if souls < 100 then
-            -- 攻擊最近目標直到 souls >= 100
-            local torso = getNearestTargetTorso()
-            if torso then
-                pcall(function()
-                    ReplicatedStorage.GeneralHit:FireServer(torso)
-                end)
-            end
-            task.wait(0.8)
-        else
-            -- 開始充能
-            local charge = char:GetAttribute("charge") or 0
-            if charge < 100 then
-                pcall(function()
-                    local eventsFolder = ReplicatedStorage:FindFirstChild("Events")
-                    if eventsFolder then
-                        local soulRemote = eventsFolder:FindFirstChild("soul")
-                        if soulRemote then
-                            soulRemote:FireServer("charge")
-                        end
-                    end
-                end)
-                task.wait(0.05)
-            else
-                -- charge = 100，等幫助者（最近玩家）從 ragdoll 恢復且在 15 單位內再發動能力
-                local function helperReadyToAbility()
-                    local myChar = player.Character
-                    local myHrp = myChar and myChar:FindFirstChild("HumanoidRootPart")
-                    if not myHrp then return false end
-                    -- 找最近玩家
-                    local nearestP = nil
-                    local minDist = math.huge
-                    for _, p in ipairs(Players:GetPlayers()) do
-                        if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                            local d = (p.Character.HumanoidRootPart.Position - myHrp.Position).Magnitude
-                            if d < minDist then
-                                minDist = d
-                                nearestP = p
-                            end
-                        end
-                    end
-                    if not nearestP then return false end
-                    -- 非 ragdoll 且在 15 單位內
-                    if isPlayerRagdoll(nearestP) then return false end
-                    return minDist <= 15
-                end
-
-                -- 等待條件成立（最多等 3 秒）
-                local waitTimeout = tick() + 3
-                while toggles.attacker and tick() < waitTimeout do
-                    if helperReadyToAbility() then break end
-                    task.wait(0.1)
-                end
-
-                if not toggles.attacker then break end
-
-                -- 發動能力
-                pcall(function()
-                    ReplicatedStorage.GeneralAbility:FireServer(true)
-                end)
-                task.wait(0.1)
-                -- 等待 souls 和 charge 重置後繼續
-                local timeout = tick() + 5
-                while toggles.attacker and tick() < timeout do
-                    local c = player.Character
-                    if c then
-                        local s = c:GetAttribute("souls") or 0
-                        local ch = c:GetAttribute("charge") or 0
-                        if s < 100 or ch < 100 then break end
-                    end
-                    task.wait(0.1)
-                end
-            end
-        end
-    end
-end
-
--- 第四任務：GeneralHit → 等目標非 ragdoll → GeneralAbility(false) → 等幫助者非 ragdoll → 重複
-local function runQuest4()
-    while toggles.attacker do
-        -- 找最近目標
-        local nearestPlayer = nil
-        local char = player.Character
-        if char and char:FindFirstChild("HumanoidRootPart") then
-            local myPos = char.HumanoidRootPart.Position
-            local minDist = math.huge
-            for _, p in ipairs(Players:GetPlayers()) do
-                if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Torso") then
-                    local d = (p.Character.HumanoidRootPart.Position - myPos).Magnitude
-                    if d < minDist then
-                        minDist = d
-                        nearestPlayer = p
-                    end
-                end
-            end
-        end
-
-        if nearestPlayer and nearestPlayer.Character then
-            local torso = nearestPlayer.Character:FindFirstChild("Torso")
-            if torso then
-                -- 記錄打擊前的 Slaps 數值
-                local slapsBefore = 0
-                pcall(function()
-                    local ls = player.leaderstats
-                    if ls and ls:FindFirstChild("Slaps") then
-                        slapsBefore = ls.Slaps.Value
-                    end
-                end)
-
-                -- 攻擊
-                pcall(function()
-                    ReplicatedStorage.GeneralHit:FireServer(torso)
-                end)
-
-                task.wait(0.3)
-
-                -- 檢查 Slaps 是否有增加，沒有則補點擊畫面
-                local slapsAfter = 0
-                pcall(function()
-                    local ls = player.leaderstats
-                    if ls and ls:FindFirstChild("Slaps") then
-                        slapsAfter = ls.Slaps.Value
-                    end
-                end)
-
-                if slapsAfter <= slapsBefore then
-                    -- Slaps 沒變，直接再補打一次
-                    pcall(function()
-                        ReplicatedStorage.GeneralHit:FireServer(torso)
-                    end)
-                    task.wait(0.3)
-                end
-
-                task.wait(0.05)
-
-                -- 等目標不是 ragdoll（最多等 5 秒）
-                local waitTimeout = tick() + 5
-                while toggles.attacker and tick() < waitTimeout do
-                    if not isPlayerRagdoll(nearestPlayer) then break end
-                    task.wait(0.05)
-                end
-
-                if not toggles.attacker then break end
-
-                -- 發動能力
-                pcall(function()
-                    ReplicatedStorage.GeneralAbility:FireServer(false)
-                end)
-
-                -- 等幫助者（最近玩家）從 ragdoll 恢復後再繼續（最多等 8 秒）
-                local helper = nil
-                local myChar = player.Character
-                local myHrp = myChar and myChar:FindFirstChild("HumanoidRootPart")
-                if myHrp then
-                    local minDist2 = math.huge
-                    for _, p in ipairs(Players:GetPlayers()) do
-                        if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                            local d = (p.Character.HumanoidRootPart.Position - myHrp.Position).Magnitude
-                            if d < minDist2 then minDist2 = d; helper = p end
-                        end
-                    end
-                end
-                if helper then
-                    local helperTimeout = tick() + 8
-                    while toggles.attacker and tick() < helperTimeout do
-                        if not isPlayerRagdoll(helper) then break end
-                        task.wait(0.05)
-                    end
-                end
-
-                task.wait(0.5)
-            else
-                task.wait(0.1)
-            end
-        else
-            task.wait(0.1)
-        end
-    end
-end
-
-attackerButton.MouseButton1Click:Connect(function()
-    toggles.attacker = not toggles.attacker
-
-    if toggles.attacker then
-        connections.attacker = task.spawn(function()
-            if values.questMode == "第一三任務" then
-                runQuest13()
-            elseif values.questMode == "第二任務" then
-                runQuest2()
-            else
-                runQuest4()
-            end
-        end)
-    else
-        if connections.attacker then
-            task.cancel(connections.attacker)
-            connections.attacker = nil
-        end
-    end
-
-    toggleUIState(attackerButton, attackerFrame, attackerStatus, toggles.attacker, "運行中", "關閉")
-end)
-
--- ============================================================
--- 幫助模式切換
--- ============================================================
-helpModeButton.MouseButton1Click:Connect(function()
-    if values.helpMode == "被blast時重置" then
-        values.helpMode = "被打後不重置"
-        helpModeButton.Text = "被打後不重置"
-        helpModeButton.BackgroundColor3 = Color3.fromRGB(150, 80, 180)
-        -- 切換到被打後不重置：預設距離改 10
-        values.helpDistance = 10
-        helpDistanceInput.Text = "10"
-    else
-        values.helpMode = "被blast時重置"
-        helpModeButton.Text = "被blast時重置"
-        helpModeButton.BackgroundColor3 = Color3.fromRGB(70, 130, 200)
-        -- 切換到被blast時重置：預設距離改 5
-        values.helpDistance = 5
-        helpDistanceInput.Text = "5"
-    end
-end)
-
--- ============================================================
--- 幫助者固定位置切換（預設開啟）
--- ============================================================
-toggles.fixedPosHelp = true
-fixedPosHelpStatus.Text = "啟用"
-fixedPosHelpStatus.TextColor3 = THEME.accent
-fixedPosHelpButton.Text = "解除"
-fixedPosHelpButton.BackgroundColor3 = THEME.red
-fixedPosHelpFrame.BackgroundColor3 = Color3.fromRGB(20, 16, 40)
-
-fixedPosHelpButton.MouseButton1Click:Connect(function()
-    toggles.fixedPosHelp = not toggles.fixedPosHelp
-    if toggles.fixedPosHelp then
-        fixedPosHelpStatus.Text = "啟用"
-        fixedPosHelpStatus.TextColor3 = THEME.accent
-        fixedPosHelpButton.Text = "解除"
-        fixedPosHelpButton.BackgroundColor3 = THEME.red
-        fixedPosHelpFrame.BackgroundColor3 = Color3.fromRGB(20, 16, 40)
-    else
-        fixedPosHelpStatus.Text = "關閉"
-        fixedPosHelpStatus.TextColor3 = THEME.textMuted
-        fixedPosHelpButton.Text = "啟動"
-        fixedPosHelpButton.BackgroundColor3 = THEME.primary
-        fixedPosHelpFrame.BackgroundColor3 = THEME.bgRow
-    end
-end)
-
--- ============================================================
--- 共用：偵測 blast/aoe_blast 在 50 單位內並傳送到自己位置
--- ============================================================
-local function pullNearbyBlast(hrp)
-    pcall(function()
-        local myPos = hrp.Position
-        for _, obj in ipairs(Workspace:GetDescendants()) do
-            if obj.Name == "blast" or obj.Name == "aoe_blast" then
-                local objPart
-                if obj:IsA("BasePart") then
-                    objPart = obj
-                elseif obj:IsA("Model") and obj.PrimaryPart then
-                    objPart = obj.PrimaryPart
-                end
-                if objPart and (objPart.Position - myPos).Magnitude <= 50 then
-                    objPart.CFrame = CFrame.new(myPos)
-                    break
-                end
-            end
-        end
-    end)
-end
-
--- ============================================================
--- 幫助者位置迴圈：被打後不重置
--- ============================================================
-local function runHelpLoopNoReset(hrp, hum, tgt)
-    while toggles.helpTarget do
-        if not (hrp and hrp.Parent) then break end
-        if hum.Health <= 0 then break end
-
-        pcall(function()
-            if toggles.fixedPosHelp and values.fixedCFrame then
-                hrp.CFrame = values.fixedCFrame
-            elseif not toggles.fixedPosHelp then
-                local tgtRoot = tgt.Character and tgt.Character:FindFirstChild("HumanoidRootPart")
-                if tgtRoot then
-                    local lookDir = tgtRoot.CFrame.LookVector
-                    local newPos = tgtRoot.Position + (lookDir * values.helpDistance)
-                    hrp.CFrame = CFrame.new(newPos, newPos + lookDir)
-                end
-            end
-        end)
-
-        -- 偵測並拉近 blast
-        pullNearbyBlast(hrp)
-
-        task.wait()
-    end
-end
-
--- ============================================================
--- 幫助者位置迴圈：被blast時重置
--- ragdoll 時，若 aoe_blast 在自己 30 單位內 且 自己在攻擊者 15 單位內 → 等 0.5s 後重置
--- 其他情況 ragdoll → 等自然結束，不干涉
--- ============================================================
-local function runHelpLoopRagdollReset(hrp, hum, tgt)
-
-    -- 檢查是否有 aoe_blast 在自己 30 單位內
-    local function aoeBlastNearby()
-        local result = false
-        pcall(function()
-            local myPos = hrp.Position
-            for _, obj in ipairs(Workspace:GetDescendants()) do
-                if obj.Name == "aoe_blast" then
-                    local objPos
-                    if obj:IsA("BasePart") then
-                        objPos = obj.Position
-                    elseif obj:IsA("Model") and obj.PrimaryPart then
-                        objPos = obj.PrimaryPart.Position
-                    end
-                    if objPos and (objPos - myPos).Magnitude <= 30 then
-                        result = true
-                        break
-                    end
-                end
-            end
-        end)
-        return result
-    end
-
-    -- 檢查自己是否在攻擊者（tgt）15 單位內
-    local function nearAttacker()
-        local result = false
-        pcall(function()
-            local tgtRoot = tgt.Character and tgt.Character:FindFirstChild("HumanoidRootPart")
-            if tgtRoot then
-                result = (tgtRoot.Position - hrp.Position).Magnitude <= 15
-            end
-        end)
-        return result
-    end
-
-    while toggles.helpTarget do
-        if not (hrp and hrp.Parent) then break end
-        if hum.Health <= 0 then break end
-
-        -- ragdoll 和非 ragdoll 都固定/跟隨位置
-        pcall(function()
-            if toggles.fixedPosHelp and values.fixedCFrame then
-                hrp.CFrame = values.fixedCFrame
-            elseif not toggles.fixedPosHelp then
-                local tgtRoot = tgt.Character and tgt.Character:FindFirstChild("HumanoidRootPart")
-                if tgtRoot then
-                    local lookDir = tgtRoot.CFrame.LookVector
-                    local newPos = tgtRoot.Position + (lookDir * values.helpDistance)
-                    hrp.CFrame = CFrame.new(newPos, newPos + lookDir)
-                end
-            end
-        end)
-
-        -- 偵測並拉近 blast
-        pullNearbyBlast(hrp)
-
-        -- ragdoll 中：判斷是否需要重置
-        if isSelfRagdoll() then
-            if aoeBlastNearby() and nearAttacker() then
-                -- 條件成立，等 0.5 秒後 Reset
-                task.wait(0.5)
-                if not toggles.helpTarget then break end
-                pcall(function()
-                    Players.LocalPlayer.Reset:FireServer()
-                end)
-                -- 等重生（hrp 和 hum 會失效，外層迴圈會 break，由主流程重新啟動）
-                task.wait(0.1)
-                break
-            end
-        end
-
-        task.wait(0.05)
-    end
-end
-
--- ============================================================
--- 幫助目標主邏輯
--- ============================================================
-helpTargetButton.MouseButton1Click:Connect(function()
-    toggles.helpTarget = not toggles.helpTarget
-
-    if toggles.helpTarget then
-        local targetPlayer, errorMsg = findPlayerByPartialName(helpTargetInput.Text)
-
-        if not targetPlayer then
-            helpTargetInfo.Text = errorMsg or "找不到玩家"
-            helpTargetInfo.TextColor3 = Color3.fromRGB(200, 0, 0)
-            toggles.helpTarget = false
-            return
-        end
-
-        values.targetPlayer = targetPlayer
-        helpTargetInfo.Text = "目標: " .. targetPlayer.Name
-        helpTargetInfo.TextColor3 = THEME.accent
-
-        connections.helpTarget = task.spawn(function()
-
-            local function waitForAliveCharacter(timeout)
-                local t = tick()
-                while tick() - t < (timeout or 15) do
-                    if not toggles.helpTarget then return nil, nil, nil end
-                    local c = player.Character
-                    if c then
-                        local hrp = c:FindFirstChild("HumanoidRootPart")
-                        local hum = c:FindFirstChildOfClass("Humanoid")
-                        if hrp and hum and hum.Health > 0 then
-                            return c, hrp, hum
-                        end
-                    end
-                    task.wait(0.2)
-                end
-                return nil, nil, nil
-            end
-
-            local function teleportToLobby(hrp)
-                pcall(function()
-                    local tp1 = Workspace.Lobby:FindFirstChild("Teleport1")
-                    if tp1 and hrp and hrp.Parent then
-                        hrp.CFrame = tp1.CFrame
-                    end
-                end)
-            end
-
-            local function teleportToTarget(hrp, tgt)
-                pcall(function()
-                    if not (hrp and hrp.Parent) then return end
-                    local tgtRoot = tgt.Character and tgt.Character:FindFirstChild("HumanoidRootPart")
-                    if tgtRoot then
-                        local lookDir = tgtRoot.CFrame.LookVector
-                        local newPos = tgtRoot.Position + (lookDir * values.helpDistance)
-                        local newCFrame = CFrame.new(newPos, newPos + lookDir)
-                        hrp.CFrame = newCFrame
-                        values.fixedCFrame = newCFrame
-                    end
-                end)
-            end
-
-            while toggles.helpTarget do
-                local tgt = values.targetPlayer
-
-                local _, hrp, hum = waitForAliveCharacter(15)
-                if not hrp then task.wait(0.5) continue end
-                if not toggles.helpTarget then break end
-
-                teleportToLobby(hrp)
-                task.wait(0.5)
-                if not toggles.helpTarget then break end
-
-                -- 傳送到目標，若5秒內沒成功則重新開始流程
-                local teleportSuccess = false
-                local tpStart = tick()
-                while toggles.helpTarget and tick() - tpStart < 5 do
-                    teleportToTarget(hrp, tgt)
-                    -- 檢查是否已到目標附近（5單位內視為成功）
-                    pcall(function()
-                        local tgtRoot = tgt.Character and tgt.Character:FindFirstChild("HumanoidRootPart")
-                        if tgtRoot and hrp and hrp.Parent then
-                            if (tgtRoot.Position - hrp.Position).Magnitude <= (values.helpDistance + 5) then
-                                teleportSuccess = true
-                            end
-                        end
-                    end)
-                    if teleportSuccess then break end
-                    task.wait(0.5)
-                end
-                if not toggles.helpTarget then break end
-                if not teleportSuccess then continue end  -- 5秒沒傳成功，重新開始
-
-                if values.helpMode == "被打後不重置" then
-                    runHelpLoopNoReset(hrp, hum, tgt)
-                else
-                    runHelpLoopRagdollReset(hrp, hum, tgt)
-                end
-            end
-        end)
-
-        toggleUIState(helpTargetButton, helpTargetFrame, nil, true)
-        helpTargetButton.Text = "解除"
-        helpTargetButton.BackgroundColor3 = THEME.red
-    else
-        helpTargetInfo.Text = "目標: 無"
-        helpTargetInfo.TextColor3 = THEME.textMuted
-        values.targetPlayer = nil
-
-        if connections.helpTarget then
-            task.cancel(connections.helpTarget)
-            connections.helpTarget = nil
-        end
-
-        helpTargetButton.Text = "啟動"
-        helpTargetButton.BackgroundColor3 = THEME.primary
-    end
-    updateStatus()
-end)
-
--- 設定距離
-helpDistanceInput.FocusLost:Connect(function()
-    local val = tonumber(helpDistanceInput.Text)
-    if val and val > 0 then values.helpDistance = val
-    else helpDistanceInput.Text = tostring(values.helpDistance) end
-end)
-
--- ============================================================
--- 拖曳功能
--- ============================================================
-local function enableDrag(frame, dragHandle)
-    local dragging = false
-    local dragInput, dragStart, startPos
-
-    local function update(input)
-        local delta = input.Position - dragStart
-        frame.Position = UDim2.new(
-            startPos.X.Scale, startPos.X.Offset + delta.X,
-            startPos.Y.Scale, startPos.Y.Offset + delta.Y
-        )
-    end
-
-    dragHandle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or
-           input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            dragStart = input.Position
-            startPos = frame.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-
-    dragHandle.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or
-           input.UserInputType == Enum.UserInputType.Touch then
-            dragInput = input
-        end
-    end)
-
-    UserInputService.InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            update(input)
-        end
-    end)
-end
-
-enableDrag(mainFrame, titleBar)
-
--- 最小化 UI
-local miniFrame = Instance.new("Frame")
-miniFrame.Size = UDim2.new(0, 150, 0, 32)
-miniFrame.Position = UDim2.new(0.5, -75, 0, 30)
-miniFrame.BackgroundColor3 = THEME.titleBg
-miniFrame.Visible = false
-miniFrame.Parent = screenGui
-Instance.new("UICorner", miniFrame).CornerRadius = UDim.new(0, 6)
-
-local stroke2 = Instance.new("UIStroke")
-stroke2.Color = THEME.primaryDark
-stroke2.Thickness = 1.5
-stroke2.Parent = miniFrame
-
-local miniTitle = Instance.new("TextLabel")
-miniTitle.Text = "靈魂精通"
-miniTitle.Size = UDim2.new(1, -36, 1, 0)
-miniTitle.BackgroundTransparency = 1
-miniTitle.Font = Enum.Font.GothamBold
-miniTitle.TextSize = 14
-miniTitle.TextColor3 = THEME.accent
-miniTitle.Parent = miniFrame
-
-local expandButton = Instance.new("TextButton")
-expandButton.Text = "+"
-expandButton.Size = UDim2.new(0, 24, 0, 24)
-expandButton.Position = UDim2.new(1, -28, 0, 4)
-expandButton.BackgroundColor3 = THEME.primary
-expandButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-expandButton.Parent = miniFrame
-Instance.new("UICorner", expandButton).CornerRadius = UDim.new(0, 5)
-
-enableDrag(miniFrame, miniFrame)
-
-minimizeButton.MouseButton1Click:Connect(function()
-    mainFrame.Visible = false
-    miniFrame.Visible = true
-end)
-
-expandButton.MouseButton1Click:Connect(function()
-    miniFrame.Visible = false
-    mainFrame.Visible = true
-end)
+gradient.Rotation = 45
+
+local stroke = Instance.new("UIStroke", Frame)
+stroke.Color = Color3.fromRGB(100, 150, 255)
+stroke.Thickness = 2
+stroke.Transparency = 0.5
+
+Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 15)
+
+-- 標題
+local Title = Instance.new("TextLabel", Frame)
+Title.Size = UDim2.new(1, -80, 0, 50)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "✨ 貓玲的slap battle腳本區 ✨ v0.50"
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 22
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local titleStroke = Instance.new("UIStroke", Title)
+titleStroke.Color = Color3.fromRGB(100, 150, 255)
+titleStroke.Thickness = 1
+titleStroke.Transparency = 0.3
 
 -- 關閉按鈕
-closeButton.MouseButton1Click:Connect(function()
-    for _, conn in pairs(connections) do
-        if conn then
-            if type(conn) == "thread" then task.cancel(conn)
-            else pcall(function() conn:Disconnect() end) end
-        end
-    end
-    if posLockLoop then task.cancel(posLockLoop) end
-    screenGui:Destroy()
+local Close = Instance.new("TextButton", Frame)
+Close.Size = UDim2.new(0, 35, 0, 35)
+Close.Position = UDim2.new(1, -40, 0, 8)
+Close.Text = "x"
+Close.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
+Close.TextColor3 = Color3.fromRGB(255, 255, 255)
+Close.Font = Enum.Font.GothamBold
+Close.TextSize = 18
+Close.BorderSizePixel = 0
+
+local closeGradient = Instance.new("UIGradient", Close)
+closeGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(220, 60, 60)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 40, 40))
+}
+
+Instance.new("UICorner", Close).CornerRadius = UDim.new(0, 8)
+
+Close.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+    _G.maolingHubLoaded = false
 end)
 
-print("貓玲的靈魂精通腳本 v0.9 已載入!")
-print("攻擊者功能:")
-print("  第一三任務: souls<100→GeneralHit | souls>=100→GeneralAbility(true)")
-print("  第二任務: souls<100→GeneralHit | souls>=100→soul:charge | charge=100→GeneralAbility(true)")
-print("  第四任務: GeneralHit → 等非ragdoll → GeneralAbility(false) → 0.5s → 循環")
-print("  固定位置: 鎖定當前 CFrame")
-print("幫助者功能:")
-print("  被blast時重置(預設): ragdoll且LastSlappedBy.Time未增加→傳Teleport1重置")
-print("  被打後不重置: 永久固定/跟隨")
+-- 最小化按鈕
+local Minimize = Instance.new("TextButton", Frame)
+Minimize.Size = UDim2.new(0, 35, 0, 35)
+Minimize.Position = UDim2.new(1, -80, 0, 8)
+Minimize.Text = "─"
+Minimize.BackgroundColor3 = Color3.fromRGB(100, 100, 120)
+Minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
+Minimize.Font = Enum.Font.GothamBold
+Minimize.TextSize = 16
+Minimize.BorderSizePixel = 0
+
+local minimizeGradient = Instance.new("UIGradient", Minimize)
+minimizeGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 100, 120)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(80, 80, 100))
+}
+
+Instance.new("UICorner", Minimize).CornerRadius = UDim.new(0, 8)
+
+-- 側邊欄
+local SideBar = Instance.new("ScrollingFrame", Frame)
+SideBar.Size = UDim2.new(0, 130, 1, -55)
+SideBar.Position = UDim2.new(0, 5, 0, 50)
+SideBar.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+SideBar.BorderSizePixel = 0
+SideBar.ScrollBarThickness = 6
+SideBar.CanvasSize = UDim2.new(0, 0, 0, 200)
+SideBar.AutomaticCanvasSize = Enum.AutomaticSize.Y
+SideBar.ScrollingDirection = Enum.ScrollingDirection.Y
+
+local sidebarGradient = Instance.new("UIGradient", SideBar)
+sidebarGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 35, 50)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(45, 45, 65))
+}
+
+Instance.new("UICorner", SideBar).CornerRadius = UDim.new(0, 10)
+
+local sidebarLayout = Instance.new("UIListLayout", SideBar)
+sidebarLayout.Padding = UDim.new(0, 8)
+sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+-- 內容區域
+local Content = Instance.new("Frame", Frame)
+Content.Size = UDim2.new(1, -145, 1, -55)
+Content.Position = UDim2.new(0, 140, 0, 50)
+Content.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+Content.BorderSizePixel = 0
+
+local contentGradient = Instance.new("UIGradient", Content)
+contentGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 60)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 75))
+}
+
+Instance.new("UICorner", Content).CornerRadius = UDim.new(0, 10)
+
+-- 縮小功能
+local isMinimized = false
+local fullSize = UDim2.new(0, 450, 0, 350)
+local miniSize = UDim2.new(0, 450, 0, 50)
+
+Minimize.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    SideBar.Visible = not isMinimized
+    Content.Visible = not isMinimized
+    Frame.Size = isMinimized and miniSize or fullSize
+end)
+
+-- 分區按鈕樣式
+local function createSectionButton(text, order, parent)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(0, 120, 0, 45)
+    btn.Text = text
+    btn.BackgroundColor3 = Color3.fromRGB(85, 85, 105)
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextTransparency = 0
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 16
+    btn.BorderSizePixel = 0
+
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
+
+    local btnStroke = Instance.new("UIStroke", btn)
+    btnStroke.Color = Color3.fromRGB(150, 180, 255)
+    btnStroke.Thickness = 1
+    btnStroke.Transparency = 0.6
+
+    btn.MouseEnter:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(105, 105, 125)
+        btnStroke.Transparency = 0.3
+    end)
+    btn.MouseLeave:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(85, 85, 105)
+        btnStroke.Transparency = 0.6
+    end)
+
+    return btn
+end
+
+local Section1 = createSectionButton("🚀 傳送", 1, SideBar)
+local Section2 = createSectionButton("⚙️ 常用", 2, SideBar)
+local Section3 = createSectionButton("🏅 徽章手套", 3, SideBar)
+local Section4 = createSectionButton("🎯 精通腳本", 4, SideBar)
+local Section5 = createSectionButton("🔧 其他", 5, SideBar)
+
+-- 內容按鈕樣式
+local function createButton(text, order, parent, spacing)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(0, 180, 0, 35)
+    btn.Text = text
+    btn.BackgroundColor3 = Color3.fromRGB(80, 140, 220)
+    btn.LayoutOrder = order
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 16
+    btn.Font = Enum.Font.GothamBold
+    btn.BorderSizePixel = 0
+
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+
+    local btnStroke = Instance.new("UIStroke", btn)
+    btnStroke.Color = Color3.fromRGB(120, 170, 255)
+    btnStroke.Thickness = 1
+    btnStroke.Transparency = 0.6
+
+    btn.MouseEnter:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(100, 160, 240)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btnStroke.Transparency = 0.3
+    end)
+    btn.MouseLeave:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(80, 140, 220)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btnStroke.Transparency = 0.6
+    end)
+
+    return btn
+end
+
+-- ══════════════════════════════════════════
+-- 防虛空平台（提前宣告，供 addScriptButton 使用）
+-- ══════════════════════════════════════════
+local platformEnabled = false
+local generatedPlatform = nil
+
+local platformBtn -- 宣告，稍後建立
+
+local function enablePlatformIfNeeded()
+    if not platformEnabled then
+        platformEnabled = true
+        if platformBtn then
+            platformBtn.Text = "防虛空: 開"
+        end
+        if not generatedPlatform then
+            generatedPlatform = Instance.new("Part")
+            generatedPlatform.Size = Vector3.new(5000, 2, 5000)
+            generatedPlatform.Position = Vector3.new(0, -85, 0)
+            generatedPlatform.Anchored = true
+            generatedPlatform.CanCollide = true
+            generatedPlatform.Transparency = 0.3
+            generatedPlatform.Material = Enum.Material.SmoothPlastic
+            generatedPlatform.Color = Color3.fromRGB(150, 150, 150)
+            generatedPlatform.Name = "CustomPlatform"
+            generatedPlatform.Parent = Workspace
+        end
+    end
+end
+
+-- ══════════════════════════════════════════
+-- 通用腳本按鈕函式（徽章/精通手套共用）
+-- 用法：addScriptButton(父容器, "按鈕名", 順序, enablePlatform, "腳本網址")
+--   enablePlatform = "y" → 按下時若防虛空未開，自動開啟
+--   enablePlatform = "n" → 不影響防虛空狀態（預設）
+-- ══════════════════════════════════════════
+local function addScriptButton(parent, name, order, enablePlatform, url)
+    local btn = createButton(name, order, parent, 40)
+    btn.MouseButton1Click:Connect(function()
+        if enablePlatform == "y" then
+            enablePlatformIfNeeded()
+        end
+        loadstring(game:HttpGet(url))()
+    end)
+    return btn
+end
+
+-- 傳送分區 ScrollingFrame
+local TPScroll = Instance.new("ScrollingFrame", Content)
+TPScroll.Size = UDim2.new(1, 0, 1, 0)
+TPScroll.CanvasSize = UDim2.new(0, 0, 0, 600)
+TPScroll.ScrollBarThickness = 6
+TPScroll.BackgroundTransparency = 1
+TPScroll.Visible = true
+TPScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+TPScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+TPScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+
+local tpLayout = Instance.new("UIListLayout", TPScroll)
+tpLayout.Padding = UDim.new(0, 8)
+tpLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local tpPadding = Instance.new("UIPadding", TPScroll)
+tpPadding.PaddingTop = UDim.new(0, 8)
+
+-- 常用分區 ScrollingFrame
+local CommonButtonsScroll = Instance.new("ScrollingFrame", Content)
+CommonButtonsScroll.Size = UDim2.new(1, 0, 1, 0)
+CommonButtonsScroll.CanvasSize = UDim2.new(0, 0, 0, 700)
+CommonButtonsScroll.ScrollBarThickness = 6
+CommonButtonsScroll.BackgroundTransparency = 1
+CommonButtonsScroll.Visible = false
+CommonButtonsScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+CommonButtonsScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+CommonButtonsScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+
+local UIListLayout = Instance.new("UIListLayout", CommonButtonsScroll)
+UIListLayout.Padding = UDim.new(0, 8)
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local commonPadding = Instance.new("UIPadding", CommonButtonsScroll)
+commonPadding.PaddingTop = UDim.new(0, 8)
+
+-- 徽章手套分區 ScrollingFrame
+local BadgeGlove = Instance.new("ScrollingFrame", Content)
+BadgeGlove.Size = UDim2.new(1, 0, 1, 0)
+BadgeGlove.CanvasSize = UDim2.new(0, 0, 0, 540)
+BadgeGlove.ScrollBarThickness = 6
+BadgeGlove.BackgroundTransparency = 1
+BadgeGlove.Visible = false
+BadgeGlove.AutomaticCanvasSize = Enum.AutomaticSize.Y
+BadgeGlove.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+BadgeGlove.ScrollingDirection = Enum.ScrollingDirection.Y
+
+local badgeLayout = Instance.new("UIListLayout", BadgeGlove)
+badgeLayout.Padding = UDim.new(0, 8)
+badgeLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local badgePadding = Instance.new("UIPadding", BadgeGlove)
+badgePadding.PaddingTop = UDim.new(0, 8)
+
+-- 精通腳本分區 ScrollingFrame
+local MasteryScroll = Instance.new("ScrollingFrame", Content)
+MasteryScroll.Size = UDim2.new(1, 0, 1, 0)
+MasteryScroll.CanvasSize = UDim2.new(0, 0, 0, 640)
+MasteryScroll.ScrollBarThickness = 6
+MasteryScroll.BackgroundTransparency = 1
+MasteryScroll.Visible = false
+MasteryScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+MasteryScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+MasteryScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+
+local masteryLayout = Instance.new("UIListLayout", MasteryScroll)
+masteryLayout.Padding = UDim.new(0, 8)
+masteryLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local masteryPadding = Instance.new("UIPadding", MasteryScroll)
+masteryPadding.PaddingTop = UDim.new(0, 8)
+
+-- 其他分區 ScrollingFrame
+local OtherScroll = Instance.new("ScrollingFrame", Content)
+OtherScroll.Size = UDim2.new(1, 0, 1, 0)
+OtherScroll.CanvasSize = UDim2.new(0, 0, 0, 500)
+OtherScroll.ScrollBarThickness = 6
+OtherScroll.BackgroundTransparency = 1
+OtherScroll.Visible = false
+OtherScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+OtherScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+OtherScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+
+local otherLayout = Instance.new("UIListLayout", OtherScroll)
+otherLayout.Padding = UDim.new(0, 8)
+otherLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local otherPadding = Instance.new("UIPadding", OtherScroll)
+otherPadding.PaddingTop = UDim.new(0, 8)
+
+-- ScrollFrame 樣式
+local function styleScrollFrame(scrollFrame)
+    scrollFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+    scrollFrame.BorderSizePixel = 0
+    scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 150, 255)
+
+    local scrollGradient = Instance.new("UIGradient", scrollFrame)
+    scrollGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(45, 45, 65)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(55, 55, 80))
+    }
+
+    Instance.new("UICorner", scrollFrame).CornerRadius = UDim.new(0, 8)
+end
+
+styleScrollFrame(TPScroll)
+styleScrollFrame(BadgeGlove)
+styleScrollFrame(MasteryScroll)
+styleScrollFrame(CommonButtonsScroll)
+styleScrollFrame(OtherScroll)
+
+-- ══════════════════════════════════════════
+-- 傳送分區（13 個按鈕）
+-- ══════════════════════════════════════════
+local TPButtons = {
+    createButton("安全區",     1,  TPScroll, 40),
+    createButton("紅門",       2,  TPScroll, 40),
+    createButton("主場地",     3,  TPScroll, 40),
+    createButton("大廳",       4,  TPScroll, 40),
+    createButton("樹果島",     5,  TPScroll, 40),
+    createButton("石像島",     6,  TPScroll, 40),
+    createButton("大炮島",     7,  TPScroll, 40),
+    createButton("巴西",       8,  TPScroll, 40),
+    createButton("盤子",       9,  TPScroll, 40),
+    createButton("彩虹雲",     10, TPScroll, 40),
+    createButton("左島",       11, TPScroll, 40),
+    createButton("右島",       12, TPScroll, 40),
+    createButton("死亡方塊島", 13, TPScroll, 40)
+}
+
+TPButtons[1].MouseButton1Click:Connect(function()
+    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if hrp then hrp.CFrame = CFrame.new(5122, 124, 9513) end
+end)
+TPButtons[2].MouseButton1Click:Connect(function()
+    local part = Workspace:WaitForChild("Lobby"):FindFirstChild("Teleport1")
+    if part then LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame + Vector3.new(0, 5, 0) end
+end)
+TPButtons[3].MouseButton1Click:Connect(function()
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 0, 0)
+end)
+TPButtons[4].MouseButton1Click:Connect(function()
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-997, 328, -2)
+end)
+TPButtons[5].MouseButton1Click:Connect(function()
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-423, 108, -20)
+end)
+TPButtons[6].MouseButton1Click:Connect(function()
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(220, 21, 2)
+end)
+TPButtons[7].MouseButton1Click:Connect(function()
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(244, 34, 184)
+end)
+TPButtons[8].MouseButton1Click:Connect(function()
+    local portal = game:GetService("Workspace").Lobby.brazil.portal
+    LocalPlayer.Character.HumanoidRootPart.CFrame = portal.CFrame
+end)
+TPButtons[9].MouseButton1Click:Connect(function()
+    local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
+    if plate then LocalPlayer.Character.HumanoidRootPart.CFrame = plate.CFrame end
+end)
+TPButtons[10].MouseButton1Click:Connect(function()
+    local cloud = Workspace:FindFirstChild("Arena") and Workspace.Arena.Fort and Workspace.Arena.Fort:FindFirstChild("Floor")
+    if cloud then LocalPlayer.Character.HumanoidRootPart.CFrame = cloud.CFrame + Vector3.new(0, 5, 0) end
+end)
+TPButtons[11].MouseButton1Click:Connect(function()
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5, -5, -216)
+end)
+TPButtons[12].MouseButton1Click:Connect(function()
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9, -5, 212)
+end)
+TPButtons[13].MouseButton1Click:Connect(function()
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-215, -5, -3)
+end)
+
+-- ══════════════════════════════════════════
+-- 常用分區
+-- ══════════════════════════════════════════
+local currentFakeName = "catlyn"
+
+local nameBox = Instance.new("TextBox", CommonButtonsScroll)
+nameBox.Size = UDim2.new(0, 180, 0, 35)
+nameBox.PlaceholderText = "✏️ 輸入假名"
+nameBox.Text = ""
+nameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+nameBox.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
+nameBox.Font = Enum.Font.GothamBold
+nameBox.TextSize = 16
+nameBox.BorderSizePixel = 0
+nameBox.PlaceholderColor3 = Color3.fromRGB(200, 200, 200)
+nameBox.LayoutOrder = 1
+
+Instance.new("UICorner", nameBox).CornerRadius = UDim.new(0, 8)
+
+local boxStroke = Instance.new("UIStroke", nameBox)
+boxStroke.Color = Color3.fromRGB(120, 170, 255)
+boxStroke.Thickness = 1
+boxStroke.Transparency = 0.6
+
+nameBox.Focused:Connect(function()
+    nameBox.BackgroundColor3 = Color3.fromRGB(90, 90, 110)
+    boxStroke.Transparency = 0.3
+    boxStroke.Color = Color3.fromRGB(150, 200, 255)
+end)
+nameBox.FocusLost:Connect(function()
+    nameBox.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
+    boxStroke.Transparency = 0.6
+    boxStroke.Color = Color3.fromRGB(120, 170, 255)
+end)
+
+local nameBtn = createButton("設定假名", 2, CommonButtonsScroll, 40)
+
+local function setNametag(text)
+    currentFakeName = text ~= "" and text or "catlyn"
+    local char = workspace:FindFirstChild(LocalPlayer.Name)
+    if char then
+        local head = char:FindFirstChild("Head")
+        if head then
+            local nametag = head:FindFirstChild("Nametag")
+            if nametag then
+                local labels = nametag:FindFirstChild("Labels")
+                if labels then
+                    local topLabel = labels:FindFirstChild("TopLabel")
+                    if topLabel then
+                        topLabel.Text = currentFakeName
+                    end
+                end
+            end
+        end
+    end
+end
+
+nameBtn.MouseButton1Click:Connect(function()
+    setNametag(nameBox.Text)
+end)
+
+LocalPlayer.CharacterAdded:Connect(function()
+    task.wait(0.5)
+    setNametag(currentFakeName)
+end)
+
+-- 防虛空平台按鈕（建立後賦值給前面宣告的 platformBtn）
+platformBtn = createButton("防虛空: 關", 3, CommonButtonsScroll, 40)
+
+platformBtn.MouseButton1Click:Connect(function()
+    platformEnabled = not platformEnabled
+    platformBtn.Text = platformEnabled and "防虛空: 開" or "防虛空: 關"
+
+    if platformEnabled and not generatedPlatform then
+        generatedPlatform = Instance.new("Part")
+        generatedPlatform.Size = Vector3.new(5000, 2, 5000)
+        generatedPlatform.Position = Vector3.new(0, -85, 0)
+        generatedPlatform.Anchored = true
+        generatedPlatform.CanCollide = true
+        generatedPlatform.Transparency = 0.3
+        generatedPlatform.Material = Enum.Material.SmoothPlastic
+        generatedPlatform.Color = Color3.fromRGB(150, 150, 150)
+        generatedPlatform.Name = "CustomPlatform"
+        generatedPlatform.Parent = Workspace
+    elseif not platformEnabled and generatedPlatform then
+        generatedPlatform:Destroy()
+        generatedPlatform = nil
+    end
+end)
+
+-- 防掛機功能
+local antiAFK = false
+local virtualUser = game:GetService("VirtualUser")
+
+local antiAFKBtn = createButton("防掛機: 關", 4, CommonButtonsScroll, 40)
+
+antiAFKBtn.MouseButton1Click:Connect(function()
+    antiAFK = not antiAFK
+    antiAFKBtn.Text = antiAFK and "防掛機: 開" or "防掛機: 關"
+end)
+
+LocalPlayer.Idled:Connect(function()
+    if antiAFK then
+        virtualUser:Button2Down(Vector2.new(0, 0), Workspace.CurrentCamera.CFrame)
+        task.wait(1)
+        virtualUser:Button2Up(Vector2.new(0, 0), Workspace.CurrentCamera.CFrame)
+    end
+end)
+
+-- 自動進場
+local autoReturn = false
+local isReturning = false
+
+local autoReturnBtn = createButton("死後回場: 關", 5, CommonButtonsScroll, 40)
+
+autoReturnBtn.MouseButton1Click:Connect(function()
+    autoReturn = not autoReturn
+    autoReturnBtn.Text = autoReturn and "死後回場: 開" or "死後回場: 關"
+end)
+
+task.spawn(function()
+    while true do
+        task.wait(0.1)
+        if autoReturn and not isReturning then
+            pcall(function()
+                local char = LocalPlayer.Character
+                local lobby = Workspace:FindFirstChild("Lobby")
+                local tele = lobby and lobby:FindFirstChild("Teleport1")
+
+                if char and char:FindFirstChild("Humanoid") and char.Humanoid.Health <= 0 then
+                    isReturning = true
+                    task.wait(4)
+                    if LocalPlayer.Character and tele then
+                        LocalPlayer.Character:PivotTo(tele.CFrame + Vector3.new(0, 5, 0))
+                        print("已自動回場")
+                        task.wait(0.1)
+                    end
+                    isReturning = false
+                end
+            end)
+        end
+    end
+end)
+
+local remoteSpyBtn = createButton("Remote Spy Mobile", 6, CommonButtonsScroll, 40)
+remoteSpyBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/catlyn316/Remote-captor/refs/heads/main/Huh"))()
+end)
+
+local realCommonBtn = createButton("真-常用？", 7, CommonButtonsScroll, 45)
+realCommonBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/catlyn316/Slap-battle-oof/refs/heads/main/Hell%20no"))()
+end)
+
+-- 改變所有玩家名（開關）
+local changeNamesEnabled = false
+local changeNamesConns = {}
+
+local changeNamesBtn = createButton("改變玩家名: 關", 8, CommonButtonsScroll, 45)
+
+local function applyNameToChar(character)
+    -- 跳過自己
+    if character == LocalPlayer.Character then return end
+    task.spawn(function()
+        -- 等待 Head 和 Nametag 載入
+        local head = character:WaitForChild("Head", 5)
+        if not head then return end
+        local nametag = head:WaitForChild("Nametag", 5)
+        if not nametag then return end
+        local labels = nametag:WaitForChild("Labels", 5)
+        if not labels then return end
+        local topLabel = labels:WaitForChild("TopLabel", 5)
+        if not topLabel then return end
+        topLabel.Text = "catlyn's helper"
+    end)
+end
+
+local function applyNamesToAll()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            applyNameToChar(player.Character)
+        end
+    end
+end
+
+local function startChangeNames()
+    -- 套用到目前所有玩家
+    applyNamesToAll()
+
+    -- 新玩家加入 → 監聽其角色
+    local c1 = Players.PlayerAdded:Connect(function(player)
+        if not changeNamesEnabled then return end
+        -- 監聽此玩家的每次角色重生
+        player.CharacterAdded:Connect(function(char)
+            if changeNamesEnabled then
+                task.wait(0.3)
+                applyNameToChar(char)
+            end
+        end)
+        -- 如果玩家已有角色
+        if player.Character then
+            task.wait(0.3)
+            applyNameToChar(player.Character)
+        end
+    end)
+
+    -- 已在線玩家每次重生也要改
+    local c2 = Players.PlayerRemoving:Connect(function() end) -- placeholder
+    local charConns = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            local cc = player.CharacterAdded:Connect(function(char)
+                if changeNamesEnabled then
+                    task.wait(0.3)
+                    applyNameToChar(char)
+                end
+            end)
+            table.insert(charConns, cc)
+        end
+    end
+
+    changeNamesConns = { c1, c2 }
+    for _, cc in ipairs(charConns) do
+        table.insert(changeNamesConns, cc)
+    end
+
+    -- 持續輪詢確保名字不被遊戲重置（每3秒掃一次）
+    local loopConn
+    loopConn = task.spawn(function()
+        while changeNamesEnabled do
+            task.wait(3)
+            if changeNamesEnabled then
+                applyNamesToAll()
+            end
+        end
+    end)
+    table.insert(changeNamesConns, { disconnect = function()
+        changeNamesEnabled = false -- 讓 while 自然結束
+    end })
+end
+
+local function stopChangeNames()
+    for _, conn in ipairs(changeNamesConns) do
+        pcall(function()
+            if typeof(conn) == "RBXScriptConnection" then
+                conn:Disconnect()
+            elseif type(conn) == "table" and conn.disconnect then
+                conn:disconnect()
+            end
+        end)
+    end
+    changeNamesConns = {}
+end
+
+changeNamesBtn.MouseButton1Click:Connect(function()
+    changeNamesEnabled = not changeNamesEnabled
+    changeNamesBtn.Text = changeNamesEnabled and "改變玩家名: 開" or "改變玩家名: 關"
+    if changeNamesEnabled then
+        startChangeNames()
+    else
+        stopChangeNames()
+    end
+end)
+
+local giangHubBtn = createButton("Giang hub", 9, CommonButtonsScroll, 45)
+giangHubBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Slap_Battles/main/Slap_Battles.lua", true))()
+end)
+
+local kykyHubBtn = createButton("kyky hub", 10, CommonButtonsScroll, 45)
+kykyHubBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://rawscripts.net/raw/Slap-Battles-KykyryzoB-Hub-SB-9008"))()
+end)
+
+local masteryBtn = createButton("mastery", 11, CommonButtonsScroll, 45)
+masteryBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/MasteryHelper.NewestVersion'))()
+end)
+
+local serverHopWithItemsBtn = createButton("跳到少人服（會拿樹果和光球）", 12, CommonButtonsScroll, 45)
+serverHopWithItemsBtn.MouseButton1Click:Connect(function()
+    serverhop = true
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/Pro666Pro/autofarm-serverhop/main/main.lua'))()
+end)
+
+local simpleServerHopBtn = createButton("單純跳到少人服", 13, CommonButtonsScroll, 45)
+simpleServerHopBtn.MouseButton1Click:Connect(function()
+    local HttpService = game:GetService("HttpService")
+    local TeleportService = game:GetService("TeleportService")
+
+    local function joinSmallestServer()
+        local success, result = pcall(function()
+            local response = HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"))
+            if response.data and #response.data > 0 then
+                table.sort(response.data, function(a, b) return a.playing < b.playing end)
+                local targetServer = response.data[8] or response.data[1]
+                if targetServer and targetServer.id then
+                    TeleportService:TeleportToPlaceInstance(game.PlaceId, targetServer.id)
+                else
+                    warn("無法找到適合的伺服器")
+                end
+            else
+                warn("無法獲取伺服器列表")
+            end
+        end)
+        if not success then warn("跳服失敗: " .. tostring(result)) end
+    end
+
+    joinSmallestServer()
+end)
+
+local infyieldBtn = createButton("infyield", 14, CommonButtonsScroll, 45)
+infyieldBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source'))()
+end)
+
+local bringflyBtn = createButton("bringfly", 15, CommonButtonsScroll, 45)
+bringflyBtn.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Bring-fly/refs/heads/main/Bring%20fly'))()
+end)
+
+-- ══════════════════════════════════════════
+-- 🏅 徽章手套分區
+-- 新增按鈕只需加一行：
+-- addScriptButton(父容器, "按鈕名", 順序, enablePlatform, "腳本網址")
+-- enablePlatform: "y" = 按下時自動開啟防虛空（若尚未開啟）, "n" = 不影響（預設）
+-- ══════════════════════════════════════════
+addScriptButton(BadgeGlove, "eggler手套",              1,  "n", 'https://raw.githubusercontent.com/catlyn316/Eggler-badge-glove/refs/heads/main/Eggler%20badge%20glove')
+addScriptButton(BadgeGlove, "bob手套",                 2,  "n", 'https://raw.githubusercontent.com/catlyn316/Bob-glove/refs/heads/main/Bob%20glove')
+addScriptButton(BadgeGlove, "slender手套",             3,  "n", 'https://raw.githubusercontent.com/catlyn316/Slender-glove/refs/heads/main/Slender%20glove')
+addScriptButton(BadgeGlove, "slasher手套",             4,  "n", 'https://raw.githubusercontent.com/catlyn316/Slasher-glove/refs/heads/main/Slasher')
+addScriptButton(BadgeGlove, "car keys手套",            5,  "n", 'https://raw.githubusercontent.com/catlyn316/Car/refs/heads/main/Car%20keys%20badge')
+addScriptButton(BadgeGlove, "suction手套",             6,  "n", 'https://raw.githubusercontent.com/catlyn316/Suction-glove/refs/heads/main/Suction%20glove')
+addScriptButton(BadgeGlove, "reflect手套",             7,  "n", 'https://raw.githubusercontent.com/catlyn316/reflect/refs/heads/main/reflect%20glove')
+addScriptButton(BadgeGlove, "dave和mortis戰",          8,  "n", 'https://raw.githubusercontent.com/catlyn316/Dave-boss-fight-script/refs/heads/main/Dave%20boss%20fight')
+addScriptButton(BadgeGlove, "bounty手套",              9,  "n", 'https://raw.githubusercontent.com/catlyn316/Bounty/refs/heads/main/Bounty')
+addScriptButton(BadgeGlove, "debug手套",               10, "n", 'https://raw.githubusercontent.com/catlyn316/Debug-glove/refs/heads/main/Debug%20nah%20still%20exploit')
+addScriptButton(BadgeGlove, "paint手套",               11, "n", 'https://raw.githubusercontent.com/catlyn316/Paint-mode/refs/heads/main/Paint%20mode')
+addScriptButton(BadgeGlove, "plate手套",               12, "n", 'https://raw.githubusercontent.com/catlyn316/Plate-glove/refs/heads/main/Plate')
+addScriptButton(BadgeGlove, "企鵝手套",                13, "n", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Penguin")
+addScriptButton(BadgeGlove, "鍊金和其他有關聯的手套",  14, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Alchemist%20and%20others")
+-- 🔽 在這裡新增徽章手套按鈕：
+
+-- ══════════════════════════════════════════
+-- 🎯 精通手套分區
+-- 新增按鈕只需加一行：
+-- addScriptButton(父容器, "按鈕名", 順序, enablePlatform, "腳本網址")
+-- enablePlatform: "y" = 按下時自動開啟防虛空（若尚未開啟）, "n" = 不影響（預設）
+-- ══════════════════════════════════════════
+addScriptButton(MasteryScroll, "閃光(任務二)", 1,  "n", 'https://raw.githubusercontent.com/catlyn316/Flash-mastery/refs/heads/main/Flash%20second%20task')
+addScriptButton(MasteryScroll, "加速器",       2,  "n", 'https://raw.githubusercontent.com/catlyn316/Need-baller/refs/heads/main/Need%20baller%20to%20farm%20booster%20mastery')
+addScriptButton(MasteryScroll, "空間",         3,  "n", 'https://raw.githubusercontent.com/catlyn316/Space-mastery/refs/heads/main/Space%20mastery%20no%20need%20baller%20but%20alt')
+addScriptButton(MasteryScroll, "冰砂",         4,  "n", 'https://raw.githubusercontent.com/catlyn316/Shard-mastery/refs/heads/main/Shard%20mastery')
+addScriptButton(MasteryScroll, "公車",         5,  "n", 'https://raw.githubusercontent.com/catlyn316/Bus-mastery-need-null-help/refs/heads/main/Bus%20mastery')
+addScriptButton(MasteryScroll, "階段",         6,  "n", 'https://raw.githubusercontent.com/catlyn316/Phase-mastery/refs/heads/main/Phase%20mastery')
+addScriptButton(MasteryScroll, "大亨和蜜蜂",   7,  "n", 'https://raw.githubusercontent.com/catlyn316/Tycoon-and-hive-mastery/refs/heads/main/Tycoon%2Bhive%20mastery')
+addScriptButton(MasteryScroll, "🗿",           8,  "n", 'https://raw.githubusercontent.com/catlyn316/moai-mastery/refs/heads/main/moai%20mastery')
+addScriptButton(MasteryScroll, "屏障",         9,  "n", 'https://raw.githubusercontent.com/catlyn316/Defense-mastery/refs/heads/main/Defense')
+addScriptButton(MasteryScroll, "車鑰匙",       10, "n", 'https://raw.githubusercontent.com/catlyn316/Car-key-mastery/refs/heads/main/Car%20key%20mastery')
+addScriptButton(MasteryScroll, "巫毒",         11, "n", 'https://raw.githubusercontent.com/catlyn316/Voodoo-mastery/refs/heads/main/Voodoo%20mastery')
+addScriptButton(MasteryScroll, "櫻桃",         12, "n", 'https://raw.githubusercontent.com/catlyn316/Cherry-mastery/refs/heads/main/Cherry%20mastery')
+addScriptButton(MasteryScroll, "BONK",         13, "n", 'https://raw.githubusercontent.com/catlyn316/BONK-mastery/refs/heads/main/bonk')
+addScriptButton(MasteryScroll, "chain",        14, "y", 'https://raw.githubusercontent.com/catlyn316/Chain-mastery/refs/heads/main/No%20more%20alt%20need')
+addScriptButton(MasteryScroll, "彈簧",         15, "n", 'https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Spring')
+addScriptButton(MasteryScroll, "月球",         16, "n", 'https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Moon')
+addScriptButton(MasteryScroll, "雜技演員",     17, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Acrobat")
+addScriptButton(MasteryScroll, "修理工",       18, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Tinkerer")
+-- 🔽 在這裡新增精通手套按鈕：
+
+
+-- ══════════════════════════════════════════
+-- 其他分區按鈕
+-- ══════════════════════════════════════════
+local OtherButtons = {
+    createButton("隱形直到重置",  1, OtherScroll, 40),
+    createButton("自動拍擊: 關",  2, OtherScroll, 40),
+    createButton("防無限跳: 開",  3, OtherScroll, 40)
+}
+
+-- 防無限跳（預設開啟）
+local antiInfiniteJump = true
+local antiJumpConns = {}
+
+local function clearAntiJumpConns()
+    for _, conn in ipairs(antiJumpConns) do
+        pcall(function() conn:Disconnect() end)
+    end
+    antiJumpConns = {}
+end
+
+local function setupAntiInfiniteJump(char)
+    clearAntiJumpConns()
+    local hum = char:WaitForChild("Humanoid", 5)
+    if not hum then return end
+
+    local inAir = false
+    local airJumpCount = 0
+
+    local stateConn = hum.StateChanged:Connect(function(_, newState)
+        if not antiInfiniteJump then return end
+
+        if newState == Enum.HumanoidStateType.Jumping then
+            if inAir then
+                airJumpCount = airJumpCount + 1
+                warn("[防無限跳] 空中跳躍偵測，次數：" .. airJumpCount)
+                warn("[防無限跳] 空中跳躍，踢出！")
+                game.Players.LocalPlayer:Kick("你差點被封了")
+            else
+                inAir = true
+                airJumpCount = 0
+            end
+        elseif newState == Enum.HumanoidStateType.Freefall then
+            if not inAir then
+                inAir = true
+                airJumpCount = 0
+            end
+        elseif newState == Enum.HumanoidStateType.Landed
+            or newState == Enum.HumanoidStateType.Running
+            or newState == Enum.HumanoidStateType.RunningNoPhysics
+            or newState == Enum.HumanoidStateType.Swimming then
+            inAir = false
+            airJumpCount = 0
+        end
+    end)
+    table.insert(antiJumpConns, stateConn)
+end
+
+LocalPlayer.CharacterAdded:Connect(function(newChar)
+    task.wait(0.5)
+    if antiInfiniteJump then setupAntiInfiniteJump(newChar) end
+end)
+
+task.spawn(function()
+    task.wait(1)
+    local char = LocalPlayer.Character
+    if char and antiInfiniteJump then setupAntiInfiniteJump(char) end
+end)
+
+-- 自動拍擊
+local autoSlap = false
+local autoSlapConnection = nil
+
+OtherButtons[1].MouseButton1Click:Connect(function()
+    pcall(function()
+        fireclickdetector(workspace.Lobby["Ghost"].ClickDetector)
+        wait(0.1)
+        game:GetService("ReplicatedStorage").Ghostinvisibilityactivated:FireServer()
+        wait(0.1)
+        fireclickdetector(workspace.Lobby["Whirlwind"].ClickDetector)
+    end)
+end)
+
+OtherButtons[2].MouseButton1Click:Connect(function()
+    autoSlap = not autoSlap
+    OtherButtons[2].Text = autoSlap and "自動拍擊: 開" or "自動拍擊: 關"
+
+    if autoSlap then
+        autoSlapConnection = task.spawn(function()
+            while autoSlap do
+                pcall(function()
+                    local success1 = pcall(function()
+                        UserInputService.InputBegan:Fire({
+                            UserInputType = Enum.UserInputType.MouseButton1,
+                            UserInputState = Enum.UserInputState.Begin
+                        })
+                        task.wait(0.05)
+                        UserInputService.InputEnded:Fire({
+                            UserInputType = Enum.UserInputType.MouseButton1,
+                            UserInputState = Enum.UserInputState.End
+                        })
+                    end)
+
+                    if not success1 then
+                        local virtualInputManager = game:GetService("VirtualInputManager")
+                        local camera = workspace.CurrentCamera
+                        local screenSize = camera.ViewportSize
+                        local centerX, centerY = screenSize.X / 2, screenSize.Y / 2
+                        virtualInputManager:SendMouseButtonEvent(centerX, centerY, 0, true, game, 1)
+                        task.wait(0.05)
+                        virtualInputManager:SendMouseButtonEvent(centerX, centerY, 0, false, game, 1)
+                    end
+
+                    local character = LocalPlayer.Character
+                    if character then
+                        local tool = character:FindFirstChildOfClass("Tool")
+                        if tool then tool:Activate() end
+                    end
+                end)
+                task.wait(0.6)
+            end
+        end)
+    else
+        if autoSlapConnection then
+            task.cancel(autoSlapConnection)
+            autoSlapConnection = nil
+        end
+    end
+end)
+
+OtherButtons[3].MouseButton1Click:Connect(function()
+    antiInfiniteJump = not antiInfiniteJump
+    OtherButtons[3].Text = antiInfiniteJump and "防無限跳: 開" or "防無限跳: 關"
+    if antiInfiniteJump then
+        local char = LocalPlayer.Character
+        if char then setupAntiInfiniteJump(char) end
+    else
+        clearAntiJumpConns()
+    end
+end)
+
+-- ══════════════════════════════════════════
+-- 分區切換
+-- ══════════════════════════════════════════
+local function switchSection(visible1, visible2, visible3, visible4, visible5)
+    TPScroll.Visible          = visible1
+    CommonButtonsScroll.Visible = visible2
+    BadgeGlove.Visible        = visible3
+    MasteryScroll.Visible     = visible4
+    OtherScroll.Visible       = visible5
+
+    Section1.BackgroundColor3 = visible1 and Color3.fromRGB(100,100,100) or Color3.fromRGB(60,60,60)
+    Section2.BackgroundColor3 = visible2 and Color3.fromRGB(100,100,100) or Color3.fromRGB(60,60,60)
+    Section3.BackgroundColor3 = visible3 and Color3.fromRGB(100,100,100) or Color3.fromRGB(60,60,60)
+    Section4.BackgroundColor3 = visible4 and Color3.fromRGB(100,100,100) or Color3.fromRGB(60,60,60)
+    Section5.BackgroundColor3 = visible5 and Color3.fromRGB(100,100,100) or Color3.fromRGB(60,60,60)
+end
+
+Section1.MouseButton1Click:Connect(function() switchSection(true,  false, false, false, false) end)
+Section2.MouseButton1Click:Connect(function() switchSection(false, true,  false, false, false) end)
+Section3.MouseButton1Click:Connect(function() switchSection(false, false, true,  false, false) end)
+Section4.MouseButton1Click:Connect(function() switchSection(false, false, false, true,  false) end)
+Section5.MouseButton1Click:Connect(function() switchSection(false, false, false, false, true)  end)
+
+-- 初始高亮第一個分區
+Section1.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+
+-- ══════════════════════════════════════════
+-- 清理函數
+-- ══════════════════════════════════════════
+local function cleanUp()
+    if generatedPlatform then
+        generatedPlatform:Destroy()
+        generatedPlatform = nil
+    end
+    if autoSlapConnection then
+        task.cancel(autoSlapConnection)
+        autoSlapConnection = nil
+    end
+    autoSlap = false
+    clearAntiJumpConns()
+end
+
+script.AncestryChanged:Connect(function(_, newParent)
+    if not newParent then cleanUp() end
+end)
+
+-- 防止重複執行
+if _G.maolingHubLoaded then
+    warn("貓玲的腳本已經在運行中")
+    return
+end
+_G.maolingHubLoaded = true
