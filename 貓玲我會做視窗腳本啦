@@ -199,7 +199,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size               = UDim2.new(1, -80, 0, 50)
 Title.Position           = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.51"
+Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.52"
 Title.Font               = Enum.Font.GothamBold
 Title.TextSize           = 22
 Title.TextColor3         = Color3.fromRGB(255, 255, 255)
@@ -739,7 +739,7 @@ addScriptButton(BadgeGlove, "plate手套",              12, "n", 'https://raw.gi
 addScriptButton(BadgeGlove, "企鵝手套",               13, "n", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Penguin")
 addScriptButton(BadgeGlove, "鍊金和其他有關聯的手套", 14, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Alchemist%20and%20others")
 -- 🔽 在這裡新增徽章手套按鈕：
-
+-- addScriptButton(BadgeGlove, "",         , "n", "")
 -- ══════════════════════════════════════════
 -- 🎯 精通手套分區
 -- ══════════════════════════════════════════
@@ -763,8 +763,10 @@ addScriptButton(MasteryScroll, "雜技演員",     17, "n", "https://raw.githubu
 addScriptButton(MasteryScroll, "修理工",       18, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Tinkerer")
 addScriptButton(MasteryScroll, "靈魂",         19, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Soul")
 addScriptButton(MasteryScroll, "憤怒",         20, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Rage")
+addScriptButton(MasteryScroll, "跟蹤者",         21, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Stalker")
+addScriptButton(MasteryScroll, "木板",         22, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Plank")
 -- 🔽 在這裡新增精通手套按鈕：
-
+-- addScriptButton(MasteryScroll, "",         , "n", "")
 -- ══════════════════════════════════════════
 -- 🔧 其他分區
 -- ══════════════════════════════════════════
