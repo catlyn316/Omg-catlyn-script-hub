@@ -747,7 +747,7 @@ addScriptButton(MasteryScroll, "閃光(任務二)", 1,  "n", 'https://raw.github
 addScriptButton(MasteryScroll, "加速器",       2,  "n", 'https://raw.githubusercontent.com/catlyn316/Need-baller/refs/heads/main/Need%20baller%20to%20farm%20booster%20mastery')
 addScriptButton(MasteryScroll, "空間",         3,  "n", 'https://raw.githubusercontent.com/catlyn316/Space-mastery/refs/heads/main/Space%20mastery%20no%20need%20baller%20but%20alt')
 addScriptButton(MasteryScroll, "冰砂",         4,  "n", 'https://raw.githubusercontent.com/catlyn316/Shard-mastery/refs/heads/main/Shard%20mastery')
-addScriptButton(MasteryScroll, "公車",         5,  "n", 'https://raw.githubusercontent.com/catlyn316/Bus-mastery-need-null-help/refs/heads/main/Bus%20mastery')
+addScriptButton(MasteryScroll, "公車",         5,  "y", 'https://raw.githubusercontent.com/catlyn316/Bus-mastery-need-null-help/refs/heads/main/Bus%20mastery')
 addScriptButton(MasteryScroll, "階段",         6,  "n", 'https://raw.githubusercontent.com/catlyn316/Phase-mastery/refs/heads/main/Phase%20mastery')
 addScriptButton(MasteryScroll, "大亨和蜜蜂",   7,  "n", 'https://raw.githubusercontent.com/catlyn316/Tycoon-and-hive-mastery/refs/heads/main/Tycoon%2Bhive%20mastery')
 addScriptButton(MasteryScroll, "🗿",           8,  "n", 'https://raw.githubusercontent.com/catlyn316/moai-mastery/refs/heads/main/moai%20mastery')
