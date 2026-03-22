@@ -199,7 +199,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size               = UDim2.new(1, -80, 0, 50)
 Title.Position           = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.52"
+Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.53"
 Title.Font               = Enum.Font.GothamBold
 Title.TextSize           = 22
 Title.TextColor3         = Color3.fromRGB(255, 255, 255)
@@ -763,8 +763,10 @@ addScriptButton(MasteryScroll, "雜技演員",     17, "n", "https://raw.githubu
 addScriptButton(MasteryScroll, "修理工",       18, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Tinkerer")
 addScriptButton(MasteryScroll, "靈魂",         19, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Soul")
 addScriptButton(MasteryScroll, "憤怒",         20, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Rage")
-addScriptButton(MasteryScroll, "跟蹤者",         21, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Stalker")
+addScriptButton(MasteryScroll, "跟蹤者",       21, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Stalker")
 addScriptButton(MasteryScroll, "木板",         22, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Plank")
+addScriptButton(MasteryScroll, "泡泡",         23, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Bubble")
+addScriptButton(MasteryScroll, "幻影",         24, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Phantom")
 -- 🔽 在這裡新增精通手套按鈕：
 -- addScriptButton(MasteryScroll, "",         , "n", "")
 -- ══════════════════════════════════════════
@@ -773,12 +775,36 @@ addScriptButton(MasteryScroll, "木板",         22, "n", "https://raw.githubuse
 local OtherButtons = {
     createButton("隱形直到重置", 1, OtherScroll),
     createButton("自動拍擊: 關", 2, OtherScroll),
-    createButton("防無限跳: 開", 3, OtherScroll),
+    createButton("防無限跳: 關", 3, OtherScroll),
 }
 
--- 防無限跳（預設開啟）
-local antiInfiniteJump = true
-local antiJumpConns    = {}
+-- ══════════════════════════════════════════
+-- 防無限跳
+-- 邏輯：
+--   - 使用者名稱含 randomcat / 1x1x1x1 / sacrifice（不分大小寫）→ 預設開
+--   - 其他使用者 → 預設關
+--   - 手動按鈕切換後記錄「是否已手動操作」，不再被 Cloud 偵測覆蓋
+--   - 偵測到裝備 Cloud 手套 → 自動關（除非使用者是手動關的）
+--   - 偵測到換成其他手套 → 若之前是「因 Cloud 自動關的」則自動重開
+-- ══════════════════════════════════════════
+local lowerName = string.lower(LocalPlayer.Name)
+local isSpecialUser = lowerName:find("randomcat") ~= nil
+    or lowerName:find("1x1x1x1") ~= nil
+    or lowerName:find("sacrifice") ~= nil
+
+-- antiInfiniteJump: 目前狀態
+-- userManuallySet: true = 使用者手動設定過，不被 Cloud 偵測覆蓋
+-- autoDisabledByCloud: true = 目前是因為 Cloud 手套而自動關掉的
+local antiInfiniteJump  = isSpecialUser  -- 依使用者名稱決定預設值
+local userManuallySet   = false
+local autoDisabledByCloud = false
+local antiJumpConns     = {}
+
+-- 更新按鈕文字
+local function updateAntiJumpBtn()
+    OtherButtons[3].Text = antiInfiniteJump and "防無限跳: 開" or "防無限跳: 關"
+end
+updateAntiJumpBtn()
 
 local function clearAntiJumpConns()
     for _, conn in ipairs(antiJumpConns) do pcall(function() conn:Disconnect() end) end
@@ -811,6 +837,46 @@ local function setupAntiInfiniteJump(char)
     end)
     table.insert(antiJumpConns, stateConn)
 end
+
+-- Cloud 手套偵測：監聽 leaderstats.Glove 變化
+local function watchGloveForCloud()
+    task.spawn(function()
+        local leaderstats = LocalPlayer:WaitForChild("leaderstats", 10)
+        if not leaderstats then return end
+        local gloveVal = leaderstats:WaitForChild("Glove", 10)
+        if not gloveVal then return end
+
+        local function onGloveChanged()
+            local currentGlove = gloveVal.Value
+            if currentGlove == "Cloud" then
+                -- 裝備 Cloud：若使用者沒有手動設定（或是自動開的），自動關
+                if not userManuallySet and antiInfiniteJump then
+                    antiInfiniteJump    = false
+                    autoDisabledByCloud = true
+                    clearAntiJumpConns()
+                    updateAntiJumpBtn()
+                    print("[防無限跳] 偵測到 Cloud 手套，自動關閉")
+                end
+            else
+                -- 換成其他手套：若之前是被 Cloud 自動關的，重新開啟
+                if autoDisabledByCloud then
+                    antiInfiniteJump    = true
+                    autoDisabledByCloud = false
+                    local char = LocalPlayer.Character
+                    if char then setupAntiInfiniteJump(char) end
+                    updateAntiJumpBtn()
+                    print("[防無限跳] 離開 Cloud 手套，自動重新開啟")
+                end
+            end
+        end
+
+        gloveVal.Changed:Connect(onGloveChanged)
+        -- 立即檢查目前手套
+        onGloveChanged()
+    end)
+end
+
+watchGloveForCloud()
 
 LocalPlayer.CharacterAdded:Connect(function(newChar)
     task.wait(0.5)
@@ -881,8 +947,10 @@ OtherButtons[2].MouseButton1Click:Connect(function()
 end)
 
 OtherButtons[3].MouseButton1Click:Connect(function()
-    antiInfiniteJump = not antiInfiniteJump
-    OtherButtons[3].Text = antiInfiniteJump and "防無限跳: 開" or "防無限跳: 關"
+    antiInfiniteJump  = not antiInfiniteJump
+    userManuallySet   = true   -- 標記為手動設定
+    autoDisabledByCloud = false -- 手動後清除 Cloud 自動關的旗標
+    updateAntiJumpBtn()
     if antiInfiniteJump then
         local char = LocalPlayer.Character
         if char then setupAntiInfiniteJump(char) end
