@@ -36,47 +36,80 @@ _markVisited(game.JobId)
 
 local function simpleHopToSmall()
     _cleanVisited()
-    local pid = game.PlaceId
-    local success, err = pcall(function()
-        local response = HttpService:JSONDecode(
-            game:HttpGet("https://games.roblox.com/v1/games/" .. pid .. "/servers/Public?sortOrder=Asc&limit=100")
-        )
-        if response.data and #response.data > 0 then
-            table.sort(response.data, function(a, b) return a.playing < b.playing end)
-            local valid = {}
-            for _, s in ipairs(response.data) do
-                if s.id ~= game.JobId
-                and not _isRecentlyVisited(s.id)
-                and s.playing < s.maxPlayers then
-                    table.insert(valid, s)
-                end
-            end
-            local pool = {}
-            for i = 8, math.min(50, #valid) do
-                table.insert(pool, valid[i])
-            end
-            if #pool == 0 then
-                for i = math.max(1, #valid - 2), #valid do
-                    table.insert(pool, valid[i])
-                end
-            end
-            if #pool == 0 then
-                warn("[跳服] 找不到合適的伺服器，改隨機跳")
-                TeleportService:Teleport(pid, LocalPlayer)
-                return
-            end
-            local pick = pool[math.random(1, #pool)]
-            _markVisited(pick.id)
-            print(string.format("[跳服] 跳往伺服器（%d/%d人）", pick.playing, pick.maxPlayers))
-            TeleportService:TeleportToPlaceInstance(pid, pick.id)
-        else
-            warn("[跳服] 無法取得伺服器列表，改隨機跳")
-            TeleportService:Teleport(pid, LocalPlayer)
+    local pid      = game.PlaceId
+    local cursor   = nil
+    local maxPages = 5
+    local allValid = {}
+
+    -- 翻頁收集所有可用伺服器
+    for page = 1, maxPages do
+        local url = "https://games.roblox.com/v1/games/" .. pid .. "/servers/Public?sortOrder=Asc&limit=100"
+        if cursor then
+            url = url .. "&cursor=" .. cursor
         end
-    end)
-    if not success then
-        warn("[跳服] 發生錯誤：" .. tostring(err))
-        TeleportService:Teleport(pid, LocalPlayer)
+
+        local ok, result = pcall(function()
+            return HttpService:JSONDecode(game:HttpGet(url))
+        end)
+
+        if not ok or not result or not result.data then
+            warn("[跳服] 第" .. page .. "頁讀取失敗")
+            break
+        end
+
+        print("[跳服] 第" .. page .. "頁，拿到" .. #result.data .. "筆")
+
+        for _, s in ipairs(result.data) do
+            if s.id ~= game.JobId
+            and not _isRecentlyVisited(s.id)
+            and s.playing < s.maxPlayers then
+                table.insert(allValid, s)
+            end
+        end
+
+        if #allValid >= 50 then break end
+
+        cursor = result.nextPageCursor
+        if not cursor or cursor == "" then break end
+
+        wait(0.3)
+    end
+
+    if #allValid == 0 then
+        return nil, "找不到伺服器"
+    end
+
+    if pid == 6403373529 then
+        -- Slap Battle：由少到多排序後第 8~50 名隨機挑一個
+        local pool = {}
+        for i = 8, math.min(50, #allValid) do
+            table.insert(pool, allValid[i])
+        end
+        if #pool == 0 then pool = allValid end
+        local pick = pool[math.random(1, #pool)]
+        _markVisited(pick.id)
+        return pick, nil
+    else
+        -- 其他遊戲：先試 0~1 人，找不到就遞增上限
+        local pick = nil
+        for maxP = 1, 999 do
+            local pool = {}
+            for _, s in ipairs(allValid) do
+                if s.playing <= maxP then
+                    table.insert(pool, s)
+                end
+            end
+            if #pool > 0 then
+                print("[跳服] 找到 0~" .. maxP .. " 人的伺服器，共 " .. #pool .. " 個")
+                pick = pool[math.random(1, #pool)]
+                break
+            end
+        end
+        if not pick then
+            return nil, "找不到伺服器"
+        end
+        _markVisited(pick.id)
+        return pick, nil
     end
 end
 
@@ -199,7 +232,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size               = UDim2.new(1, -80, 0, 50)
 Title.Position           = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.53"
+Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.54"
 Title.Font               = Enum.Font.GothamBold
 Title.TextSize           = 22
 Title.TextColor3         = Color3.fromRGB(255, 255, 255)
@@ -696,19 +729,6 @@ masteryBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/MasteryHelper.NewestVersion'))()
 end)
 
--- 跳到少人服（會拿樹果和光球）
-local serverHopWithItemsBtn = createButton("跳服+拿樹果光球", 12, CommonButtonsScroll)
-serverHopWithItemsBtn.MouseButton1Click:Connect(function()
-    serverhop = true
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/Pro666Pro/autofarm-serverhop/main/main.lua'))()
-end)
-
--- 單純跳到少人服（第8~50，防重複，排滿服）
-local simpleServerHopBtn = createButton("單純跳到少人服", 13, CommonButtonsScroll)
-simpleServerHopBtn.MouseButton1Click:Connect(function()
-    simpleHopToSmall()
-end)
-
 -- infyield
 local infyieldBtn = createButton("infyield", 14, CommonButtonsScroll)
 infyieldBtn.MouseButton1Click:Connect(function()
@@ -777,6 +797,31 @@ local OtherButtons = {
     createButton("自動拍擊: 關", 2, OtherScroll),
     createButton("防無限跳: 關", 3, OtherScroll),
 }
+
+-- 跳服+拿樹果光球
+local serverHopWithItemsBtn = createButton("跳服+拿樹果光球", 4, OtherScroll)
+serverHopWithItemsBtn.MouseButton1Click:Connect(function()
+    serverhop = true
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/Pro666Pro/autofarm-serverhop/main/main.lua'))()
+end)
+
+-- 單純跳到少人服
+local simpleServerHopBtn = createButton("單純跳到少人服", 5, OtherScroll)
+simpleServerHopBtn.MouseButton1Click:Connect(function()
+    simpleServerHopBtn.Text = "搜尋中..."
+    task.spawn(function()
+        local pick, err = simpleHopToSmall()
+        if err then
+            simpleServerHopBtn.Text = err
+            wait(2)
+            simpleServerHopBtn.Text = "單純跳到少人服"
+            TeleportService:Teleport(game.PlaceId, LocalPlayer)
+        else
+            simpleServerHopBtn.Text = "跳往 " .. pick.playing .. " 人的服"
+            TeleportService:TeleportToPlaceInstance(game.PlaceId, pick.id)
+        end
+    end)
+end)
 
 -- ══════════════════════════════════════════
 -- 防無限跳
