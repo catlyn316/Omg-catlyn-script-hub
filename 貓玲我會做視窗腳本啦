@@ -34,6 +34,83 @@ local function _cleanVisited()
 end
 _markVisited(game.JobId)
 
+local AUTO_EXEC_URL = "https://raw.githubusercontent.com/catlyn316/Omg-catlyn-script-hub/refs/heads/main/%E8%B2%93%E7%8E%B2%E6%88%91%E6%9C%83%E5%81%9A%E8%A6%96%E7%AA%97%E8%85%B3%E6%9C%AC%E5%95%A6"
+
+local function queueAutoExec()
+    local queueTeleport = queueonteleport or queue_on_teleport
+    if queueTeleport then
+        queueTeleport([[
+if not game:IsLoaded() then game.Loaded:Wait() end
+repeat task.wait() until game.Players.LocalPlayer
+task.wait(0.5)
+loadstring(game:HttpGet("]] .. AUTO_EXEC_URL .. [["))()
+]])
+    end
+end
+
+local function hopToLarge()
+    _cleanVisited()
+    local pid      = game.PlaceId
+    local cursor   = nil
+    local maxPages = 5
+    local allValid = {}
+
+    for page = 1, maxPages do
+        local url = "https://games.roblox.com/v1/games/" .. pid .. "/servers/Public?sortOrder=Desc&limit=100"
+        if cursor then
+            url = url .. "&cursor=" .. cursor
+        end
+
+        local ok, result = pcall(function()
+            return HttpService:JSONDecode(game:HttpGet(url))
+        end)
+
+        if not ok or not result or not result.data then
+            warn("[跳服] 第" .. page .. "頁讀取失敗")
+            break
+        end
+
+        for _, s in ipairs(result.data) do
+            -- 排除額滿的
+            if s.id ~= game.JobId
+            and not _isRecentlyVisited(s.id)
+            and s.playing < s.maxPlayers then
+                table.insert(allValid, s)
+            end
+        end
+
+        if #allValid >= 50 then break end
+
+        cursor = result.nextPageCursor
+        if not cursor or cursor == "" then break end
+
+        wait(0.3)
+    end
+
+    if #allValid == 0 then
+        return nil, "找不到伺服器"
+    end
+
+    -- 找最大人數（已排除額滿，所以是最接近滿的）
+    local maxCount = allValid[1].playing
+    -- 目標：maxPlayers - 2，但用實際最大人數當基準
+    local targetCount = maxCount - 2
+    if targetCount < 0 then targetCount = 0 end
+
+    local pool = {}
+    for _, s in ipairs(allValid) do
+        if s.playing >= targetCount then
+            table.insert(pool, s)
+        end
+    end
+
+    if #pool == 0 then pool = allValid end
+
+    local pick = pool[math.random(1, #pool)]
+    _markVisited(pick.id)
+    return pick, nil
+end
+
 local function simpleHopToSmall()
     _cleanVisited()
     local pid      = game.PlaceId
@@ -502,8 +579,45 @@ TPButtons[7].MouseButton1Click:Connect(function()
     LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(244, 34, 184)
 end)
 TPButtons[8].MouseButton1Click:Connect(function()
-    local portal = game:GetService("Workspace").Lobby.brazil.portal
-    LocalPlayer.Character.HumanoidRootPart.CFrame = portal.CFrame
+    local btn = TPButtons[8]
+    -- 若已在倒數中，視為確認傳送
+    if btn.Text ~= "巴西" then
+        btn.Text = "傳送中..."
+        local BRAZIL_HUB_URL     = "https://raw.githubusercontent.com/catlyn316/Omg-catlyn-script-hub/refs/heads/main/%E8%B2%93%E7%8E%B2%E6%88%91%E6%9C%83%E5%81%9A%E8%A6%96%E7%AA%97%E8%85%B3%E6%9C%AC%E5%95%A6"
+        local BRAZIL_INFYIELD    = "https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"
+        local BRAZIL_FREECAM     = "https://raw.githubusercontent.com/catlyn316/Freecam-script/refs/heads/main/Fc"
+        local queueTeleport = queueonteleport or queue_on_teleport
+        if queueTeleport then
+            queueTeleport([[
+if not game:IsLoaded() then game.Loaded:Wait() end
+repeat task.wait() until game.Players.LocalPlayer
+task.wait(1)
+loadstring(game:HttpGet("]] .. BRAZIL_HUB_URL .. [["))()
+task.wait(0.5)
+loadstring(game:HttpGet("]] .. BRAZIL_INFYIELD .. [["))()
+task.wait(0.5)
+loadstring(game:HttpGet("]] .. BRAZIL_FREECAM .. [["))()
+]])
+        end
+        pcall(function()
+            local portal = game:GetService("Workspace").Lobby.brazil.portal
+            LocalPlayer.Character.HumanoidRootPart.CFrame = portal.CFrame
+        end)
+        task.wait(0.5)
+        btn.Text = "巴西"
+        return
+    end
+    -- 第一下：開始倒數
+    task.spawn(function()
+        for i = 2, 1, -1 do
+            btn.Text = "是否傳送？(" .. i .. ")"
+            task.wait(1)
+        end
+        -- 倒數結束沒再按，恢復
+        if btn.Text ~= "傳送中..." then
+            btn.Text = "巴西"
+        end
+    end)
 end)
 TPButtons[9].MouseButton1Click:Connect(function()
     local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
@@ -818,6 +932,26 @@ simpleServerHopBtn.MouseButton1Click:Connect(function()
             TeleportService:Teleport(game.PlaceId, LocalPlayer)
         else
             simpleServerHopBtn.Text = "跳往 " .. pick.playing .. " 人的服"
+            queueAutoExec()
+            TeleportService:TeleportToPlaceInstance(game.PlaceId, pick.id)
+        end
+    end)
+end)
+
+-- 單純跳到多人服
+local largeServerHopBtn = createButton("單純跳到多人服", 6, OtherScroll)
+largeServerHopBtn.MouseButton1Click:Connect(function()
+    largeServerHopBtn.Text = "搜尋中..."
+    task.spawn(function()
+        local pick, err = hopToLarge()
+        if err then
+            largeServerHopBtn.Text = err
+            wait(2)
+            largeServerHopBtn.Text = "單純跳到多人服"
+            TeleportService:Teleport(game.PlaceId, LocalPlayer)
+        else
+            largeServerHopBtn.Text = "跳往 " .. pick.playing .. " 人的服"
+            queueAutoExec()
             TeleportService:TeleportToPlaceInstance(game.PlaceId, pick.id)
         end
     end)
