@@ -13,8 +13,120 @@ end
 _G.maolingHubLoaded = true
 
 -- ══════════════════════════════════════════
--- 跳服工具（單純跳少人服用）
+-- 巴西遊戲自動偵測
+-- 如果當前 PlaceId 是巴西三個遊戲之一，
+-- 就自動執行 Giang hub + loopfullbright/nofog/刪screenshake
+-- 並結束主腳本（不顯示 hub）
 -- ══════════════════════════════════════════
+local BRAZIL_PLACE_IDS = {
+    [14422118326] = true,
+    [18550498098] = true,
+    [13833961666] = true,
+}
+
+local function runLoopBrightNoFogDeleteScreenshake()
+    -- LoopFullBright + NoFog
+    local Lighting = game:GetService("Lighting")
+    task.spawn(function()
+        while true do
+            Lighting.Brightness        = 2
+            Lighting.ClockTime         = 14
+            Lighting.FogEnd            = 1000000
+            Lighting.FogStart          = 1000000
+            Lighting.GlobalShadows     = false
+            Lighting.Ambient           = Color3.fromRGB(255, 255, 255)
+            Lighting.OutdoorAmbient    = Color3.fromRGB(255, 255, 255)
+            for _, effect in ipairs(Lighting:GetChildren()) do
+                if effect:IsA("PostEffect") then
+                    effect.Enabled = false
+                end
+            end
+            task.wait(1)
+        end
+    end)
+
+    -- 刪除所有含 "screenshake"（不分大小寫）的腳本
+    local function deleteScreenshake(parent)
+        for _, obj in ipairs(parent:GetDescendants()) do
+            if (obj:IsA("LocalScript") or obj:IsA("Script") or obj:IsA("ModuleScript"))
+            and obj.Name:lower():find("screenshake") then
+                pcall(function() obj:Destroy() end)
+            end
+        end
+    end
+    pcall(function() deleteScreenshake(Workspace) end)
+    pcall(function() deleteScreenshake(game:GetService("ReplicatedStorage")) end)
+    pcall(function() deleteScreenshake(LocalPlayer) end)
+end
+
+if BRAZIL_PLACE_IDS[game.PlaceId] then
+    -- 在巴西遊戲裡：執行 Giang hub + 亮度/霧/screenshake
+    task.spawn(function()
+        runLoopBrightNoFogDeleteScreenshake()
+    end)
+    task.spawn(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Slap_Battles/main/Slap_Battles.lua", true))()
+    end)
+    -- 不顯示主 hub，直接結束
+    _G.maolingHubLoaded = false
+    return
+end
+
+-- ══════════════════════════════════════════
+-- 預先排好 queueonteleport
+-- 不管之後怎麼被傳送，只要到那三個遊戲就自動執行
+-- ══════════════════════════════════════════
+local function preQueueBrazilCheck()
+    local queueTeleport = queueonteleport or queue_on_teleport
+    if not queueTeleport then return end
+    queueTeleport([[
+if not game:IsLoaded() then game.Loaded:Wait() end
+repeat task.wait() until game.Players.LocalPlayer
+task.wait(1)
+
+local pid = game.PlaceId
+local BRAZIL_IDS = {[14422118326]=true,[18550498098]=true,[13833961666]=true}
+if not BRAZIL_IDS[pid] then return end
+
+-- LoopFullBright + NoFog
+local Lighting = game:GetService("Lighting")
+task.spawn(function()
+    while true do
+        Lighting.Brightness     = 2
+        Lighting.ClockTime      = 14
+        Lighting.FogEnd         = 1000000
+        Lighting.FogStart       = 1000000
+        Lighting.GlobalShadows  = false
+        Lighting.Ambient        = Color3.fromRGB(255,255,255)
+        Lighting.OutdoorAmbient = Color3.fromRGB(255,255,255)
+        for _, e in ipairs(Lighting:GetChildren()) do
+            if e:IsA("PostEffect") then e.Enabled = false end
+        end
+        task.wait(1)
+    end
+end)
+
+-- 刪 screenshake
+local function delSS(parent)
+    for _, obj in ipairs(parent:GetDescendants()) do
+        if (obj:IsA("LocalScript") or obj:IsA("Script") or obj:IsA("ModuleScript"))
+        and obj.Name:lower():find("screenshake") then
+            pcall(function() obj:Destroy() end)
+        end
+    end
+end
+pcall(function() delSS(game:GetService("Workspace")) end)
+pcall(function() delSS(game:GetService("ReplicatedStorage")) end)
+pcall(function() delSS(game.Players.LocalPlayer) end)
+
+-- Giang hub
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Giangplay/Slap_Battles/main/Slap_Battles.lua", true))()
+]])
+end
+
+preQueueBrazilCheck()
+
+
 local _visitedServers = {}
 local _VISIT_COOLDOWN = 120
 
@@ -48,6 +160,54 @@ loadstring(game:HttpGet("]] .. AUTO_EXEC_URL .. [["))()
     end
 end
 
+-- 巴西遊戲專用的 queueonteleport
+local BRAZIL_GIANG_URL = "https://raw.githubusercontent.com/Giangplay/Slap_Battles/main/Slap_Battles.lua"
+
+local function queueBrazilExec()
+    local queueTeleport = queueonteleport or queue_on_teleport
+    if queueTeleport then
+        queueTeleport([[
+if not game:IsLoaded() then game.Loaded:Wait() end
+repeat task.wait() until game.Players.LocalPlayer
+task.wait(1)
+
+-- LoopFullBright + NoFog
+local Lighting = game:GetService("Lighting")
+task.spawn(function()
+    while true do
+        Lighting.Brightness     = 2
+        Lighting.ClockTime      = 14
+        Lighting.FogEnd         = 1000000
+        Lighting.FogStart       = 1000000
+        Lighting.GlobalShadows  = false
+        Lighting.Ambient        = Color3.fromRGB(255,255,255)
+        Lighting.OutdoorAmbient = Color3.fromRGB(255,255,255)
+        for _, e in ipairs(Lighting:GetChildren()) do
+            if e:IsA("PostEffect") then e.Enabled = false end
+        end
+        task.wait(1)
+    end
+end)
+
+-- 刪screenshake
+local function delSS(parent)
+    for _, obj in ipairs(parent:GetDescendants()) do
+        if (obj:IsA("LocalScript") or obj:IsA("Script") or obj:IsA("ModuleScript"))
+        and obj.Name:lower():find("screenshake") then
+            pcall(function() obj:Destroy() end)
+        end
+    end
+end
+pcall(function() delSS(game:GetService("Workspace")) end)
+pcall(function() delSS(game:GetService("ReplicatedStorage")) end)
+pcall(function() delSS(game.Players.LocalPlayer) end)
+
+-- Giang hub
+loadstring(game:HttpGet("]] .. BRAZIL_GIANG_URL .. [[", true))()
+]])
+    end
+end
+
 local function hopToLarge()
     _cleanVisited()
     local pid      = game.PlaceId
@@ -71,7 +231,6 @@ local function hopToLarge()
         end
 
         for _, s in ipairs(result.data) do
-            -- 排除額滿的
             if s.id ~= game.JobId
             and not _isRecentlyVisited(s.id)
             and s.playing < s.maxPlayers then
@@ -91,9 +250,7 @@ local function hopToLarge()
         return nil, "找不到伺服器"
     end
 
-    -- 找最大人數（已排除額滿，所以是最接近滿的）
-    local maxCount = allValid[1].playing
-    -- 目標：maxPlayers - 2，但用實際最大人數當基準
+    local maxCount   = allValid[1].playing
     local targetCount = maxCount - 2
     if targetCount < 0 then targetCount = 0 end
 
@@ -118,7 +275,6 @@ local function simpleHopToSmall()
     local maxPages = 5
     local allValid = {}
 
-    -- 翻頁收集所有可用伺服器
     for page = 1, maxPages do
         local url = "https://games.roblox.com/v1/games/" .. pid .. "/servers/Public?sortOrder=Asc&limit=100"
         if cursor then
@@ -157,7 +313,6 @@ local function simpleHopToSmall()
     end
 
     if pid == 6403373529 then
-        -- Slap Battle：由少到多排序後第 8~50 名隨機挑一個
         local pool = {}
         for i = 8, math.min(50, #allValid) do
             table.insert(pool, allValid[i])
@@ -167,7 +322,6 @@ local function simpleHopToSmall()
         _markVisited(pick.id)
         return pick, nil
     else
-        -- 其他遊戲：先試 0~1 人，找不到就遞增上限
         local pick = nil
         for maxP = 1, 999 do
             local pool = {}
@@ -482,7 +636,6 @@ end
 
 -- ══════════════════════════════════════════
 -- 通用腳本按鈕（徽章/精通共用）
--- enablePlatform: "y" = 自動開防虛空, "n" = 不影響
 -- ══════════════════════════════════════════
 local function addScriptButton(parent, name, order, enablePlatform, url)
     local btn = createButton(name, order, parent)
@@ -583,22 +736,7 @@ TPButtons[8].MouseButton1Click:Connect(function()
     -- 若已在倒數中，視為確認傳送
     if btn.Text ~= "巴西" then
         btn.Text = "傳送中..."
-        local BRAZIL_HUB_URL     = "https://raw.githubusercontent.com/catlyn316/Omg-catlyn-script-hub/refs/heads/main/%E8%B2%93%E7%8E%B2%E6%88%91%E6%9C%83%E5%81%9A%E8%A6%96%E7%AA%97%E8%85%B3%E6%9C%AC%E5%95%A6"
-        local BRAZIL_INFYIELD    = "https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"
-        local BRAZIL_FREECAM     = "https://raw.githubusercontent.com/catlyn316/Freecam-script/refs/heads/main/Fc"
-        local queueTeleport = queueonteleport or queue_on_teleport
-        if queueTeleport then
-            queueTeleport([[
-if not game:IsLoaded() then game.Loaded:Wait() end
-repeat task.wait() until game.Players.LocalPlayer
-task.wait(1)
-loadstring(game:HttpGet("]] .. BRAZIL_HUB_URL .. [["))()
-task.wait(0.5)
-loadstring(game:HttpGet("]] .. BRAZIL_INFYIELD .. [["))()
-task.wait(0.5)
-loadstring(game:HttpGet("]] .. BRAZIL_FREECAM .. [["))()
-]])
-        end
+        queueBrazilExec()
         pcall(function()
             local portal = game:GetService("Workspace").Lobby.brazil.portal
             LocalPlayer.Character.HumanoidRootPart.CFrame = portal.CFrame
@@ -613,7 +751,6 @@ loadstring(game:HttpGet("]] .. BRAZIL_FREECAM .. [["))()
             btn.Text = "是否傳送？(" .. i .. ")"
             task.wait(1)
         end
-        -- 倒數結束沒再按，恢復
         if btn.Text ~= "傳送中..." then
             btn.Text = "巴西"
         end
@@ -640,7 +777,6 @@ end)
 -- ══════════════════════════════════════════
 -- ⚙️ 常用分區
 -- ══════════════════════════════════════════
--- 假名輸入框
 local nameBox = Instance.new("TextBox", CommonButtonsScroll)
 nameBox.Size               = UDim2.new(0, 180, 0, 35)
 nameBox.PlaceholderText    = "✏️ 輸入假名"
@@ -872,7 +1008,7 @@ addScriptButton(BadgeGlove, "paint手套",              11, "n", 'https://raw.gi
 addScriptButton(BadgeGlove, "plate手套",              12, "n", 'https://raw.githubusercontent.com/catlyn316/Plate-glove/refs/heads/main/Plate')
 addScriptButton(BadgeGlove, "企鵝手套",               13, "n", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Penguin")
 addScriptButton(BadgeGlove, "鍊金和其他有關聯的手套", 14, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Alchemist%20and%20others")
-addScriptButton(BadgeGlove, "地震和其他有關的手套",15, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Quake")
+addScriptButton(BadgeGlove, "地震和其他有關的手套",   15, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Quake")
 -- 🔽 在這裡新增徽章手套按鈕：
 -- addScriptButton(BadgeGlove, "",         , "n", "")
 
@@ -905,6 +1041,7 @@ addScriptButton(MasteryScroll, "泡泡",         23, "n", "https://raw.githubuse
 addScriptButton(MasteryScroll, "幻影",         24, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Phantom")
 -- 🔽 在這裡新增精通手套按鈕：
 -- addScriptButton(MasteryScroll, "",         , "n", "")
+
 -- ══════════════════════════════════════════
 -- 🔧 其他分區
 -- ══════════════════════════════════════════
@@ -961,27 +1098,17 @@ end)
 
 -- ══════════════════════════════════════════
 -- 防無限跳
--- 邏輯：
---   - 使用者名稱含 randomcat / 1x1x1x1 / sacrifice（不分大小寫）→ 預設開
---   - 其他使用者 → 預設關
---   - 手動按鈕切換後記錄「是否已手動操作」，不再被 Cloud 偵測覆蓋
---   - 偵測到裝備 Cloud 手套 → 自動關（除非使用者是手動關的）
---   - 偵測到換成其他手套 → 若之前是「因 Cloud 自動關的」則自動重開
 -- ══════════════════════════════════════════
 local lowerName = string.lower(LocalPlayer.Name)
 local isSpecialUser = lowerName:find("randomcat") ~= nil
     or lowerName:find("1x1x1x1") ~= nil
     or lowerName:find("sacrifice") ~= nil
 
--- antiInfiniteJump: 目前狀態
--- userManuallySet: true = 使用者手動設定過，不被 Cloud 偵測覆蓋
--- autoDisabledByCloud: true = 目前是因為 Cloud 手套而自動關掉的
-local antiInfiniteJump  = isSpecialUser  -- 依使用者名稱決定預設值
-local userManuallySet   = false
+local antiInfiniteJump    = isSpecialUser
+local userManuallySet     = false
 local autoDisabledByCloud = false
-local antiJumpConns     = {}
+local antiJumpConns       = {}
 
--- 更新按鈕文字
 local function updateAntiJumpBtn()
     OtherButtons[3].Text = antiInfiniteJump and "防無限跳: 開" or "防無限跳: 關"
 end
@@ -1019,7 +1146,6 @@ local function setupAntiInfiniteJump(char)
     table.insert(antiJumpConns, stateConn)
 end
 
--- Cloud 手套偵測：監聽 leaderstats.Glove 變化
 local function watchGloveForCloud()
     task.spawn(function()
         local leaderstats = LocalPlayer:WaitForChild("leaderstats", 10)
@@ -1030,29 +1156,24 @@ local function watchGloveForCloud()
         local function onGloveChanged()
             local currentGlove = gloveVal.Value
             if currentGlove == "Cloud" then
-                -- 裝備 Cloud：若使用者沒有手動設定（或是自動開的），自動關
                 if not userManuallySet and antiInfiniteJump then
                     antiInfiniteJump    = false
                     autoDisabledByCloud = true
                     clearAntiJumpConns()
                     updateAntiJumpBtn()
-                    print("[防無限跳] 偵測到 Cloud 手套，自動關閉")
                 end
             else
-                -- 換成其他手套：若之前是被 Cloud 自動關的，重新開啟
                 if autoDisabledByCloud then
                     antiInfiniteJump    = true
                     autoDisabledByCloud = false
                     local char = LocalPlayer.Character
                     if char then setupAntiInfiniteJump(char) end
                     updateAntiJumpBtn()
-                    print("[防無限跳] 離開 Cloud 手套，自動重新開啟")
                 end
             end
         end
 
         gloveVal.Changed:Connect(onGloveChanged)
-        -- 立即檢查目前手套
         onGloveChanged()
     end)
 end
@@ -1128,9 +1249,9 @@ OtherButtons[2].MouseButton1Click:Connect(function()
 end)
 
 OtherButtons[3].MouseButton1Click:Connect(function()
-    antiInfiniteJump  = not antiInfiniteJump
-    userManuallySet   = true   -- 標記為手動設定
-    autoDisabledByCloud = false -- 手動後清除 Cloud 自動關的旗標
+    antiInfiniteJump    = not antiInfiniteJump
+    userManuallySet     = true
+    autoDisabledByCloud = false
     updateAntiJumpBtn()
     if antiInfiniteJump then
         local char = LocalPlayer.Character
@@ -1143,8 +1264,8 @@ end)
 -- ══════════════════════════════════════════
 -- 分區切換
 -- ══════════════════════════════════════════
-local allScrolls   = {TPScroll, CommonButtonsScroll, BadgeGlove, MasteryScroll, OtherScroll}
-local allSections  = {Section1, Section2, Section3, Section4, Section5}
+local allScrolls  = {TPScroll, CommonButtonsScroll, BadgeGlove, MasteryScroll, OtherScroll}
+local allSections = {Section1, Section2, Section3, Section4, Section5}
 
 local function switchSection(index)
     for i, scroll in ipairs(allScrolls) do
