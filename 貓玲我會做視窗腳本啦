@@ -321,61 +321,67 @@ LocalPlayer.CharacterAdded:Connect(function()
 end)
 
 -- ══════════════════════════════════════════
--- 安全區平台
+-- 安全區平台（按下按鈕才建立，只建立一次）
 -- ══════════════════════════════════════════
-local baseSize     = Vector3.new(150, 5, 150)
-local basePosition = Vector3.new(5122, 119, 9513)
+local baseSize      = Vector3.new(150, 5, 150)
+local basePosition  = Vector3.new(5122, 119, 9513)
+local safeZoneBuilt = false
 
-local platform = Instance.new("Part")
-platform.Size          = baseSize
-platform.Position      = basePosition
-platform.Anchored      = true
-platform.CanCollide    = true
-platform.Transparency  = 0.5
-platform.Color         = Color3.fromRGB(100, 100, 100)
-platform.Material      = Enum.Material.SmoothPlastic
-platform.Name          = "LocalPlatform"
-platform.Parent        = Workspace
+local function buildSafeZone()
+    if safeZoneBuilt then return end
+    safeZoneBuilt = true
 
-local textPart = Instance.new("Part")
-textPart.Size         = Vector3.new(50, 1, 50)
-textPart.Anchored     = true
-textPart.CanCollide   = false
-textPart.Transparency = 1
-textPart.Position     = platform.Position - Vector3.new(0, 0.5, 0)
-textPart.Rotation     = Vector3.new(180, 0, 0)
-textPart.Parent       = Workspace
+    local platform = Instance.new("Part")
+    platform.Size          = baseSize
+    platform.Position      = basePosition
+    platform.Anchored      = true
+    platform.CanCollide    = true
+    platform.Transparency  = 0.5
+    platform.Color         = Color3.fromRGB(100, 100, 100)
+    platform.Material      = Enum.Material.SmoothPlastic
+    platform.Name          = "LocalPlatform"
+    platform.Parent        = Workspace
 
-local surfaceGui = Instance.new("SurfaceGui", textPart)
-surfaceGui.Face        = Enum.NormalId.Top
-surfaceGui.AlwaysOnTop = true
+    local textPart = Instance.new("Part")
+    textPart.Size         = Vector3.new(50, 1, 50)
+    textPart.Anchored     = true
+    textPart.CanCollide   = false
+    textPart.Transparency = 1
+    textPart.Position     = basePosition - Vector3.new(0, 0.5, 0)
+    textPart.Rotation     = Vector3.new(180, 0, 0)
+    textPart.Parent       = Workspace
 
-local label = Instance.new("TextLabel", surfaceGui)
-label.Text                   = "貓玲的安全區(>^ω^<)"
-label.Size                   = UDim2.new(1, 0, 1, 0)
-label.BackgroundTransparency = 1
-label.TextColor3             = Color3.fromRGB(255, 192, 203)
-label.TextScaled             = true
-label.Font                   = Enum.Font.Fantasy
+    local surfaceGui = Instance.new("SurfaceGui", textPart)
+    surfaceGui.Face        = Enum.NormalId.Top
+    surfaceGui.AlwaysOnTop = true
 
-local function createWall(size, position)
-    local wall = Instance.new("Part")
-    wall.Size         = size
-    wall.Position     = position
-    wall.Anchored     = true
-    wall.CanCollide   = true
-    wall.Transparency = 0.5
-    wall.Color        = Color3.fromRGB(100, 100, 100)
-    wall.Material     = Enum.Material.SmoothPlastic
-    wall.Parent       = Workspace
+    local label = Instance.new("TextLabel", surfaceGui)
+    label.Text                   = "貓玲的安全區(>^ω^<)"
+    label.Size                   = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3             = Color3.fromRGB(255, 192, 203)
+    label.TextScaled             = true
+    label.Font                   = Enum.Font.Fantasy
+
+    local function createWall(size, position)
+        local wall = Instance.new("Part")
+        wall.Size         = size
+        wall.Position     = position
+        wall.Anchored     = true
+        wall.CanCollide   = true
+        wall.Transparency = 0.5
+        wall.Color        = Color3.fromRGB(100, 100, 100)
+        wall.Material     = Enum.Material.SmoothPlastic
+        wall.Parent       = Workspace
+    end
+
+    local wallHeight = 150
+    createWall(Vector3.new(2, wallHeight, 150), basePosition + Vector3.new( baseSize.X/2,  wallHeight/2, 0))
+    createWall(Vector3.new(2, wallHeight, 150), basePosition + Vector3.new(-baseSize.X/2,  wallHeight/2, 0))
+    createWall(Vector3.new(150, wallHeight, 2), basePosition + Vector3.new(0,  wallHeight/2,  baseSize.Z/2))
+    createWall(Vector3.new(150, wallHeight, 2), basePosition + Vector3.new(0,  wallHeight/2, -baseSize.Z/2))
+    createWall(baseSize,                        basePosition + Vector3.new(0,  wallHeight, 0))
 end
-
-local wallHeight = 150
-createWall(Vector3.new(1, wallHeight, 150), basePosition + Vector3.new( baseSize.X/2,  wallHeight/2, 0))
-createWall(Vector3.new(1, wallHeight, 150), basePosition + Vector3.new(-baseSize.X/2,  wallHeight/2, 0))
-createWall(Vector3.new(150, wallHeight, 1), basePosition + Vector3.new(0,  wallHeight/2,  baseSize.Z/2))
-createWall(Vector3.new(150, wallHeight, 1), basePosition + Vector3.new(0,  wallHeight/2, -baseSize.Z/2))
-createWall(baseSize,                        basePosition + Vector3.new(0,  wallHeight, 0))
 
 -- ══════════════════════════════════════════
 -- GUI 主體
@@ -647,7 +653,7 @@ local TPButtons = {
     createButton("石像島",     6,  TPScroll),
     createButton("大炮島",     7,  TPScroll),
     createButton("巴西",       8,  TPScroll),
-    createButton("盤子",       9,  TPScroll),
+    createButton("盤子(雙擊固定)", 9,  TPScroll),
     createButton("彩虹雲",     10, TPScroll),
     createButton("左島",       11, TPScroll),
     createButton("右島",       12, TPScroll),
@@ -655,6 +661,7 @@ local TPButtons = {
 }
 
 TPButtons[1].MouseButton1Click:Connect(function()
+    buildSafeZone()
     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if hrp then hrp.CFrame = CFrame.new(5122, 124, 9513) end
 end)
@@ -720,9 +727,66 @@ loadstring(game:HttpGet("]] .. BRAZIL_FREECAM .. [["))()
     end)
 end)
 
+-- 盤子：單擊傳送，雙擊切換固定追蹤
+local plateLocked       = false
+local plateLockThread   = nil
+local plateLastClick    = 0
+local PLATE_DCLICK_TIME = 0.4  -- 雙擊判定秒數
+
+local function stopPlateLock()
+    plateLocked = false
+    if plateLockThread then
+        task.cancel(plateLockThread)
+        plateLockThread = nil
+    end
+    TPButtons[9].Text = "盤子(雙擊固定)"
+end
+
+local function startPlateLock()
+    plateLocked     = true
+    TPButtons[9].Text = "盤子(固定中🔒)"
+    plateLockThread = task.spawn(function()
+        while plateLocked do
+            pcall(function()
+                local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
+                local hrp   = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if plate and hrp then
+                    -- 卡進盤子中心（Y 偏移 0 讓軀幹嵌入盤子）
+                    hrp.CFrame = CFrame.new(plate.Position)
+                end
+            end)
+            task.wait(0)  -- 每幀更新
+        end
+    end)
+end
+
 TPButtons[9].MouseButton1Click:Connect(function()
-    local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
-    if plate then LocalPlayer.Character.HumanoidRootPart.CFrame = plate.CFrame end
+    local now = tick()
+    local dt  = now - plateLastClick
+    plateLastClick = now
+
+    if dt <= PLATE_DCLICK_TIME then
+        -- 雙擊：切換固定
+        if plateLocked then
+            stopPlateLock()
+        else
+            -- 先傳送過去再開始鎖定
+            pcall(function()
+                local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
+                local hrp   = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if plate and hrp then hrp.CFrame = CFrame.new(plate.Position) end
+            end)
+            startPlateLock()
+        end
+    else
+        -- 單擊：只傳送，不鎖定
+        if plateLocked then stopPlateLock() end
+        pcall(function()
+            local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
+            local hrp   = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if plate and hrp then hrp.CFrame = plate.CFrame end
+        end)
+    end
 end)
 TPButtons[10].MouseButton1Click:Connect(function()
     local cloud = Workspace:FindFirstChild("Arena") and Workspace.Arena.Fort and Workspace.Arena.Fort:FindFirstChild("Floor")
@@ -1258,7 +1322,9 @@ switchSection(1)
 local function cleanUp()
     if generatedPlatform  then generatedPlatform:Destroy(); generatedPlatform = nil end
     if autoSlapConnection then task.cancel(autoSlapConnection); autoSlapConnection = nil end
-    autoSlap = false
+    if plateLockThread    then task.cancel(plateLockThread); plateLockThread = nil end
+    autoSlap    = false
+    plateLocked = false
     clearAntiJumpConns()
 end
 
