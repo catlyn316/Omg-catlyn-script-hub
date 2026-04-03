@@ -589,20 +589,11 @@ end
 -- ══════════════════════════════════════════
 -- 通用腳本按鈕（徽章/精通共用）
 -- enablePlatform: "y" = 自動開防虛空
--- enableAFK:      "y" = 自動開防掛機
 -- ══════════════════════════════════════════
-local function enableAFKIfNeeded()
-    if not antiAFK then
-        antiAFK         = true
-        antiAFKBtn.Text = "防掛機: 開"
-    end
-end
-
-local function addScriptButton(parent, name, order, enablePlatform, url, enableAFK)
+local function addScriptButton(parent, name, order, enablePlatform, url)
     local btn = createButton(name, order, parent)
     btn.MouseButton1Click:Connect(function()
         if enablePlatform == "y" then enablePlatformIfNeeded() end
-        if enableAFK      == "y" then enableAFKIfNeeded()      end
         loadstring(game:HttpGet(url))()
     end)
     return btn
@@ -870,10 +861,10 @@ platformBtn.MouseButton1Click:Connect(function()
 end)
 
 -- 防掛機
-local antiAFK     = false
+local antiAFK     = true
 local virtualUser = game:GetService("VirtualUser")
 
-local antiAFKBtn = createButton("防掛機: 關", 4, CommonButtonsScroll)
+local antiAFKBtn = createButton("防掛機: 開", 4, CommonButtonsScroll)
 antiAFKBtn.MouseButton1Click:Connect(function()
     antiAFK         = not antiAFK
     antiAFKBtn.Text = antiAFK and "防掛機: 開" or "防掛機: 關"
@@ -1032,53 +1023,53 @@ end)
 -- ══════════════════════════════════════════
 -- 🏅 徽章手套分區
 -- ══════════════════════════════════════════
-addScriptButton(BadgeGlove, "eggler手套",             1,  "n", 'https://raw.githubusercontent.com/catlyn316/Eggler-badge-glove/refs/heads/main/Eggler%20badge%20glove',             "n")
-addScriptButton(BadgeGlove, "bob手套",                2,  "n", 'https://raw.githubusercontent.com/catlyn316/Bob-glove/refs/heads/main/Bob%20glove',                                "n")
-addScriptButton(BadgeGlove, "slender手套",            3,  "n", 'https://raw.githubusercontent.com/catlyn316/Slender-glove/refs/heads/main/Slender%20glove',                        "n")
-addScriptButton(BadgeGlove, "slasher手套",            4,  "n", 'https://raw.githubusercontent.com/catlyn316/Slasher-glove/refs/heads/main/Slasher',                                "n")
-addScriptButton(BadgeGlove, "car keys手套",           5,  "n", 'https://raw.githubusercontent.com/catlyn316/Car/refs/heads/main/Car%20keys%20badge',                               "n")
-addScriptButton(BadgeGlove, "suction手套",            6,  "n", 'https://raw.githubusercontent.com/catlyn316/Suction-glove/refs/heads/main/Suction%20glove',                        "n")
-addScriptButton(BadgeGlove, "reflect手套",            7,  "n", 'https://raw.githubusercontent.com/catlyn316/reflect/refs/heads/main/reflect%20glove',                              "n")
-addScriptButton(BadgeGlove, "dave和mortis戰",         8,  "n", 'https://raw.githubusercontent.com/catlyn316/Dave-boss-fight-script/refs/heads/main/Dave%20boss%20fight',           "n")
-addScriptButton(BadgeGlove, "bounty手套",             9,  "n", 'https://raw.githubusercontent.com/catlyn316/Bounty/refs/heads/main/Bounty',                                        "y")
-addScriptButton(BadgeGlove, "debug手套",              10, "n", 'https://raw.githubusercontent.com/catlyn316/Debug-glove/refs/heads/main/Debug%20nah%20still%20exploit',             "n")
-addScriptButton(BadgeGlove, "paint手套",              11, "n", 'https://raw.githubusercontent.com/catlyn316/Paint-mode/refs/heads/main/Paint%20mode',                              "n")
-addScriptButton(BadgeGlove, "plate手套",              12, "n", 'https://raw.githubusercontent.com/catlyn316/Plate-glove/refs/heads/main/Plate',                                    "n")
-addScriptButton(BadgeGlove, "企鵝手套",               13, "n", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Penguin",                          "n")
-addScriptButton(BadgeGlove, "鍊金和其他有關聯的手套", 14, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Alchemist%20and%20others",         "n")
-addScriptButton(BadgeGlove, "地震和其他有關的手套",   15, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Quake",                            "n")
+addScriptButton(BadgeGlove, "eggler手套",             1,  "n", 'https://raw.githubusercontent.com/catlyn316/Eggler-badge-glove/refs/heads/main/Eggler%20badge%20glove')
+addScriptButton(BadgeGlove, "bob手套",                2,  "n", 'https://raw.githubusercontent.com/catlyn316/Bob-glove/refs/heads/main/Bob%20glove')
+addScriptButton(BadgeGlove, "slender手套",            3,  "n", 'https://raw.githubusercontent.com/catlyn316/Slender-glove/refs/heads/main/Slender%20glove')
+addScriptButton(BadgeGlove, "slasher手套",            4,  "n", 'https://raw.githubusercontent.com/catlyn316/Slasher-glove/refs/heads/main/Slasher')
+addScriptButton(BadgeGlove, "car keys手套",           5,  "n", 'https://raw.githubusercontent.com/catlyn316/Car/refs/heads/main/Car%20keys%20badge')
+addScriptButton(BadgeGlove, "suction手套",            6,  "n", 'https://raw.githubusercontent.com/catlyn316/Suction-glove/refs/heads/main/Suction%20glove')
+addScriptButton(BadgeGlove, "reflect手套",            7,  "n", 'https://raw.githubusercontent.com/catlyn316/reflect/refs/heads/main/reflect%20glove')
+addScriptButton(BadgeGlove, "dave和mortis戰",         8,  "n", 'https://raw.githubusercontent.com/catlyn316/Dave-boss-fight-script/refs/heads/main/Dave%20boss%20fight')
+addScriptButton(BadgeGlove, "bounty手套",             9,  "n", 'https://raw.githubusercontent.com/catlyn316/Bounty/refs/heads/main/Bounty')
+addScriptButton(BadgeGlove, "debug手套",              10, "n", 'https://raw.githubusercontent.com/catlyn316/Debug-glove/refs/heads/main/Debug%20nah%20still%20exploit')
+addScriptButton(BadgeGlove, "paint手套",              11, "n", 'https://raw.githubusercontent.com/catlyn316/Paint-mode/refs/heads/main/Paint%20mode')
+addScriptButton(BadgeGlove, "plate手套",              12, "n", 'https://raw.githubusercontent.com/catlyn316/Plate-glove/refs/heads/main/Plate')
+addScriptButton(BadgeGlove, "企鵝手套",               13, "n", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Penguin")
+addScriptButton(BadgeGlove, "鍊金和其他有關聯的手套", 14, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Alchemist%20and%20others")
+addScriptButton(BadgeGlove, "地震和其他有關的手套",   15, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Quake")
 -- 🔽 在這裡新增徽章手套按鈕：
--- addScriptButton(BadgeGlove, "", , "n", "", "n")
+-- addScriptButton(BadgeGlove, "", , "n", "")
 
 -- ══════════════════════════════════════════
 -- 🎯 精通手套分區
 -- ══════════════════════════════════════════
-addScriptButton(MasteryScroll, "閃光(任務二)", 1,  "n", 'https://raw.githubusercontent.com/catlyn316/Flash-mastery/refs/heads/main/Flash%20second%20task',                                           "y")
-addScriptButton(MasteryScroll, "加速器",       2,  "n", 'https://raw.githubusercontent.com/catlyn316/Need-baller/refs/heads/main/Need%20baller%20to%20farm%20booster%20mastery',                     "y")
-addScriptButton(MasteryScroll, "空間",         3,  "n", 'https://raw.githubusercontent.com/catlyn316/Space-mastery/refs/heads/main/Space%20mastery%20no%20need%20baller%20but%20alt',                "y")
-addScriptButton(MasteryScroll, "冰砂",         4,  "n", 'https://raw.githubusercontent.com/catlyn316/Shard-mastery/refs/heads/main/Shard%20mastery',                                                 "y")
-addScriptButton(MasteryScroll, "公車",         5,  "y", 'https://raw.githubusercontent.com/catlyn316/Bus-mastery-need-null-help/refs/heads/main/Bus%20mastery',                                      "y")
-addScriptButton(MasteryScroll, "階段",         6,  "n", 'https://raw.githubusercontent.com/catlyn316/Phase-mastery/refs/heads/main/Phase%20mastery',                                                 "y")
-addScriptButton(MasteryScroll, "大亨和蜜蜂",   7,  "n", 'https://raw.githubusercontent.com/catlyn316/Tycoon-and-hive-mastery/refs/heads/main/Tycoon%2Bhive%20mastery',                               "y")
-addScriptButton(MasteryScroll, "🗿",           8,  "n", 'https://raw.githubusercontent.com/catlyn316/moai-mastery/refs/heads/main/moai%20mastery',                                                   "y")
-addScriptButton(MasteryScroll, "屏障",         9,  "n", 'https://raw.githubusercontent.com/catlyn316/Defense-mastery/refs/heads/main/Defense',                                                       "y")
-addScriptButton(MasteryScroll, "車鑰匙",       10, "n", 'https://raw.githubusercontent.com/catlyn316/Car-key-mastery/refs/heads/main/Car%20key%20mastery',                                           "y")
-addScriptButton(MasteryScroll, "巫毒",         11, "n", 'https://raw.githubusercontent.com/catlyn316/Voodoo-mastery/refs/heads/main/Voodoo%20mastery',                                               "y")
-addScriptButton(MasteryScroll, "櫻桃",         12, "n", 'https://raw.githubusercontent.com/catlyn316/Cherry-mastery/refs/heads/main/Cherry%20mastery',                                               "y")
-addScriptButton(MasteryScroll, "BONK",         13, "n", 'https://raw.githubusercontent.com/catlyn316/BONK-mastery/refs/heads/main/bonk',                                                             "y")
-addScriptButton(MasteryScroll, "chain",        14, "y", 'https://raw.githubusercontent.com/catlyn316/Chain-mastery/refs/heads/main/No%20more%20alt%20need',                                          "y")
-addScriptButton(MasteryScroll, "彈簧",         15, "n", 'https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Spring',                                                   "y")
-addScriptButton(MasteryScroll, "月球",         16, "n", 'https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Moon',                                                     "y")
-addScriptButton(MasteryScroll, "雜技演員",     17, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Acrobat",                                                 "y")
-addScriptButton(MasteryScroll, "修理工",       18, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Tinkerer",                                                "y")
-addScriptButton(MasteryScroll, "靈魂",         19, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Soul",                                                    "y")
-addScriptButton(MasteryScroll, "憤怒",         20, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Rage",                                                    "y")
-addScriptButton(MasteryScroll, "跟蹤者",       21, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Stalker",                                                 "y")
-addScriptButton(MasteryScroll, "木板",         22, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Plank",                                                   "y")
-addScriptButton(MasteryScroll, "泡泡",         23, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Bubble",                                                  "y")
-addScriptButton(MasteryScroll, "幻影",         24, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Phantom",                                                 "y")
+addScriptButton(MasteryScroll, "閃光(任務二)", 1,  "n", 'https://raw.githubusercontent.com/catlyn316/Flash-mastery/refs/heads/main/Flash%20second%20task')
+addScriptButton(MasteryScroll, "加速器",       2,  "n", 'https://raw.githubusercontent.com/catlyn316/Need-baller/refs/heads/main/Need%20baller%20to%20farm%20booster%20mastery')
+addScriptButton(MasteryScroll, "空間",         3,  "n", 'https://raw.githubusercontent.com/catlyn316/Space-mastery/refs/heads/main/Space%20mastery%20no%20need%20baller%20but%20alt')
+addScriptButton(MasteryScroll, "冰砂",         4,  "n", 'https://raw.githubusercontent.com/catlyn316/Shard-mastery/refs/heads/main/Shard%20mastery')
+addScriptButton(MasteryScroll, "公車",         5,  "y", 'https://raw.githubusercontent.com/catlyn316/Bus-mastery-need-null-help/refs/heads/main/Bus%20mastery')
+addScriptButton(MasteryScroll, "階段",         6,  "n", 'https://raw.githubusercontent.com/catlyn316/Phase-mastery/refs/heads/main/Phase%20mastery')
+addScriptButton(MasteryScroll, "大亨和蜜蜂",   7,  "n", 'https://raw.githubusercontent.com/catlyn316/Tycoon-and-hive-mastery/refs/heads/main/Tycoon%2Bhive%20mastery')
+addScriptButton(MasteryScroll, "🗿",           8,  "n", 'https://raw.githubusercontent.com/catlyn316/moai-mastery/refs/heads/main/moai%20mastery')
+addScriptButton(MasteryScroll, "屏障",         9,  "n", 'https://raw.githubusercontent.com/catlyn316/Defense-mastery/refs/heads/main/Defense')
+addScriptButton(MasteryScroll, "車鑰匙",       10, "n", 'https://raw.githubusercontent.com/catlyn316/Car-key-mastery/refs/heads/main/Car%20key%20mastery')
+addScriptButton(MasteryScroll, "巫毒",         11, "n", 'https://raw.githubusercontent.com/catlyn316/Voodoo-mastery/refs/heads/main/Voodoo%20mastery')
+addScriptButton(MasteryScroll, "櫻桃",         12, "n", 'https://raw.githubusercontent.com/catlyn316/Cherry-mastery/refs/heads/main/Cherry%20mastery')
+addScriptButton(MasteryScroll, "BONK",         13, "n", 'https://raw.githubusercontent.com/catlyn316/BONK-mastery/refs/heads/main/bonk')
+addScriptButton(MasteryScroll, "chain",        14, "y", 'https://raw.githubusercontent.com/catlyn316/Chain-mastery/refs/heads/main/No%20more%20alt%20need')
+addScriptButton(MasteryScroll, "彈簧",         15, "n", 'https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Spring')
+addScriptButton(MasteryScroll, "月球",         16, "n", 'https://raw.githubusercontent.com/catlyn316/Return-mastery-glove/refs/heads/main/Moon')
+addScriptButton(MasteryScroll, "雜技演員",     17, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Acrobat")
+addScriptButton(MasteryScroll, "修理工",       18, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Tinkerer")
+addScriptButton(MasteryScroll, "靈魂",         19, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Soul")
+addScriptButton(MasteryScroll, "憤怒",         20, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Rage")
+addScriptButton(MasteryScroll, "跟蹤者",       21, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Stalker")
+addScriptButton(MasteryScroll, "木板",         22, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Plank")
+addScriptButton(MasteryScroll, "泡泡",         23, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Bubble")
+addScriptButton(MasteryScroll, "幻影",         24, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Phantom")
 -- 🔽 在這裡新增精通手套按鈕：
--- addScriptButton(MasteryScroll, "", , "n", "", "y")
+-- addScriptButton(MasteryScroll, "", , "n", "")
 
 -- ══════════════════════════════════════════
 -- 🔧 其他分區
