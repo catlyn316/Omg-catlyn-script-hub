@@ -1069,7 +1069,7 @@ addScriptButton(MasteryScroll, "木板",         22, "n", "https://raw.githubuse
 addScriptButton(MasteryScroll, "泡泡",         23, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Bubble")
 addScriptButton(MasteryScroll, "幻影",         24, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Phantom")
 addScriptButton(MasteryScroll, "薩諾斯和耀西", 25, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Thanos%20Eggler")
-addScriptButton(MasteryScroll, "5 more幫刷",   26, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/5%20more%20helper")
+
 -- 🔽 在這裡新增精通手套按鈕：
 -- addScriptButton(MasteryScroll, "", , "n", "")
 
