@@ -415,7 +415,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size               = UDim2.new(1, -80, 0, 50)
 Title.Position           = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.55"
+Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.56"
 Title.Font               = Enum.Font.GothamBold
 Title.TextSize           = 22
 Title.TextColor3         = Color3.fromRGB(255, 255, 255)
@@ -1068,6 +1068,8 @@ addScriptButton(MasteryScroll, "跟蹤者",       21, "n", "https://raw.githubus
 addScriptButton(MasteryScroll, "木板",         22, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Plank")
 addScriptButton(MasteryScroll, "泡泡",         23, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Bubble")
 addScriptButton(MasteryScroll, "幻影",         24, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Phantom")
+addScriptButton(MasteryScroll, "薩諾斯和耀西", 25, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Thanos%20Eggler")
+addScriptButton(MasteryScroll, "5 more幫刷",   26, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/5%20more%20helper")
 -- 🔽 在這裡新增精通手套按鈕：
 -- addScriptButton(MasteryScroll, "", , "n", "")
 
