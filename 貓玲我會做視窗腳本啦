@@ -415,7 +415,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size               = UDim2.new(1, -80, 0, 50)
 Title.Position           = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.56"
+Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.57"
 Title.Font               = Enum.Font.GothamBold
 Title.TextSize           = 22
 Title.TextColor3         = Color3.fromRGB(255, 255, 255)
@@ -1023,23 +1023,25 @@ end)
 -- ══════════════════════════════════════════
 -- 🏅 徽章手套分區
 -- ══════════════════════════════════════════
-addScriptButton(BadgeGlove, "eggler手套",             1,  "n", 'https://raw.githubusercontent.com/catlyn316/Eggler-badge-glove/refs/heads/main/Eggler%20badge%20glove')
-addScriptButton(BadgeGlove, "bob手套",                2,  "n", 'https://raw.githubusercontent.com/catlyn316/Bob-glove/refs/heads/main/Bob%20glove')
-addScriptButton(BadgeGlove, "slender手套",            3,  "n", 'https://raw.githubusercontent.com/catlyn316/Slender-glove/refs/heads/main/Slender%20glove')
-addScriptButton(BadgeGlove, "slasher手套",            4,  "n", 'https://raw.githubusercontent.com/catlyn316/Slasher-glove/refs/heads/main/Slasher')
-addScriptButton(BadgeGlove, "car keys手套",           5,  "n", 'https://raw.githubusercontent.com/catlyn316/Car/refs/heads/main/Car%20keys%20badge')
-addScriptButton(BadgeGlove, "suction手套",            6,  "n", 'https://raw.githubusercontent.com/catlyn316/Suction-glove/refs/heads/main/Suction%20glove')
-addScriptButton(BadgeGlove, "reflect手套",            7,  "n", 'https://raw.githubusercontent.com/catlyn316/reflect/refs/heads/main/reflect%20glove')
-addScriptButton(BadgeGlove, "dave和mortis戰",         8,  "n", 'https://raw.githubusercontent.com/catlyn316/Dave-boss-fight-script/refs/heads/main/Dave%20boss%20fight')
-addScriptButton(BadgeGlove, "bounty手套",             9,  "n", 'https://raw.githubusercontent.com/catlyn316/Bounty/refs/heads/main/Bounty')
-addScriptButton(BadgeGlove, "debug手套",              10, "n", 'https://raw.githubusercontent.com/catlyn316/Debug-glove/refs/heads/main/Debug%20nah%20still%20exploit')
-addScriptButton(BadgeGlove, "paint手套",              11, "n", 'https://raw.githubusercontent.com/catlyn316/Paint-mode/refs/heads/main/Paint%20mode')
-addScriptButton(BadgeGlove, "plate手套",              12, "n", 'https://raw.githubusercontent.com/catlyn316/Plate-glove/refs/heads/main/Plate')
-addScriptButton(BadgeGlove, "企鵝手套",               13, "n", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Penguin")
-addScriptButton(BadgeGlove, "鍊金和其他有關聯的手套", 14, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Alchemist%20and%20others")
-addScriptButton(BadgeGlove, "地震和其他有關的手套",   15, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Quake")
--- 🔽 在這裡新增徽章手套按鈕：
--- addScriptButton(BadgeGlove, "", , "n", "")
+addScriptButton(BadgeGlove, "swordfighter",             1,  "n", 'https://pastefy.app/CELLdBl9/raw')
+addScriptButton(BadgeGlove, "eggler+shellbert",         2,  "n", 'https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Shellbert')
+addScriptButton(BadgeGlove, "bob手套",                  3,  "n", 'https://raw.githubusercontent.com/catlyn316/Bob-glove/refs/heads/main/Bob%20glove')
+addScriptButton(BadgeGlove, "slender手套",              4,  "n", 'https://raw.githubusercontent.com/catlyn316/Slender-glove/refs/heads/main/Slender%20glove')
+addScriptButton(BadgeGlove, "slasher手套",              5,  "n", 'https://raw.githubusercontent.com/catlyn316/Slasher-glove/refs/heads/main/Slasher')
+addScriptButton(BadgeGlove, "car keys手套",             6,  "n", 'https://raw.githubusercontent.com/catlyn316/Car/refs/heads/main/Car%20keys%20badge')
+addScriptButton(BadgeGlove, "suction手套",              7,  "n", 'https://raw.githubusercontent.com/catlyn316/Suction-glove/refs/heads/main/Suction%20glove')
+addScriptButton(BadgeGlove, "reflect手套",              8,  "n", 'https://raw.githubusercontent.com/catlyn316/reflect/refs/heads/main/reflect%20glove')
+addScriptButton(BadgeGlove, "dave和mortis戰",           9,  "n", 'https://raw.githubusercontent.com/catlyn316/Dave-boss-fight-script/refs/heads/main/Dave%20boss%20fight')
+addScriptButton(BadgeGlove, "bounty手套",               10, "n", 'https://raw.githubusercontent.com/catlyn316/Bounty/refs/heads/main/Bounty')
+addScriptButton(BadgeGlove, "debug手套",                11, "n", 'https://raw.githubusercontent.com/catlyn316/Debug-glove/refs/heads/main/Debug%20nah%20still%20exploit')
+addScriptButton(BadgeGlove, "paint手套",                12, "n", 'https://raw.githubusercontent.com/catlyn316/Paint-mode/refs/heads/main/Paint%20mode')
+addScriptButton(BadgeGlove, "plate手套",                13, "n", 'https://raw.githubusercontent.com/catlyn316/Plate-glove/refs/heads/main/Plate')
+addScriptButton(BadgeGlove, "riftshot",                 14, "n", 'https://pastefy.app/poybNIBq/raw')
+addScriptButton(BadgeGlove, "conker",                   15, "n", 'https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Conker')
+addScriptButton(BadgeGlove, "collector",                16, "n", 'https://pastefy.app/93kg1N1u/raw')
+addScriptButton(BadgeGlove, "企鵝手套",                 17, "n", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Penguin")
+addScriptButton(BadgeGlove, "鍊金和其他有關聯的手套",   18, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Alchemist%20and%20others")
+addScriptButton(BadgeGlove, "地震和其他有關的手套",     19, "y", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Quake")
 
 -- ══════════════════════════════════════════
 -- 🎯 精通手套分區
@@ -1070,24 +1072,15 @@ addScriptButton(MasteryScroll, "泡泡",         23, "n", "https://raw.githubuse
 addScriptButton(MasteryScroll, "幻影",         24, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Phantom")
 addScriptButton(MasteryScroll, "薩諾斯和耀西", 25, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Thanos%20Eggler")
 
--- 🔽 在這裡新增精通手套按鈕：
--- addScriptButton(MasteryScroll, "", , "n", "")
-
 -- ══════════════════════════════════════════
 -- 🔧 其他分區
 -- ══════════════════════════════════════════
 local OtherButtons = {
-    createButton("隱形直到重置", 1, OtherScroll),
-    createButton("自動拍擊: 關", 2, OtherScroll),
-    createButton("防無限跳: 關", 3, OtherScroll),
+    createButton("手套檢測工具", 1, OtherScroll),
+    createButton("fc腳本", 2, OtherScroll),
+    createButton("隱形直到重置", 3, OtherScroll),
+    createButton("自動拍擊: 關", 4, OtherScroll),
 }
-
--- 跳服+拿樹果光球
-local serverHopWithItemsBtn = createButton("跳服+拿樹果光球", 4, OtherScroll)
-serverHopWithItemsBtn.MouseButton1Click:Connect(function()
-    serverhop = true
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/Pro666Pro/autofarm-serverhop/main/main.lua'))()
-end)
 
 -- 單純跳到少人服
 local simpleServerHopBtn = createButton("單純跳到少人服", 5, OtherScroll)
@@ -1127,8 +1120,44 @@ largeServerHopBtn.MouseButton1Click:Connect(function()
     end)
 end)
 
--- ══════════════════════════════════════════
+-- 跳服+拿樹果光球 (自動偵測 Error 手套)
+local serverHopWithItemsBtn = createButton("跳服+拿樹果光球", 7, OtherScroll)
+
+serverHopWithItemsBtn.MouseButton1Click:Connect(function()
+    print("[跳服+拿光球] 開始執行...")
+    
+    -- 檢查當前手套是否為 Error
+    local jetMode = 1
+    local phaseMode = 1
+    
+    pcall(function()
+        local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
+        if leaderstats then
+            local gloveVal = leaderstats:FindFirstChild("Glove")
+            if gloveVal and gloveVal.Value == "Error" then
+                jetMode = 2
+                phaseMode = 2
+                print("[跳服+拿光球] 偵測到 Error 手套，自動調整模式為 2")
+            end
+        end
+    end)
+    
+    -- 設定變數並執行光球腳本
+    GLOVE_TELEPORT       = 1
+    JET_ORB_MODE         = jetMode
+    PHASE_ORB_MODE       = phaseMode
+    SIPHON_ORB_MODE      = 1
+    MATERIALIZE_ORB_MODE = 1
+    SERVER_HOP_MODE      = 1
+    
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Getting-slapples-and-orbs/refs/heads/main/Omg'))()
+end)
+
 -- 防無限跳
+local antiInfiniteJumpBtn = createButton("防無限跳: 關", 8, OtherScroll)
+
+-- ══════════════════════════════════════════
+-- 防無限跳功能
 -- ══════════════════════════════════════════
 local lowerName     = string.lower(LocalPlayer.Name)
 local isSpecialUser = lowerName:find("randomcat") ~= nil
@@ -1142,7 +1171,7 @@ local autoDisabledByCloud = false
 local antiJumpConns       = {}
 
 local function updateAntiJumpBtn()
-    OtherButtons[3].Text = antiInfiniteJump and "防無限跳: 開" or "防無限跳: 關"
+    antiInfiniteJumpBtn.Text = antiInfiniteJump and "防無限跳: 開" or "防無限跳: 關"
 end
 updateAntiJumpBtn()
 
@@ -1229,6 +1258,14 @@ local autoSlap           = false
 local autoSlapConnection = nil
 
 OtherButtons[1].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Testing-script/refs/heads/main/Search%20glove'))()
+end)
+
+OtherButtons[2].MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/catlyn316/Freecam-script/refs/heads/main/Fc'))()
+end)
+
+OtherButtons[3].MouseButton1Click:Connect(function()
     pcall(function()
         fireclickdetector(Workspace.Lobby["Ghost"].ClickDetector)
         wait(0.1)
@@ -1238,14 +1275,15 @@ OtherButtons[1].MouseButton1Click:Connect(function()
     end)
 end)
 
-OtherButtons[2].MouseButton1Click:Connect(function()
+OtherButtons[4].MouseButton1Click:Connect(function()
     autoSlap             = not autoSlap
-    OtherButtons[2].Text = autoSlap and "自動拍擊: 開" or "自動拍擊: 關"
+    OtherButtons[4].Text = autoSlap and "自動拍擊: 開" or "自動拍擊: 關"
     if autoSlap then
         autoSlapConnection = task.spawn(function()
             while autoSlap do
                 pcall(function()
                     local success1 = pcall(function()
+                        local UserInputService = game:GetService("UserInputService")
                         UserInputService.InputBegan:Fire({
                             UserInputType  = Enum.UserInputType.MouseButton1,
                             UserInputState = Enum.UserInputState.Begin
@@ -1282,7 +1320,7 @@ OtherButtons[2].MouseButton1Click:Connect(function()
     end
 end)
 
-OtherButtons[3].MouseButton1Click:Connect(function()
+antiInfiniteJumpBtn.MouseButton1Click:Connect(function()
     antiInfiniteJump    = not antiInfiniteJump
     userManuallySet     = true
     autoDisabledByCloud = false
