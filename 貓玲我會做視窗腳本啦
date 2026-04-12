@@ -1047,7 +1047,7 @@ addScriptButton(BadgeGlove, "地震和其他有關的手套",     19, "y", "http
 -- 🎯 精通手套分區
 -- ══════════════════════════════════════════
 addScriptButton(MasteryScroll, "閃光(任務二)", 1,  "n", 'https://raw.githubusercontent.com/catlyn316/Flash-mastery/refs/heads/main/Flash%20second%20task')
-addScriptButton(MasteryScroll, "加速器",       2,  "n", 'https://raw.githubusercontent.com/catlyn316/Need-baller/refs/heads/main/Need%20baller%20to%20farm%20booster%20mastery')
+addScriptButton(MasteryScroll, "加速器",       2,  "n", 'https://raw.githubusercontent.com/catlyn316/booster/refs/heads/main/Need%20alt%20now')
 addScriptButton(MasteryScroll, "空間",         3,  "n", 'https://raw.githubusercontent.com/catlyn316/Space-mastery/refs/heads/main/Space%20mastery%20no%20need%20baller%20but%20alt')
 addScriptButton(MasteryScroll, "冰砂",         4,  "n", 'https://raw.githubusercontent.com/catlyn316/Shard-mastery/refs/heads/main/Shard%20mastery')
 addScriptButton(MasteryScroll, "公車",         5,  "y", 'https://raw.githubusercontent.com/catlyn316/Bus-mastery-need-null-help/refs/heads/main/Bus%20mastery')
