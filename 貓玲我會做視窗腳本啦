@@ -1164,6 +1164,7 @@ local isSpecialUser = lowerName:find("randomcat") ~= nil
     or lowerName:find("1x1x1x1") ~= nil
     or lowerName:find("sacrifice") ~= nil
     or lowerName:find("ker") ~= nil
+    or lowerName:find("heart") ~= nil
 
 local antiInfiniteJump    = isSpecialUser
 local userManuallySet     = false
