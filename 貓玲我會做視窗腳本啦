@@ -415,7 +415,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size               = UDim2.new(1, -80, 0, 50)
 Title.Position           = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.57"
+Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.58"
 Title.Font               = Enum.Font.GothamBold
 Title.TextSize           = 22
 Title.TextColor3         = Color3.fromRGB(255, 255, 255)
@@ -1268,11 +1268,37 @@ end)
 
 OtherButtons[3].MouseButton1Click:Connect(function()
     pcall(function()
+        -- 記錄當前手套
+        local recordedGlove = nil
+        local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
+        if leaderstats then
+            local gloveVal = leaderstats:FindFirstChild("Glove")
+            if gloveVal then
+                recordedGlove = gloveVal.Value
+                print("[幽靈隱形 0.58] 已記錄手套: " .. recordedGlove)
+            end
+        end
+        
+        -- 點擊幽靈
         fireclickdetector(Workspace.Lobby["Ghost"].ClickDetector)
         wait(0.1)
+        
+        -- 激活幽靈隱形能力
         game:GetService("ReplicatedStorage").Ghostinvisibilityactivated:FireServer()
         wait(0.1)
-        fireclickdetector(Workspace.Lobby["Whirlwind"].ClickDetector)
+        
+        -- 點擊記錄的手套，而不是旋風
+        if recordedGlove then
+            local gloveObj = Workspace.Lobby[recordedGlove]
+            if gloveObj and gloveObj:FindFirstChild("ClickDetector") then
+                fireclickdetector(gloveObj.ClickDetector)
+                print("[幽靈隱形 0.58] 已點擊手套: " .. recordedGlove)
+            else
+                print("[幽靈隱形 0.58] 警告: 找不到手套 " .. recordedGlove)
+            end
+        else
+            print("[幽靈隱形 0.58] 警告: 未能記錄手套")
+        end
     end)
 end)
 
