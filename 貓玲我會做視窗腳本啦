@@ -415,7 +415,7 @@ local Title = Instance.new("TextLabel", Frame)
 Title.Size               = UDim2.new(1, -80, 0, 50)
 Title.Position           = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.59"
+Title.Text               = "✨ 貓玲的slap battle腳本區 ✨ v0.60"
 Title.Font               = Enum.Font.GothamBold
 Title.TextSize           = 22
 Title.TextColor3         = Color3.fromRGB(255, 255, 255)
@@ -1074,7 +1074,10 @@ addScriptButton(MasteryScroll, "幻影",         24, "n", "https://raw.githubuse
 addScriptButton(MasteryScroll, "薩諾斯和耀西", 25, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Thanos%20Eggler")
 addScriptButton(MasteryScroll, "六角", 26, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Hexa")
 addScriptButton(MasteryScroll, "積木(也可解陷阱)", 27, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Brick")
+addScriptButton(MasteryScroll, "炸彈", 28, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Bomb")
+addScriptButton(MasteryScroll, "霜凍", 29, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Frostbite")
 
+-- addScriptButton(MasteryScroll, "炸彈", 28, "n", "")
 -- ══════════════════════════════════════════
 -- 🔐 安全區分區 (新增)
 -- ══════════════════════════════════════════
