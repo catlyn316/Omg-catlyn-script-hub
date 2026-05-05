@@ -1155,7 +1155,7 @@ end)
 SafeZoneButtons[2].MouseButton1Click:Connect(function()
     buildHighSafeZone()
     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if hrp then hrp.CFrame = CFrame.new(0, 3500, 0) end
+    if hrp then hrp.CFrame = CFrame.new(0, 3505, 0) end
 end)
 
 SafeZoneButtons[3].MouseButton1Click:Connect(function()
