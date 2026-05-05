@@ -631,6 +631,7 @@ local TPScroll            = makeScroll(true)
 local CommonButtonsScroll = makeScroll(false)
 local BadgeGlove          = makeScroll(false)
 local MasteryScroll       = makeScroll(false)
+local SafeZoneScroll      = makeScroll(false)
 local OtherScroll         = makeScroll(false)
 
 -- ══════════════════════════════════════════
@@ -640,7 +641,8 @@ local Section1 = createSectionButton("🚀 傳送",    SideBar)
 local Section2 = createSectionButton("⚙️ 常用",    SideBar)
 local Section3 = createSectionButton("🏅 徽章手套", SideBar)
 local Section4 = createSectionButton("🎯 精通腳本", SideBar)
-local Section5 = createSectionButton("🔧 其他",    SideBar)
+local Section5 = createSectionButton("🔐 安全區",  SideBar)
+local Section6 = createSectionButton("🔧 其他",    SideBar)
 
 -- ══════════════════════════════════════════
 -- 🚀 傳送分區
@@ -732,7 +734,7 @@ end)
 local plateLocked       = false
 local plateLockThread   = nil
 local plateLastClick    = 0
-local PLATE_DCLICK_TIME = 0.4  -- 雙擊判定秒數
+local PLATE_DCLICK_TIME = 0.4
 
 local function stopPlateLock()
     plateLocked = false
@@ -752,11 +754,10 @@ local function startPlateLock()
                 local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
                 local hrp   = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                 if plate and hrp then
-                    -- 卡進盤子中心（Y 偏移 0 讓軀幹嵌入盤子）
                     hrp.CFrame = CFrame.new(plate.Position)
                 end
             end)
-            task.wait(0)  -- 每幀更新
+            task.wait(0)
         end
     end)
 end
@@ -767,11 +768,9 @@ TPButtons[9].MouseButton1Click:Connect(function()
     plateLastClick = now
 
     if dt <= PLATE_DCLICK_TIME then
-        -- 雙擊：切換固定
         if plateLocked then
             stopPlateLock()
         else
-            -- 先傳送過去再開始鎖定
             pcall(function()
                 local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
                 local hrp   = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -780,7 +779,6 @@ TPButtons[9].MouseButton1Click:Connect(function()
             startPlateLock()
         end
     else
-        -- 單擊：只傳送，不鎖定
         if plateLocked then stopPlateLock() end
         pcall(function()
             local plate = Workspace:FindFirstChild("Arena") and Workspace.Arena:FindFirstChild("Plate")
@@ -789,6 +787,7 @@ TPButtons[9].MouseButton1Click:Connect(function()
         end)
     end
 end)
+
 TPButtons[10].MouseButton1Click:Connect(function()
     local cloud = Workspace:FindFirstChild("Arena") and Workspace.Arena.Fort and Workspace.Arena.Fort:FindFirstChild("Floor")
     if cloud then LocalPlayer.Character.HumanoidRootPart.CFrame = cloud.CFrame + Vector3.new(0, 5, 0) end
@@ -1045,8 +1044,6 @@ addScriptButton(BadgeGlove, "地震和其他有關的手套",     19, "y", "http
 addScriptButton(BadgeGlove, "obby+hexa",     20, "n", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Obby%2Bhexa")
 addScriptButton(BadgeGlove, "套索手套",     21, "n", "https://raw.githubusercontent.com/catlyn316/Return-badge-gloves/refs/heads/main/Lasso")
 
-
-
 -- ══════════════════════════════════════════
 -- 🎯 精通手套分區
 -- ══════════════════════════════════════════
@@ -1078,6 +1075,93 @@ addScriptButton(MasteryScroll, "薩諾斯和耀西", 25, "n", "https://raw.githu
 addScriptButton(MasteryScroll, "六角", 26, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Hexa")
 addScriptButton(MasteryScroll, "積木(也可解陷阱)", 27, "n", "https://raw.githubusercontent.com/catlyn316/Return-mastery-gloves/refs/heads/main/Brick")
 
+-- ══════════════════════════════════════════
+-- 🔐 安全區分區 (新增)
+-- ══════════════════════════════════════════
+local SafeZoneCubeBuilt = false
+
+local function buildHighSafeZone()
+    if SafeZoneCubeBuilt then return end
+    SafeZoneCubeBuilt = true
+
+    local baseSize     = Vector3.new(150, 5, 150)
+    local basePosition = Vector3.new(0, 3500, 0)
+
+    local platform = Instance.new("Part")
+    platform.Size          = baseSize
+    platform.Position      = basePosition
+    platform.Anchored      = true
+    platform.CanCollide    = true
+    platform.Transparency  = 0.5
+    platform.Color         = Color3.fromRGB(100, 100, 100)
+    platform.Material      = Enum.Material.SmoothPlastic
+    platform.Name          = "LocalPlatform"
+    platform.Parent        = Workspace
+
+    local textPart = Instance.new("Part")
+    textPart.Size         = Vector3.new(50, 1, 50)
+    textPart.Anchored     = true
+    textPart.CanCollide   = false
+    textPart.Transparency = 1
+    textPart.Position     = basePosition - Vector3.new(0, 0.5, 0)
+    textPart.Rotation     = Vector3.new(180, 0, 0)
+    textPart.Parent       = Workspace
+
+    local surfaceGui = Instance.new("SurfaceGui", textPart)
+    surfaceGui.Face        = Enum.NormalId.Top
+    surfaceGui.AlwaysOnTop = true
+
+    local label = Instance.new("TextLabel", surfaceGui)
+    label.Text                   = "貓玲的安全區(>^ω^<)"
+    label.Size                   = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3             = Color3.fromRGB(255, 192, 203)
+    label.TextScaled             = true
+    label.Font                   = Enum.Font.Fantasy
+
+    local wallHeight = 150
+
+    local function createWall(size, position)
+        local wall = Instance.new("Part")
+        wall.Size         = size
+        wall.Position     = position
+        wall.Anchored     = true
+        wall.CanCollide   = true
+        wall.Transparency = 0.5
+        wall.Color        = Color3.fromRGB(100, 100, 100)
+        wall.Material     = Enum.Material.SmoothPlastic
+        wall.Parent       = Workspace
+    end
+
+    createWall(Vector3.new(2, wallHeight, 150), basePosition + Vector3.new( baseSize.X/2,  wallHeight/2, 0))
+    createWall(Vector3.new(2, wallHeight, 150), basePosition + Vector3.new(-baseSize.X/2,  wallHeight/2, 0))
+    createWall(Vector3.new(150, wallHeight, 2), basePosition + Vector3.new(0,  wallHeight/2,  baseSize.Z/2))
+    createWall(Vector3.new(150, wallHeight, 2), basePosition + Vector3.new(0,  wallHeight/2, -baseSize.Z/2))
+    createWall(baseSize,                        basePosition + Vector3.new(0,  wallHeight, 0))
+end
+
+local SafeZoneButtons = {
+    createButton("安全區(第一版)", 1, SafeZoneScroll),
+    createButton("安全區(高處)",  2, SafeZoneScroll),
+    createButton("安全區(地下室上)", 3, SafeZoneScroll),
+}
+
+SafeZoneButtons[1].MouseButton1Click:Connect(function()
+    buildSafeZone()
+    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if hrp then hrp.CFrame = CFrame.new(5122, 124, 9513) end
+end)
+
+SafeZoneButtons[2].MouseButton1Click:Connect(function()
+    buildHighSafeZone()
+    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if hrp then hrp.CFrame = CFrame.new(0, 3500, 0) end
+end)
+
+SafeZoneButtons[3].MouseButton1Click:Connect(function()
+    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if hrp then hrp.CFrame = CFrame.new(17893, -24, -3564) end
+end)
 
 -- ══════════════════════════════════════════
 -- 🔧 其他分區
@@ -1127,13 +1211,12 @@ largeServerHopBtn.MouseButton1Click:Connect(function()
     end)
 end)
 
--- 跳服+拿樹果光球 (自動偵測 Error 手套)
+-- 跳服+拿樹果光球
 local serverHopWithItemsBtn = createButton("跳服+拿樹果光球", 7, OtherScroll)
 
 serverHopWithItemsBtn.MouseButton1Click:Connect(function()
     print("[跳服+拿光球] 開始執行...")
     
-    -- 檢查當前手套是否為 Error
     local jetMode = 1
     local phaseMode = 1
     
@@ -1149,7 +1232,6 @@ serverHopWithItemsBtn.MouseButton1Click:Connect(function()
         end
     end)
     
-    -- 設定變數並執行光球腳本
     GLOVE_TELEPORT       = 1
     JET_ORB_MODE         = jetMode
     PHASE_ORB_MODE       = phaseMode
@@ -1275,7 +1357,6 @@ end)
 
 OtherButtons[3].MouseButton1Click:Connect(function()
     pcall(function()
-        -- 記錄當前手套
         local recordedGlove = nil
         local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
         if leaderstats then
@@ -1286,15 +1367,12 @@ OtherButtons[3].MouseButton1Click:Connect(function()
             end
         end
         
-        -- 點擊幽靈
         fireclickdetector(Workspace.Lobby["Ghost"].ClickDetector)
         wait(0.1)
         
-        -- 激活幽靈隱形能力
         game:GetService("ReplicatedStorage").Ghostinvisibilityactivated:FireServer()
         wait(0.1)
         
-        -- 點擊記錄的手套，而不是旋風
         if recordedGlove then
             local gloveObj = Workspace.Lobby[recordedGlove]
             if gloveObj and gloveObj:FindFirstChild("ClickDetector") then
@@ -1370,8 +1448,8 @@ end)
 -- ══════════════════════════════════════════
 -- 分區切換
 -- ══════════════════════════════════════════
-local allScrolls  = {TPScroll, CommonButtonsScroll, BadgeGlove, MasteryScroll, OtherScroll}
-local allSections = {Section1, Section2, Section3, Section4, Section5}
+local allScrolls  = {TPScroll, CommonButtonsScroll, BadgeGlove, MasteryScroll, SafeZoneScroll, OtherScroll}
+local allSections = {Section1, Section2, Section3, Section4, Section5, Section6}
 
 local function switchSection(index)
     for i, scroll in ipairs(allScrolls) do
@@ -1389,6 +1467,7 @@ Section2.MouseButton1Click:Connect(function() switchSection(2) end)
 Section3.MouseButton1Click:Connect(function() switchSection(3) end)
 Section4.MouseButton1Click:Connect(function() switchSection(4) end)
 Section5.MouseButton1Click:Connect(function() switchSection(5) end)
+Section6.MouseButton1Click:Connect(function() switchSection(6) end)
 
 switchSection(1)
 
